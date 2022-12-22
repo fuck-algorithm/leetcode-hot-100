@@ -126,7 +126,7 @@ https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
 
 - [ ] [198. 打家劫舍](https://leetcode.cn/problems/house-robber/?favorite=2cktkvj)
 
-- [ ] [200. 岛屿数量](https://leetcode.cn/problems/number-of-islands/?favorite=2cktkvj)
+- [x] [200. 岛屿数量](./number-of-islands)
 
 - [ ] [207. 课程表](https://leetcode.cn/problems/course-schedule/?favorite=2cktkvj)
 

@@ -54,9 +54,9 @@ https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
 
 # 中等
 
-- [ ] [2. 两数相加](./add-two-numbers)
+- [x] [2. 两数相加](./add-two-numbers)
 
-- [ ] [3. 无重复字符的最长子串](./longest-substring-without-repeating-characters)
+- [x] [3. 无重复字符的最长子串](./longest-substring-without-repeating-characters)
 
 - [ ] [5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/?favorite=2cktkvj)
 

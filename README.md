@@ -122,7 +122,7 @@ https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
 
 - [ ] [152. 乘积最大子数组](https://leetcode.cn/problems/maximum-product-subarray/?favorite=2cktkvj)
 
-- [ ] [155. 最小栈](https://leetcode.cn/problems/min-stack/?favorite=2cktkvj)
+- [x] [155. 最小栈](https://leetcode.cn/problems/min-stack/?favorite=2cktkvj)
 
 - [ ] [198. 打家劫舍](https://leetcode.cn/problems/house-robber/?favorite=2cktkvj)
 

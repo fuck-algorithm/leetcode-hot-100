@@ -189,7 +189,7 @@ https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
 - [ ] [10. 正则表达式匹配](https://leetcode.cn/problems/regular-expression-matching/?favorite=2cktkvj)
 
 
-- [ ] [23. 合并K个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/?favorite=2cktkvj)
+- [x] [23. 合并K个升序链表](./merge-k-sorted-lists)
 
 
 - [ ]  [32. 最长有效括号](https://leetcode.cn/problems/longest-valid-parentheses/?favorite=2cktkvj)

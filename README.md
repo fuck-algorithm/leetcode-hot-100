@@ -86,7 +86,7 @@ https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
 
 - [ ] [53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/?favorite=2cktkvj)
 
-- [ ] [55. 跳跃游戏](https://leetcode.cn/problems/jump-game/?favorite=2cktkvj)
+- [x] [55. 跳跃游戏](./jump-game)
 
 - [ ] [56. 合并区间](https://leetcode.cn/problems/merge-intervals/?favorite=2cktkvj)
 

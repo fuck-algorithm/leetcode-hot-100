@@ -58,7 +58,7 @@ https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
 
 - [x] [3. 无重复字符的最长子串](./longest-substring-without-repeating-characters)
 
-- [ ] [5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/?favorite=2cktkvj)
+- [ ] [5. 最长回文子串](./longest-palindromic-substring)
 
 - [ ] [11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/?favorite=2cktkvj)
 

@@ -182,7 +182,7 @@ https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
 
 - [ ] [647. 回文子串](https://leetcode.cn/problems/palindromic-substrings/?favorite=2cktkvj)
 
-- [ ] [739. 每日温度](https://leetcode.cn/problems/daily-temperatures/?favorite=2cktkvj)
+- [ ] [739. 每日温度](./daily-temperatures)
 
 # 困难
 

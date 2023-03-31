@@ -16,9 +16,9 @@ func reverseList(head *ListNode) *ListNode {
 		return head
 	}
 	t := reverseList(head.Next)
-	head.Next.Next = head
-	head.Next = nil
-	return t
+	head.Next.Next = head // 翻转当前函数栈节点的后继的后继
+	head.Next = nil       // 当前函数栈节点的后继置空
+	return t              // 返回函数栈顶的节点
 }
 func printList(head *ListNode) {
 	for head != nil {

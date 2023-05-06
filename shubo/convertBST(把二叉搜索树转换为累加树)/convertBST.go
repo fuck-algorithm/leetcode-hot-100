@@ -51,7 +51,7 @@ func convertBST(root *TreeNode) *TreeNode {
 // S(n)+1 = 2^(n)
 // n =  ln(S(n)+1)/ ln2 = Log2(S(n)+1)
 
-func transportCase2Tree(caseStr string) (root *TreeNode) {
+func transportCase2BSTTree(caseStr string) (root *TreeNode) {
 	caseStr = strings.ReplaceAll(strings.ReplaceAll(caseStr, "[", ""), "]", "")
 	nodes := strings.Split(caseStr, ",")
 	Sn := len(nodes)
@@ -59,7 +59,7 @@ func transportCase2Tree(caseStr string) (root *TreeNode) {
 		return &TreeNode{}
 	}
 	root = &TreeNode{Val: *transportElement(nodes[0])}
-	dpath := math.Log2(float64(Sn + 1))
+	dpath := math.Ceil(math.Log2(float64(Sn + 1)))
 	stack := []*TreeNode{root}
 	for i := 2; i <= int(dpath); i++ {
 		l := 1 << (i - 1)
@@ -67,8 +67,11 @@ func transportCase2Tree(caseStr string) (root *TreeNode) {
 		for len(stack) != 0 && l < r {
 			par := stack[0]
 			stack = stack[1:]
-			lPtr := transportElement(nodes[l-1])
-			rPtr := transportElement(nodes[l])
+			var lPtr, rPtr *int
+			if len(nodes) > l {
+				lPtr = transportElement(nodes[l-1])
+				rPtr = transportElement(nodes[l])
+			}
 			if lPtr != nil {
 				par.Left = &TreeNode{Val: *lPtr}
 				stack = append(stack, par.Left)
@@ -92,7 +95,7 @@ func transportElement(str string) *int {
 	}
 	return &i
 }
-func tree2Array(root *TreeNode) (arr []*int) {
+func bst2Array(root *TreeNode) (arr []*int) {
 	arr = []*int{}
 	if root == nil {
 		return
@@ -121,11 +124,11 @@ func addValOrNil(node *TreeNode, arr *[]*int, stack *[]*TreeNode) {
 	}
 }
 func main() {
-	root := transportCase2Tree(`[4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]`)
-	arrBefore := tree2Array(root)
+	root := transportCase2BSTTree(`[4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]`)
+	arrBefore := bst2Array(root)
 	b, _ := json.Marshal(arrBefore)
 	fmt.Printf("%s\n", string(b))
-	arrAfter := tree2Array(convertBST(root))
+	arrAfter := bst2Array(convertBST(root))
 	bb, _ := json.Marshal(arrAfter)
 	fmt.Printf("%s\n", bb)
 }

@@ -11,9 +11,9 @@ var cur = ListNode{}
 var head = &ListNode{Next: &cur}
 
 func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
-	return rescur(list1, list2)
+	return recur(list1, list2)
 }
-func rescur(list1 *ListNode, list2 *ListNode) *ListNode {
+func recur(list1 *ListNode, list2 *ListNode) *ListNode {
 	if list1 == nil {
 		return list2
 	}
@@ -21,10 +21,10 @@ func rescur(list1 *ListNode, list2 *ListNode) *ListNode {
 		return list1
 	}
 	if list1.Val < list2.Val {
-		list1.Next = rescur(list1.Next, list2)
+		list1.Next = recur(list1.Next, list2)
 		return list1
 	} else {
-		list2.Next = rescur(list1, list2.Next)
+		list2.Next = recur(list1, list2.Next)
 		return list2
 	}
 }

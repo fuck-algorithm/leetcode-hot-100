@@ -8,6 +8,8 @@ import (
 func TestCombinationSum(t *testing.T) {
 	t.Log(combinationSum([]int{2, 3, 6, 7}, 7))
 }
+
+// dfs + 回溯
 func combinationSum(candidates []int, target int) [][]int {
 	sort.Ints(candidates)
 	var ans [][]int

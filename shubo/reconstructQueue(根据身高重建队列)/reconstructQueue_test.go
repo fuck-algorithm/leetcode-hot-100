@@ -11,7 +11,6 @@ import (
 
 // 先按照队列次序排序
 // 再从前向后调整错误的队列次序
-// TODO 还有问题
 func reconstructQueue(people [][]int) [][]int {
 	sort.Slice(people, func(i, j int) bool {
 		return people[i][0] < people[j][0] || people[i][0] == people[j][0] && people[i][1] > people[j][1]
@@ -29,29 +28,8 @@ func reconstructQueue(people [][]int) [][]int {
 			}
 		}
 	}
-	return people
+	return ret
 }
-
-//func reconstructQueue(people [][]int) [][]int {
-//	sort.Slice(people, func(i, j int) bool {
-//		a, b := people[i], people[j]
-//		return a[0] < b[0] || a[0] == b[0] && a[1] > b[1]
-//	})
-//	ans := make([][]int, len(people))
-//	for _, person := range people {
-//		spaces := person[1] + 1
-//		for i := range ans {
-//			if ans[i] != nil {
-//				continue
-//			}
-//			spaces--
-//			if spaces == 0 {
-//				ans[i] = person
-//			}
-//		}
-//	}
-//	return ans
-//}
 
 func TestReconstructQueue(t *testing.T) {
 	t.Log(reconstructQueue([][]int{{7, 0}, {4, 4}, {7, 1}, {5, 0}, {6, 1}, {5, 2}}))

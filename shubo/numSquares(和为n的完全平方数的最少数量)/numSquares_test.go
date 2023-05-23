@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"sort"
 	"testing"
 )
@@ -17,26 +18,40 @@ import (
 // 1. 由整数n可以推出 完全平方数 组成的数组
 // 2. 该题转换为从一个递增的完全平方数数组里找最短的组合的数量 使其相加等于n
 // FIXME: 这样套娃会超时
+//func numSquares(n int) int {
+//	//hash := map[int]bool{}
+//	i := 1
+//	var nums []int
+//	for i*i <= n {
+//		//hash[i*i] = true
+//		nums = append(nums, i*i)
+//		i++
+//	}
+//	x := combinationSum(nums, n)
+//	for _, xx := range x {
+//		n = min(n, len(xx))
+//	}
+//	return n
+//}
+
+// 官方题解dp
 func numSquares(n int) int {
-	//hash := map[int]bool{}
-	i := 1
-	var nums []int
-	for i*i <= n {
-		//hash[i*i] = true
-		nums = append(nums, i*i)
-		i++
+	f := make([]int, n+1)
+	for i := 1; i <= n; i++ {
+		minn := math.MaxInt32
+		for j := 1; j*j <= i; j++ {
+			minn = min(minn, f[i-j*j])
+		}
+		f[i] = minn + 1
 	}
-	x := combinationSum(nums, n)
-	for _, xx := range x {
-		n = min(n, len(xx))
-	}
-	return n
+	return f[n]
 }
+
 func min(a, b int) int {
-	if a > b {
-		return b
+	if a < b {
+		return a
 	}
-	return a
+	return b
 }
 
 // dfs + 回溯

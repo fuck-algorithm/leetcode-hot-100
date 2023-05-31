@@ -9,6 +9,7 @@ import (
 //例如，先修课程对 [0, 1] 表示：想要学习课程 0 ，你需要先完成课程 1 。
 //请你判断是否可能完成所有课程的学习？如果可以，返回 true ；否则，返回 false 。
 
+// 这题没过 FixME: 拓扑排序 或 bfs
 func canFinish(numCourses int, prerequisites [][]int) bool {
 	var coursesMap = map[int]struct{}{}
 	for _, prerequisite := range prerequisites {

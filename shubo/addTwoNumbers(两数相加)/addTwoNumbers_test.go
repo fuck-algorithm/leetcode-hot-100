@@ -74,3 +74,40 @@ func arr2ListNode(arr []int) (ret *ListNode) {
 	}
 	return ret.Next
 }
+func addTwoNumbers2023811(l1 *ListNode, l2 *ListNode) *ListNode {
+	var flag bool
+	var ret = &ListNode{}
+	var cursor = ret
+	for {
+		if l1 != nil && l2 != nil {
+			cursor.Val = l1.Val + l2.Val
+			l1 = l1.Next
+			l2 = l2.Next
+		} else {
+			if l1 != nil && l2 == nil {
+				cursor.Val = l1.Val
+				l1 = l1.Next
+			}
+			if l2 != nil && l1 == nil {
+				cursor.Val = l2.Val
+				l2 = l2.Next
+			}
+		}
+
+		if flag {
+			cursor.Val = cursor.Val + 1
+		}
+		flag = cursor.Val/10 == 1
+		cursor.Val %= 10
+		if l1 == nil && l2 == nil && !flag {
+			return ret
+		}
+		cursor.Next = &ListNode{}
+		cursor = cursor.Next
+	}
+
+}
+func Test20230811(t *testing.T) {
+	t.Log(printListNode(addTwoNumbers2023811(arr2ListNode([]int{9, 9, 9, 9, 9, 9, 9}), arr2ListNode([]int{9, 9, 9, 9}))))
+	t.Log(printListNode(addTwoNumbers2023811(arr2ListNode([]int{2, 4, 3}), arr2ListNode([]int{5, 6, 4}))))
+}

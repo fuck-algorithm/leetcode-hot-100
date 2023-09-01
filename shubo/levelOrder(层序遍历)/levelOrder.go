@@ -9,20 +9,20 @@ func levelOrder(root *TreeNode) [][]int {
 	if root == nil {
 		return [][]int{}
 	}
-	var stack = []*TreeNode{root}
+	var queue = []*TreeNode{root}
 	var ret [][]int
-	for len(stack) > 0 {
-		var curLen = len(stack)
+	for len(queue) > 0 {
+		var curLen = len(queue)
 		var curLevel []int
 		for curLen > 0 {
-			curNode := stack[0]
-			stack = stack[1:]
+			curNode := queue[0]
+			queue = queue[1:]
 			curLevel = append(curLevel, curNode.Val)
 			if curNode.Left != nil {
-				stack = append(stack, curNode.Left)
+				queue = append(queue, curNode.Left)
 			}
 			if curNode.Right != nil {
-				stack = append(stack, curNode.Right)
+				queue = append(queue, curNode.Right)
 			}
 			curLen--
 		}

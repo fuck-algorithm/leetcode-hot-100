@@ -40,9 +40,9 @@ https://leetcode.cn/studyplan/top-100-liked/
 
 - [x] [20. 有效的括号](./栈/20.%20有效的括号)
 - [x] [155. 最小栈](./栈/155.%20最小栈)
-- [x] [394. 字符串解码](https://leetcode.cn/problems/decode-string/)
-- [x] [739. 每日温度](https://leetcode.cn/problems/daily-temperatures/)
-- [x] [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)
+- [ ] [394. 字符串解码](https://leetcode.cn/problems/decode-string/)
+- [ ] [739. 每日温度](./栈/739.%20每日温度)
+- [ ] [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)
 
 # 堆
 
@@ -164,7 +164,6 @@ https://leetcode.cn/studyplan/top-100-liked/
 - [ ] [581. 最短无序连续子数组](https://leetcode.cn/problems/shortest-unsorted-continuous-subarray/?favorite=2cktkvj)
 - [ ] [621. 任务调度器](https://leetcode.cn/problems/task-scheduler/?favorite=2cktkvj)
 - [x] [647. 回文子串](./中等/647. 回文子串)
-- [x] [739. 每日温度](./中等/739. 每日温度)
 
 # 困难
 

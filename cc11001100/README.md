@@ -3,62 +3,104 @@
 题集链接：
 
 ```
+https://leetcode.cn/problem-list/2cktkvj
+```
 
-https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
+hot 100：
 
 ```
+https://leetcode.cn/studyplan/top-100-liked/
+```
+
+
+
+# 哈希
+
+# 双指针
+
+# 滑动窗口
+
+# 子串
+
+# 普通数组
+
+# 矩阵
+
+# 链表
+
+# 二叉树
+
+# 图论
+
+# 回溯
+
+# 二分查找
+
+# 栈
+
+- [x] [20. 有效的括号](./栈/20. 有效的括号)
+
+# 堆
+
+# 贪心算法
+
+# 动态规划
+
+# 多维动态规划
+
+# 技巧
+
+
+
+
 
 # 简单
 
-- [x] [1. 两数之和](./two-sum)
+- [x] [21. 合并两个有序链表](./简单/21. 合并两个有序链表)
 
-- [x] [20. 有效的括号](./valid-parentheses)
+- [x] [70. 爬楼梯](./简单/70. 爬楼梯)
 
-- [x] [21. 合并两个有序链表](./merge-two-sorted-lists)
+- [x] [94. 二叉树的中序遍历](./简单/94. 二叉树的中序遍历)
 
-- [x] [70. 爬楼梯](./climbing-stairs)
+- [x] [101. 对称二叉树](./简单/101. 对称二叉树)
 
-- [x] [94. 二叉树的中序遍历](./binary-tree-inorder-traversal)
+- [x] [104. 二叉树的最大深度](./简单/104. 二叉树的最大深度)
 
-- [x] [101. 对称二叉树](./symmetric-tree)
+- [x] [121. 买卖股票的最佳时机](./简单/121. 买卖股票的最佳时机)
 
-- [x] [104. 二叉树的最大深度](./maximum-depth-of-binary-tree)
+- [x] [136. 只出现一次的数字](./简单/136. 只出现一次的数字)
 
-- [ ] [121. 买卖股票的最佳时机]()
+- [x] [141. 环形链表](./简单/141. 环形链表)
 
-- [x] [136. 只出现一次的数字](./single-number)
+- [x] [160. 相交链表](./简单/160. 相交链表)
 
-- [ ] [141. 环形链表]()
+- [x] [169. 多数元素](./简单/169. 多数元素)
 
-- [ ] [160. 相交链表]()
+- [x] [206. 反转链表](./简单/206. 反转链表)
 
-- [ ] [169. 多数元素]()
+- [x] [226. 翻转二叉树](./简单/226. 翻转二叉树)
 
-- [ ] [206. 反转链表]()
+- [x] [234. 回文链表](./简单/234. 回文链表)
 
-- [x] [226. 翻转二叉树](./invert-binary-tree)
+- [x] [283. 移动零](./简单/283. 移动零)
 
-- [x] [234. 回文链表](./palindrome-linked-list)
+- [x] [338. 比特位计数](./简单/338. 比特位计数)
 
-- [ ] [283. 移动零]()
+- [x] [448. 找到所有数组中消失的数字](./简单/448. 找到所有数组中消失的数字)
 
-- [x] [338. 比特位计数](./counting-bits)
+- [x] [461. 汉明距离](./简单/461. 汉明距离)
 
-- [x] [448. 找到所有数组中消失的数字](./find-all-numbers-disappeared-in-an-array)
+- [x] [543. 二叉树的直径](./简单/543. 二叉树的直径)
 
-- [x] [461. 汉明距离](./hamming-distance)
-
-- [ ] [543. 二叉树的直径]()
-
-- [x] [617. 合并二叉树](./merge-two-binary-trees)
+- [x] [617. 合并二叉树](./简单/617. 合并二叉树)
 
 # 中等
 
-- [x] [2. 两数相加](./add-two-numbers)
+- [x] [2. 两数相加](./中等/2. 两数相加)
 
-- [x] [3. 无重复字符的最长子串](./longest-substring-without-repeating-characters)
+- [x] [3. 无重复字符的最长子串](./中等/3. 无重复字符的最长子串)
 
-- [x] [5. 最长回文子串](./longest-palindromic-substring)
+- [x] [5. 最长回文子串](./中等/5. 最长回文子串)
 
 - [ ] [11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/?favorite=2cktkvj)
 
@@ -66,7 +108,7 @@ https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
 
 - [ ] [17. 电话号码的字母组合](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/?favorite=2cktkvj)
 
-- [ ] [19. 删除链表的倒数第 N 个结点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/?favorite=2cktkvj)
+- [x] [19. 删除链表的倒数第 N 个结点](./中等/19. 删除链表的倒数第 N 个结点)
 
 - [ ] [22. 括号生成](https://leetcode.cn/problems/generate-parentheses/?favorite=2cktkvj)
 
@@ -74,7 +116,7 @@ https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
 
 - [ ] [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/?favorite=2cktkvj)
 
-- [ ] [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/?favorite=2cktkvj)
+- [x] [34. 在排序数组中查找元素的第一个和最后一个位置](./中等/34. 在排序数组中查找元素的第一个和最后一个位置)
 
 - [ ] [39. 组合总和](https://leetcode.cn/problems/combination-sum/?favorite=2cktkvj)
 
@@ -86,9 +128,9 @@ https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
 
 - [ ] [53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/?favorite=2cktkvj)
 
-- [x] [55. 跳跃游戏](./jump-game)
+- [x] [55. 跳跃游戏](./中等/55. 跳跃游戏)
 
-- [ ] [56. 合并区间](https://leetcode.cn/problems/merge-intervals/?favorite=2cktkvj)
+- [x] [56. 合并区间](./中等/56. 合并区间)
 
 - [ ] [62. 不同路径](https://leetcode.cn/problems/unique-paths/?favorite=2cktkvj)
 
@@ -104,7 +146,7 @@ https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
 
 - [ ] [98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/?favorite=2cktkvj)
 
-- [x] [102. 二叉树的层序遍历](./binary-tree-level-order-traversal)
+- [x] [102. 二叉树的层序遍历](./中等/102. 二叉树的层序遍历)
 
 - [ ] [105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/?favorite=2cktkvj)
 
@@ -122,15 +164,15 @@ https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
 
 - [ ] [152. 乘积最大子数组](https://leetcode.cn/problems/maximum-product-subarray/?favorite=2cktkvj)
 
-- [x] [155. 最小栈](./min-stack)
+- [x] [155. 最小栈](./中等/155. 最小栈)
 
 - [ ] [198. 打家劫舍](https://leetcode.cn/problems/house-robber/?favorite=2cktkvj)
 
-- [x] [200. 岛屿数量](./number-of-islands)
+- [x] [200. 岛屿数量](./中等/200. 岛屿数量)
 
 - [ ] [207. 课程表](https://leetcode.cn/problems/course-schedule/?favorite=2cktkvj)
 
-- [ ] [208. 实现 Trie (前缀树)](https://leetcode.cn/problems/implement-trie-prefix-tree/?favorite=2cktkvj)
+- [x] [208. 实现 Trie (前缀树)](./中等/208. 实现 Trie (前缀树))
 
 - [ ] [215. 数组中的第K个最大元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/?favorite=2cktkvj)
 
@@ -174,15 +216,15 @@ https://leetcode.cn/problem-list/2cktkvj/?difficulty=EASY&page=1
 
 - [ ] [538. 把二叉搜索树转换为累加树](https://leetcode.cn/problems/convert-bst-to-greater-tree/?favorite=2cktkvj)
 
-- [ ] [560. 和为 K 的子数组](https://leetcode.cn/problems/subarray-sum-equals-k/?favorite=2cktkvj)
+- [x] [560. 和为 K 的子数组](./中等/560. 和为 K 的子数组)
 
 - [ ] [581. 最短无序连续子数组](https://leetcode.cn/problems/shortest-unsorted-continuous-subarray/?favorite=2cktkvj)
 
 - [ ] [621. 任务调度器](https://leetcode.cn/problems/task-scheduler/?favorite=2cktkvj)
 
-- [ ] [647. 回文子串](https://leetcode.cn/problems/palindromic-substrings/?favorite=2cktkvj)
+- [x] [647. 回文子串](./中等/647. 回文子串)
 
-- [x] [739. 每日温度](./daily-temperatures)
+- [x] [739. 每日温度](./中等/739. 每日温度)
 
 # 困难
 

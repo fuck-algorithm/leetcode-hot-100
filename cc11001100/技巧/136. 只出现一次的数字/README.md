@@ -2,7 +2,7 @@
 # 题目
 
 ```text
-https://leetcode.cn/problems/single-number/description/?favorite=2cktkvj
+https://leetcode.cn/problems/single-number/description
 ```
 # 代码
 

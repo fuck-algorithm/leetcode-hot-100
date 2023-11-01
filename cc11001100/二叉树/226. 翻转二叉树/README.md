@@ -1,7 +1,7 @@
 # 226. 翻转二叉树
 题目：
 ```text
-https://leetcode.cn/problems/invert-binary-tree/description/?favorite=2cktkvj
+https://leetcode.cn/problems/invert-binary-tree/description
 ```
 代码：
 ```go

@@ -1,6 +1,8 @@
 # 21. 合并两个有序链表
 
-## 题目
+# 一、题目描述
+
+题目链接：
 
 ```
 https://leetcode.cn/problems/merge-two-sorted-lists/description/?favorite=2cktkvj
@@ -37,9 +39,14 @@ https://leetcode.cn/problems/merge-two-sorted-lists/description/?favorite=2cktkv
 - `-100 <= Node.val <= 100`
 - `l1` 和 `l2` 均按 **非递减顺序** 排列
 
-## 思路
+# 二、思路
 
-从头选取小的合并即可，只是需要注意进位 
+1. 当两个链表都不为空的时候，从两个链表的头部选择更小的那个值加入到新的链表，一直重复这个步骤直到某个链表为空
+2. 然后把不为空的那个链表剩下的元素都追加到新的链表的尾部
+
+# 三、AC代码
+
+## 3.1 Golang
 
 ```go
 /**
@@ -50,31 +57,42 @@ https://leetcode.cn/problems/merge-two-sorted-lists/description/?favorite=2cktkv
  * }
  */
 func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
-    answer := &ListNode{}
-    result := answer 
+    newList := &ListNode{}
+    tail := newList 
+    
+    // 从两个列表的头部选择较小的元素 
     for list1 != nil && list2 != nil {
-        nextNode := &ListNode{}
         if list1.Val < list2.Val {
-            nextNode.Val = list1.Val 
+            tail.Next = &ListNode{
+                Val: list1.Val,
+            }
+            tail = tail.Next 
             list1 = list1.Next 
         } else {
-            nextNode.Val = list2.Val 
+            tail.Next = &ListNode{
+                Val: list2.Val,
+            }
+            tail = tail.Next 
             list2 = list2.Next 
         }
-        result.Next = nextNode 
-        result = result.Next 
     }
+    
+    // 把可能的剩下的元素追加到新列表的尾部 
     for list1 != nil {
-        result.Next = &ListNode{Val: list1.Val}
-        list1 = list1.Next
-        result = result.Next      
+        tail.Next = &ListNode{
+            Val: list1.Val,
+        }
+        tail = tail.Next 
+        list1 = list1.Next 
     }
     for list2 != nil {
-        result.Next = &ListNode{Val: list2.Val}
-        list2 = list2.Next   
-        result = result.Next       
+        tail.Next = &ListNode{
+            Val: list2.Val, 
+        }
+        tail = tail.Next 
+        list2 = list2.Next 
     }
-    return answer.Next 
+    return newList.Next 
 }
 ```
 

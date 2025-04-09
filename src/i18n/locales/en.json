@@ -37,5 +37,8 @@
   "animationFilter": "Filter by interactive animation",
   "issueTitle": {
     "requestAnimation": "[Request Animation for Problem {{id}}] {{title}}"
+  },
+  "tooltips": {
+    "openLeetcode": "Click to open LeetCode problem page"
   }
 } 

@@ -15,6 +15,12 @@ export interface ProblemItemProps {
   t: (key: string) => string;
 }
 
+// 获取LeetCode题目详情页URL
+const getLeetCodeProblemUrl = (questionId: string, lang: string): string => {
+  const baseUrl = lang === 'zh' ? 'https://leetcode.cn/problems/' : 'https://leetcode.com/problems/';
+  return `${baseUrl}${questionId.replace(/^0+/, '')}`;
+};
+
 const ProblemItem: React.FC<ProblemItemProps> = ({ 
   problem, 
   selectedTags, 
@@ -25,11 +31,24 @@ const ProblemItem: React.FC<ProblemItemProps> = ({
 }) => {
   const title = currentLang === 'zh' ? problem.translatedTitle : problem.title;
   
+  // 处理题目序号点击事件
+  const handleProblemIdClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    const url = getLeetCodeProblemUrl(problem.questionFrontendId, currentLang);
+    window.open(url, '_blank');
+  };
+  
   return (
     <div className="problem-row">
       <div className="problem-info">
-        <Tooltip content={`#${problem.questionFrontendId}`}>
-          <span className="problem-id">{problem.questionFrontendId}. </span>
+        <Tooltip content={`${t('tooltips.openLeetcode')}: #${problem.questionFrontendId}`}>
+          <span 
+            className="problem-id" 
+            onClick={handleProblemIdClick}
+            style={{ cursor: 'pointer' }}
+          >
+            {problem.questionFrontendId}. 
+          </span>
         </Tooltip>
         <Tooltip content={problem.hasAnimation ? title : t('animationTooltip.noAnimation')}>
           <span 

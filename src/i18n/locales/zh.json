@@ -37,5 +37,8 @@
   "animationFilter": "按是否有交互式演示动画筛选",
   "issueTitle": {
     "requestAnimation": "【请求加速题目 {{id}}】{{title}}"
+  },
+  "tooltips": {
+    "openLeetcode": "点击跳转到LeetCode题目页面"
   }
 } 

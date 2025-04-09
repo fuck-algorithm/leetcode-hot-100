@@ -4,6 +4,7 @@ export interface Problem {
   questionFrontendId: string;
   title: string;
   translatedTitle: string;
+  titleSlug: string;
   difficulty: 'EASY' | 'MEDIUM' | 'HARD';
   acRate: number;
   frequency: number | null;

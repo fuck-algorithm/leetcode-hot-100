@@ -16,9 +16,10 @@ export interface ProblemItemProps {
 }
 
 // 获取LeetCode题目详情页URL
-const getLeetCodeProblemUrl = (questionId: string, lang: string): string => {
+const getLeetCodeProblemUrl = (problem: Problem, lang: string): string => {
   const baseUrl = lang === 'zh' ? 'https://leetcode.cn/problems/' : 'https://leetcode.com/problems/';
-  return `${baseUrl}${questionId.replace(/^0+/, '')}`;
+  // 使用titleSlug而不是数字ID
+  return `${baseUrl}${problem.titleSlug}/`;
 };
 
 const ProblemItem: React.FC<ProblemItemProps> = ({ 
@@ -34,7 +35,7 @@ const ProblemItem: React.FC<ProblemItemProps> = ({
   // 处理题目序号点击事件
   const handleProblemIdClick = (event: React.MouseEvent) => {
     event.stopPropagation();
-    const url = getLeetCodeProblemUrl(problem.questionFrontendId, currentLang);
+    const url = getLeetCodeProblemUrl(problem, currentLang);
     window.open(url, '_blank');
   };
   

@@ -1,0 +1,480 @@
+.problem-list-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.search-box {
+  position: relative;
+  width: 80%;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #e8e8e8;
+  border-radius: 20px;
+  font-size: 14px;
+  outline: none;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  position: relative;
+  align-items: center;
+}
+
+/* 动画筛选复选框样式 */
+.animation-filter {
+  margin-right: 5px;
+}
+
+.animation-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+/* 隐藏原始复选框 */
+.animation-checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* 自定义复选框样式 */
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+/* 复选框悬停状态 */
+.animation-checkbox-label:hover .custom-checkbox {
+  background-color: #e6f7ff;
+  border-color: #1890ff;
+}
+
+/* 复选框选中状态 */
+.animation-checkbox:checked + .custom-checkbox {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+/* 图标样式 */
+.animation-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* 选中状态下的图标颜色 */
+.animation-checkbox:checked + .custom-checkbox .animation-icon {
+  color: white;
+}
+
+.sort-button, .filter-button {
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* 排序菜单样式 */
+.sort-menu {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  width: 200px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  overflow: hidden;
+}
+
+.sort-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.sort-option:last-child {
+  border-bottom: none;
+}
+
+.sort-option:hover {
+  background-color: #f8f8f8;
+}
+
+.sort-option-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.check-mark {
+  color: #1890ff;
+  font-weight: bold;
+}
+
+.sort-direction {
+  color: #1890ff;
+  font-weight: bold;
+}
+
+.sort-icon {
+  color: #ffb800;
+}
+
+.sort-icon.hidden {
+  color: #999;
+  opacity: 0.7;
+}
+
+/* 标签筛选菜单 */
+.filter-menu {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  width: 280px;
+  max-height: 400px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  overflow: hidden;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-weight: 500;
+}
+
+.clear-filters {
+  border: none;
+  background: none;
+  color: #1890ff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.filter-tags {
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.filter-tag {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+.filter-tag:hover {
+  background-color: #f5f5f5;
+}
+
+.filter-tag.selected {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.tag-count {
+  font-size: 12px;
+  color: #999;
+}
+
+/* 已选标签区域 */
+.selected-tags-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1;
+}
+
+.selected-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background-color: #e6f7ff;
+  color: #1890ff;
+  border-radius: 16px;
+  font-size: 13px;
+}
+
+.selected-tag button {
+  background: none;
+  border: none;
+  color: #1890ff;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-all {
+  border: none;
+  background: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 13px;
+  white-space: nowrap;
+  margin-left: 10px;
+}
+
+.problems-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.problem-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.problem-row:hover {
+  background-color: #f8f8f8;
+}
+
+.problem-info {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 70%;
+}
+
+.problem-id {
+  font-weight: bold;
+  margin-right: 8px;
+  font-size: 15px;
+}
+
+.problem-title {
+  font-size: 16px;
+  color: #333;
+  flex-grow: 1;
+  padding-right: 10px;
+  transition: color 0.2s ease;
+}
+
+/* 有动画的题目标题悬停效果 */
+.problem-title:hover {
+  text-decoration: underline;
+}
+
+/* 有动画的题目标题特别样式 */
+.problem-info span.problem-title[style*="cursor: pointer"]:hover {
+  color: #1890ff;
+}
+
+/* 题目标签样式 */
+.problem-tags {
+  display: flex;
+  gap: 6px;
+  margin-left: 6px;
+  flex-wrap: wrap;
+}
+
+.problem-tag {
+  background-color: #f0f0f0;
+  color: #666;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.problem-tag:hover {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.problem-tag.selected {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.problem-stats {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.pass-rate {
+  color: #777;
+  font-size: 14px;
+}
+
+.difficulty {
+  font-size: 14px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.difficulty.simple {
+  color: #00af9b;
+}
+
+.difficulty.medium {
+  color: #ffb800;
+}
+
+.difficulty.hard {
+  color: #ff2d55;
+}
+
+/* 表格标题样式 */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+}
+
+.table-header-left, .table-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.table-header-right {
+  gap: 20px;
+}
+
+.column-title {
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  position: relative;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.column-title:hover {
+  background-color: #eaeaea;
+}
+
+/* 添加排序指示器样式 */
+.column-title .sort-indicator {
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+.animation-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-left: 8px;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.has-animation {
+  background-color: #52c41a;
+  color: white;
+}
+
+.no-animation {
+  background-color: #f5222d;
+  color: white;
+  position: relative;
+}
+
+/* 添加悬停效果，强调可点击性 */
+.no-animation:hover {
+  background-color: #ff7875;
+  transform: scale(1.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.no-animation:hover::after {
+  content: '→';
+  position: absolute;
+  right: -6px;
+  font-size: 12px;
+  font-weight: bold;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.problem-title:hover {
+  text-decoration: underline;
+  color: #1890ff;
+} 

@@ -1,0 +1,38 @@
+{
+  "appTitle": "LeetCode 热题 HOT 100",
+  "searchPlaceholder": "搜索题目",
+  "columns": {
+    "problem": "题目",
+    "passRate": "通过率",
+    "difficulty": "难度"
+  },
+  "difficulties": {
+    "easy": "简单",
+    "medium": "中等",
+    "hard": "困难"
+  },
+  "filters": {
+    "title": "标签筛选",
+    "clear": "清除",
+    "clearAll": "清除全部"
+  },
+  "sorting": {
+    "default": "默认排序",
+    "difficulty": "难度",
+    "passRate": "通过率",
+    "problemId": "题号",
+    "tags": "标签"
+  },
+  "languages": {
+    "en": "English",
+    "zh": "中文"
+  },
+  "animation": "动画演示",
+  "notAvailable": "暂无",
+  "filterOnly": "仅显示",
+  "animationTooltip": {
+    "hasAnimation": "此题目已有交互式演示动画，单击访问演示站点",
+    "noAnimation": "此题目暂无交互式演示动画，着急看？点击去提issue加速！"
+  },
+  "animationFilter": "按是否有交互式演示动画筛选"
+} 

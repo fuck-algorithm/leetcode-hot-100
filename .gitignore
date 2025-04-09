@@ -1,2 +1,82 @@
-.idea
+# 依赖包
+node_modules/
+/.pnp
+.pnp.js
+
+# 测试
+/coverage
+/cypress/videos/
+/cypress/screenshots/
+
+# 构建输出
+/build
+/dist
+.next/
+out/
+storybook-static/
+
+# 缓存
+.npm
+.eslintcache
+.stylelintcache
+.parcel-cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+.cache/
+
+# 环境文件
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 日志
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# 编辑器
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# 操作系统
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# 临时文件
 *.~vsdx
+.temp
+.tmp
+
+# 本地历史
+.history/
+.ionide/
+
+# 其他
+.vercel
+.netlify
+.github/.temp

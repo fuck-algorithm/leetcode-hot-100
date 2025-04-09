@@ -10,7 +10,7 @@ export interface ProblemItemProps {
   problem: Problem;
   selectedTags: string[];
   toggleTag: (tagSlug: string) => void;
-  handleAnimationClick: (event: React.MouseEvent, questionId: string, hasAnimation: boolean, title?: string) => void;
+  handleAnimationClick: (event: React.MouseEvent, questionId: string, hasAnimation: boolean, title?: string, t?: (key: string) => string) => void;
   currentLang: string;
   t: (key: string) => string;
 }
@@ -34,7 +34,7 @@ const ProblemItem: React.FC<ProblemItemProps> = ({
         <Tooltip content={problem.hasAnimation ? title : t('animationTooltip.noAnimation')}>
           <span 
             className="problem-title" 
-            onClick={(e) => handleAnimationClick(e, problem.questionFrontendId, problem.hasAnimation, title)}
+            onClick={(e) => handleAnimationClick(e, problem.questionFrontendId, problem.hasAnimation, title, t)}
             style={{ cursor: 'pointer' }}
           >
             {title}

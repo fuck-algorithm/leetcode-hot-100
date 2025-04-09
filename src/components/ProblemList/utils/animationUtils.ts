@@ -20,9 +20,13 @@ export const getAnimationUrl = (questionId: string): string => {
 };
 
 // 创建GitHub issue的URL
-export const getIssueUrl = (questionId: string, title: string): string => {
-  // 编码问题标题以便在URL中使用
-  const issueTitle = `【请求加速题目 ${questionId}】${title}`;
+export const getIssueUrl = (questionId: string, title: string, t: (key: string) => string): string => {
+  // 使用国际化文本格式化issue标题
+  const issueTemplate = t('issueTitle.requestAnimation');
+  const issueTitle = issueTemplate
+    .replace('{{id}}', questionId)
+    .replace('{{title}}', title);
+    
   const encodedTitle = encodeURIComponent(issueTitle);
   return `https://github.com/fuck-algorithm/leetcode-hot-100/issues/new?title=${encodedTitle}`;
 };
@@ -32,7 +36,8 @@ export const handleAnimationClick = (
   event: React.MouseEvent, 
   questionId: string, 
   hasAnimation: boolean,
-  title?: string
+  title?: string,
+  t?: (key: string) => string
 ): void => {
   event.stopPropagation();
   
@@ -40,9 +45,9 @@ export const handleAnimationClick = (
     // 有动画，跳转到动画演示页面
     const demoUrl = getAnimationUrl(questionId);
     window.open(demoUrl, '_blank');
-  } else if (title) {
+  } else if (title && t) {
     // 无动画，跳转到GitHub创建issue
-    const issueUrl = getIssueUrl(questionId, title);
+    const issueUrl = getIssueUrl(questionId, title, t);
     window.open(issueUrl, '_blank');
   }
 };

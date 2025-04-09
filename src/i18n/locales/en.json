@@ -34,5 +34,8 @@
     "hasAnimation": "This problem has an interactive animation. Click to visit the demo site.",
     "noAnimation": "This problem has no interactive animation yet. Can't wait? Click to create an issue to speed it up!"
   },
-  "animationFilter": "Filter by interactive animation"
+  "animationFilter": "Filter by interactive animation",
+  "issueTitle": {
+    "requestAnimation": "[Request Animation for Problem {{id}}] {{title}}"
+  }
 } 

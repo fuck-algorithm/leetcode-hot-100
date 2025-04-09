@@ -6,7 +6,7 @@ export interface AnimationBadgeProps {
   hasAnimation: boolean;
   questionId: string;
   title: string;
-  handleAnimationClick: (event: React.MouseEvent, questionId: string, hasAnimation: boolean, title?: string) => void;
+  handleAnimationClick: (event: React.MouseEvent, questionId: string, hasAnimation: boolean, title?: string, t?: (key: string) => string) => void;
   t: (key: string) => string;
 }
 
@@ -26,7 +26,7 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
     >
       <span 
         className={`animation-badge ${hasAnimation ? 'has-animation' : 'no-animation'}`} 
-        onClick={(e) => handleAnimationClick(e, questionId, hasAnimation, title)}
+        onClick={(e) => handleAnimationClick(e, questionId, hasAnimation, title, t)}
         style={{ cursor: 'pointer' }}
       >
         {hasAnimation ? '🎬' : '🚫'}

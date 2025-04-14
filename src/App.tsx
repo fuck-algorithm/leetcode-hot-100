@@ -18,13 +18,18 @@ const App: React.FC = () => {
   return (
     <div className="app">
       <header className="app-header">
-        <div className="app-logo-title">
-          <img 
-            src={`${process.env.PUBLIC_URL}/favicon.png`} 
-            alt="Logo" 
-            className="app-logo" 
-          />
-          <h1>{t('appTitle')}</h1>
+        <div className="app-logo-container">
+          <div className="app-logo-title">
+            <img 
+              src={`${process.env.PUBLIC_URL}/favicon.png`} 
+              alt="Logo" 
+              className="app-logo" 
+            />
+            <h1>{t('appTitle')}</h1>
+          </div>
+          <div className="app-slogan">
+            {t('appSlogan')}
+          </div>
         </div>
         <div className="header-right">
           <a 

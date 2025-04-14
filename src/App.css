@@ -28,6 +28,11 @@
   box-sizing: border-box;
 }
 
+.app-logo-container {
+  display: flex;
+  flex-direction: column;
+}
+
 .app-logo-title {
   display: flex;
   align-items: center;
@@ -45,6 +50,14 @@
   font-size: 24px;
   color: #333;
   flex-grow: 1;
+}
+
+.app-slogan {
+  font-size: 14px;
+  color: #666;
+  margin-top: 4px;
+  font-style: italic;
+  margin-left: 42px;
 }
 
 .header-right {

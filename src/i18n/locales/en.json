@@ -1,5 +1,6 @@
 {
   "appTitle": "LeetCode Hot 100",
+  "appSlogan": "Compress a day's learning into just one hour.",
   "searchPlaceholder": "Search problems",
   "columns": {
     "problem": "Problem",

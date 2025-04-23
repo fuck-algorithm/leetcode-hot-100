@@ -33,7 +33,8 @@
   "filterOnly": "仅显示",
   "animationTooltip": {
     "hasAnimation": "此题目已有交互式演示动画，单击访问演示站点",
-    "noAnimation": "此题目暂无交互式演示动画，着急看？点击去提issue加速！"
+    "noAnimation": "此题目暂无交互式演示动画，着急看？点击去提issue加速！",
+    "clickToView": "点击查看完整动画演示"
   },
   "animationFilter": "按是否有交互式演示动画筛选",
   "issueTitle": {

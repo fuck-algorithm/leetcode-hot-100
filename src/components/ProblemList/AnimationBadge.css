@@ -39,43 +39,43 @@
   transform: translateX(-50%);
   background-color: white;
   box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
-  padding: 16px;
-  width: 500px;
-  max-width: 90vw;
+  border-radius: 12px;
+  padding: 24px;
+  width: 1000px;
+  max-width: 95vw;
   transition: opacity 0.3s;
 }
 
 .animation-preview-container::before {
   content: '';
   position: absolute;
-  top: -6px;
+  top: -8px;
   left: 50%;
   transform: translateX(-50%);
-  border-width: 0 6px 6px;
+  border-width: 0 8px 8px;
   border-style: solid;
   border-color: transparent transparent white;
 }
 
 .animation-preview-title {
   font-weight: bold;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   text-align: center;
   color: #333;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .animation-preview-gif {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 4px;
+  border-radius: 6px;
   border: 1px solid #f0f0f0;
 }
 
 .animation-preview-tip {
-  margin-top: 12px;
-  font-size: 14px;
+  margin-top: 16px;
+  font-size: 16px;
   color: #999;
   text-align: center;
   font-style: italic;

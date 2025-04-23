@@ -29,6 +29,8 @@
     "zh": "简体中文"
   },
   "animation": "Animation",
+  "animationText": "Anim",
+  "notAvailableText": "None",
   "notAvailable": "Not Available",
   "filterOnly": "Only",
   "animationTooltip": {

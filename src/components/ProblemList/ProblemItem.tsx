@@ -66,6 +66,7 @@ const ProblemItem: React.FC<ProblemItemProps> = ({
           title={title}
           handleAnimationClick={handleAnimationClick}
           t={t}
+          currentLang={currentLang}
         />
         {problem.topicTags && problem.topicTags.length > 0 && (
           <ProblemTags 

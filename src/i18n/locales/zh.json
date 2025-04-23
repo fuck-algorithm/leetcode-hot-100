@@ -29,6 +29,8 @@
     "zh": "简体中文"
   },
   "animation": "动画演示",
+  "animationText": "动画",
+  "notAvailableText": "暂无",
   "notAvailable": "暂无",
   "filterOnly": "仅显示",
   "animationTooltip": {

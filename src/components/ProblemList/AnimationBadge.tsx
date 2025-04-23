@@ -9,6 +9,7 @@ export interface AnimationBadgeProps {
   title: string;
   handleAnimationClick: (event: React.MouseEvent, questionId: string, hasAnimation: boolean, title?: string, t?: (key: string) => string) => void;
   t: (key: string) => string;
+  currentLang: string; // 添加当前语言
 }
 
 const AnimationBadge: React.FC<AnimationBadgeProps> = ({ 
@@ -16,7 +17,8 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
   questionId,
   title,
   handleAnimationClick,
-  t
+  t,
+  currentLang
 }) => {
   const [showPreview, setShowPreview] = useState(false);
   const [previewPosition, setPreviewPosition] = useState({ top: true, left: '50%', transform: 'translateX(-50%)' });
@@ -31,6 +33,15 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
   };
 
   const previewUrl = getAnimationPreviewUrl();
+
+  // 根据语言获取徽章文本
+  const getBadgeText = () => {
+    if (hasAnimation) {
+      return currentLang === 'zh' ? '🎬 动画' : '🎬 Anim';
+    } else {
+      return currentLang === 'zh' ? '🚫 暂无' : '🚫 None';
+    }
+  };
 
   // 计算预览位置
   useEffect(() => {
@@ -82,7 +93,7 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
           style={{ cursor: 'pointer' }}
           ref={badgeRef}
         >
-          {hasAnimation ? '🎬' : '🚫'}
+          {getBadgeText()}
         </span>
       </Tooltip>
       

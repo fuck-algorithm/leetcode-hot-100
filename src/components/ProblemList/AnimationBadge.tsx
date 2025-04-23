@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Tooltip from '../Tooltip';
 import './AnimationBadge.css';
 
@@ -19,6 +19,9 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
   t
 }) => {
   const [showPreview, setShowPreview] = useState(false);
+  const [previewPosition, setPreviewPosition] = useState({ top: true, left: '50%', transform: 'translateX(-50%)' });
+  const badgeRef = useRef<HTMLSpanElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
 
   // 当有动画时才显示预览
   const getAnimationPreviewUrl = () => {
@@ -28,6 +31,40 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
   };
 
   const previewUrl = getAnimationPreviewUrl();
+
+  // 计算预览位置
+  useEffect(() => {
+    if (showPreview && badgeRef.current && previewRef.current) {
+      const badgeRect = badgeRef.current.getBoundingClientRect();
+      const previewRect = previewRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const windowWidth = window.innerWidth;
+
+      // 检查底部空间是否足够
+      const isBottomEnough = badgeRect.bottom + previewRect.height + 20 < windowHeight;
+      
+      // 检查水平位置，确保不超出左右边界
+      let leftPosition = '50%';
+      let transformValue = 'translateX(-50%)';
+      
+      // 如果预览框偏左会超出屏幕
+      if (badgeRect.left - previewRect.width / 2 < 10) {
+        leftPosition = '0';
+        transformValue = 'translateX(0)';
+      } 
+      // 如果预览框偏右会超出屏幕
+      else if (badgeRect.right + previewRect.width / 2 > windowWidth - 10) {
+        leftPosition = '100%';
+        transformValue = 'translateX(-100%)';
+      }
+
+      setPreviewPosition({ 
+        top: isBottomEnough, 
+        left: leftPosition,
+        transform: transformValue
+      });
+    }
+  }, [showPreview]);
 
   return (
     <div className="animation-badge-container">
@@ -43,6 +80,7 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
           onMouseEnter={() => setShowPreview(true)}
           onMouseLeave={() => setShowPreview(false)}
           style={{ cursor: 'pointer' }}
+          ref={badgeRef}
         >
           {hasAnimation ? '🎬' : '🚫'}
         </span>
@@ -50,7 +88,14 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
       
       {/* 动画GIF预览 */}
       {hasAnimation && showPreview && previewUrl && (
-        <div className="animation-preview-container">
+        <div 
+          className={`animation-preview-container ${previewPosition.top ? 'position-bottom' : 'position-top'}`}
+          style={{ 
+            left: previewPosition.left, 
+            transform: previewPosition.transform 
+          }}
+          ref={previewRef}
+        >
           <div className="animation-preview-title">{title}</div>
           <img 
             src={previewUrl} 

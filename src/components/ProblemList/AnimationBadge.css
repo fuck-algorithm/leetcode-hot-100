@@ -40,8 +40,9 @@
   background-color: white;
   box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
   border-radius: 8px;
-  padding: 12px;
-  width: 300px;
+  padding: 16px;
+  width: 500px;
+  max-width: 90vw;
   transition: opacity 0.3s;
 }
 
@@ -58,10 +59,10 @@
 
 .animation-preview-title {
   font-weight: bold;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   text-align: center;
   color: #333;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .animation-preview-gif {
@@ -73,8 +74,8 @@
 }
 
 .animation-preview-tip {
-  margin-top: 8px;
-  font-size: 12px;
+  margin-top: 12px;
+  font-size: 14px;
   color: #999;
   text-align: center;
   font-style: italic;

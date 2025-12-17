@@ -1,22 +1,23 @@
 import React from 'react';
 
+// 题目ID到slug的映射（用于生成演示站点URL）
+const problemSlugMap: Record<string, string> = {
+  '46': 'permutations',
+  '94': 'binary-tree-inorder-traversal',
+  '136': 'single-number',
+  '160': 'intersection-of-two-linked-lists',
+  '283': 'move-zeroes',
+  '461': 'hamming-distance',
+};
+
 // 获取题目对应的动画演示网站URL
 export const getAnimationUrl = (questionId: string): string => {
-  // 根据题目ID选择正确的URL
-  switch(questionId) {
-    case '94':
-      return 'https://fuck-algorithm.github.io/leetcode-94-binary-tree-inorder-traversal/';
-    case '136':
-      return 'https://fuck-algorithm.github.io/leetcode-136-single-number/';
-    case '160':
-      return 'https://fuck-algorithm.github.io/leetcode-160-intersection-of-two-linked-lists/';
-    case '283':
-      return 'https://fuck-algorithm.github.io/leetcode-283-move-zeroes/';
-    case '461':
-      return 'https://fuck-algorithm.github.io/leetcode-461-hamming-distance/';
-    default:
-      return `https://leetcode-animation-demo.example.com/problem/${questionId}`;
+  const slug = problemSlugMap[questionId];
+  if (slug) {
+    return `https://fuck-algorithm.github.io/leetcode-${questionId}-${slug}/`;
   }
+  // 默认返回一个通用格式的URL
+  return `https://fuck-algorithm.github.io/leetcode-${questionId}-problem/`;
 };
 
 // 创建GitHub issue的URL
@@ -52,9 +53,25 @@ export const handleAnimationClick = (
   }
 };
 
-// 判断题目是否有动画演示
-export const hasAnimation = (questionId: string): boolean => {
-  const animationIds = ['94', '136', '160', '283', '461']; // 有动画的题目ID
+// 支持的动画文件格式
+const ANIMATION_FORMATS = ['mp4', 'webm', 'mov', 'gif', 'png', 'jpg', 'jpeg'];
+
+// 动态检测题目是否有动画演示
+export const checkAnimationExists = async (questionId: string): Promise<boolean> => {
+  const baseUrl = window.location.origin;
+  const basePath = process.env.PUBLIC_URL || '';
   const normalizedId = String(questionId).replace(/^0+/, '');
-  return animationIds.includes(normalizedId);
+  
+  for (const format of ANIMATION_FORMATS) {
+    const url = `${baseUrl}${basePath}/animations/${normalizedId}.${format}`;
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      if (response.ok) {
+        return true;
+      }
+    } catch {
+      // 忽略错误，继续检查下一个格式
+    }
+  }
+  return false;
 }; 

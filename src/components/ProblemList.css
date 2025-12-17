@@ -131,6 +131,16 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
+.sort-option > .tooltip-container {
+  flex: 1;
+  min-width: 0;
+}
+
+.sort-option > .tooltip-container > span {
+  display: block;
+  white-space: nowrap;
+}
+
 .sort-option:last-child {
   border-bottom: none;
 }

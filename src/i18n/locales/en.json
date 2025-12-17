@@ -29,11 +29,14 @@
     "zh": "简体中文"
   },
   "animation": "Animation",
+  "animationText": "Anim",
+  "notAvailableText": "None",
   "notAvailable": "Not Available",
   "filterOnly": "Only",
   "animationTooltip": {
     "hasAnimation": "This problem has an interactive animation. Click to visit the demo site.",
-    "noAnimation": "This problem has no interactive animation yet. Can't wait? Click to create an issue to speed it up!"
+    "noAnimation": "This problem has no interactive animation yet. Can't wait? Click to create an issue to speed it up!",
+    "clickToView": "Click to view full animation demo"
   },
   "animationFilter": "Filter by interactive animation",
   "issueTitle": {

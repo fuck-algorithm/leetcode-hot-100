@@ -29,11 +29,14 @@
     "zh": "简体中文"
   },
   "animation": "动画演示",
+  "animationText": "动画",
+  "notAvailableText": "暂无",
   "notAvailable": "暂无",
   "filterOnly": "仅显示",
   "animationTooltip": {
     "hasAnimation": "此题目已有交互式演示动画，单击访问演示站点",
-    "noAnimation": "此题目暂无交互式演示动画，着急看？点击去提issue加速！"
+    "noAnimation": "此题目暂无交互式演示动画，着急看？点击去提issue加速！",
+    "clickToView": "点击查看完整动画演示"
   },
   "animationFilter": "按是否有交互式演示动画筛选",
   "issueTitle": {

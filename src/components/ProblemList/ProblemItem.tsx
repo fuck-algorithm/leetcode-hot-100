@@ -62,10 +62,9 @@ const ProblemItem: React.FC<ProblemItemProps> = ({
         </Tooltip>
         <AnimationBadge 
           hasAnimation={problem.hasAnimation} 
-          questionId={problem.questionFrontendId} 
-          title={title}
-          handleAnimationClick={handleAnimationClick}
-          t={t}
+          problemId={problem.questionFrontendId} 
+          problemTitle={title}
+          animationUrl={problem.hasAnimation ? `/animations/${problem.questionFrontendId}.gif` : undefined}
         />
         {problem.topicTags && problem.topicTags.length > 0 && (
           <ProblemTags 

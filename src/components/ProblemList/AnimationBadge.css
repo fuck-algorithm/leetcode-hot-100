@@ -1,0 +1,87 @@
+.animation-badge-container {
+  position: relative;
+  display: inline-block;
+}
+
+.animation-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 16px;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.animation-badge:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.has-animation {
+  background-color: #4CAF50; /* 绿色表示有动画 */
+}
+
+.no-animation {
+  background-color: #f44336; /* 红色表示无动画 */
+}
+
+.animation-preview-container {
+  position: fixed;
+  z-index: 10000;
+  width: 1000px;
+  max-width: 70vw;
+  max-height: 85vh;
+  overflow: auto;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  visibility: visible;
+  opacity: 1;
+}
+
+.animation-preview-title {
+  font-weight: bold;
+  margin-bottom: 8px;
+  text-align: center;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.animation-preview-gif,
+.animation-preview-video {
+  width: 100%;
+  border-radius: 6px;
+  display: block;
+  max-height: 800px;
+  object-fit: contain;
+  background-color: #f5f5f5;
+}
+
+.animation-preview-loading {
+  padding: 40px 20px;
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+}
+
+.animation-preview-tip {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .animation-preview-container {
+    max-width: 250px;
+  }
+} 

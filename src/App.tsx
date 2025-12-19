@@ -49,6 +49,7 @@ const App: React.FC = () => {
             </span>
             {stars !== null && (
               <span className="github-stars">
+                {/* @ts-ignore */}
                 <FaStar size={14} color="#f1c40f" />
                 <span>{stars}</span>
               </span>

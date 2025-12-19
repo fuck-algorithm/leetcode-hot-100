@@ -1,0 +1,21 @@
+{
+  "generatedAt": "2025-12-19T05:21:39.293Z",
+  "count": 2,
+  "animations": {
+    "46": {
+      "formats": [
+        "gif",
+        "mp4"
+      ],
+      "preferredFormat": "mp4",
+      "type": "video"
+    },
+    "461": {
+      "formats": [
+        "gif"
+      ],
+      "preferredFormat": "gif",
+      "type": "image"
+    }
+  }
+}

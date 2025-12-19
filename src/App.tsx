@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import './App.css';
 import ProblemList from './components/ProblemList';
 import LanguageSwitcher from './components/LanguageSwitcher';
+import WeChatFloat from './components/WeChatFloat';
 import { useTranslation } from './i18n/useCustomTranslation';
 import './i18n/i18n'; // 导入 i18n 配置
 // 导入GitHub图标
@@ -51,6 +52,7 @@ const App: React.FC = () => {
       <main className="app-content">
         <ProblemList />
       </main>
+      <WeChatFloat />
     </div>
   );
 };

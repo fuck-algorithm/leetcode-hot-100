@@ -69,16 +69,27 @@
 .github-link {
   display: flex;
   align-items: center;
+  gap: 6px;
   margin-right: 15px;
   transition: transform 0.2s;
+  text-decoration: none;
 }
 
 .github-link:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
-.github-link:hover svg {
+.github-link:hover .github-icon svg {
   color: #1890ff !important;
+}
+
+.github-stars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
 }
 
 .app-content {

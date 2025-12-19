@@ -6,10 +6,12 @@ import WeChatFloat from './components/WeChatFloat';
 import { useTranslation } from './i18n/useCustomTranslation';
 import './i18n/i18n'; // 导入 i18n 配置
 // 导入GitHub图标
-import { FaGithub } from 'react-icons/fa';
+import { FaGithub, FaStar } from 'react-icons/fa';
+import { useGitHubStars } from './hooks/useGitHubStars';
 
 const App: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const { stars } = useGitHubStars('fuck-algorithm', 'leetcode-hot-100');
   
   // 监听语言变化，更新页面标题
   useEffect(() => {
@@ -45,6 +47,12 @@ const App: React.FC = () => {
               {/* @ts-ignore */}
               <FaGithub size={24} color="#333" />
             </span>
+            {stars !== null && (
+              <span className="github-stars">
+                <FaStar size={14} color="#f1c40f" />
+                <span>{stars}</span>
+              </span>
+            )}
           </a>
           <LanguageSwitcher />
         </div>

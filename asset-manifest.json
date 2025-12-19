@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/leetcode-hot-100/static/css/main.81f45c20.css",
-    "main.js": "/leetcode-hot-100/static/js/main.89f0db56.js",
+    "main.js": "/leetcode-hot-100/static/js/main.b9b0317c.js",
     "index.html": "/leetcode-hot-100/index.html",
     "main.81f45c20.css.map": "/leetcode-hot-100/static/css/main.81f45c20.css.map",
-    "main.89f0db56.js.map": "/leetcode-hot-100/static/js/main.89f0db56.js.map"
+    "main.b9b0317c.js.map": "/leetcode-hot-100/static/js/main.b9b0317c.js.map"
   },
   "entrypoints": [
     "static/css/main.81f45c20.css",
-    "static/js/main.89f0db56.js"
+    "static/js/main.b9b0317c.js"
   ]
 }

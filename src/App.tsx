@@ -47,13 +47,11 @@ const App: React.FC = () => {
               {/* @ts-ignore */}
               <FaGithub size={24} color="#333" />
             </span>
-            {stars !== null && (
-              <span className="github-stars">
-                {/* @ts-ignore */}
-                <FaStar size={14} color="#f1c40f" />
-                <span>{stars}</span>
-              </span>
-            )}
+            <span className="github-stars">
+              {/* @ts-ignore */}
+              <FaStar size={14} color="#f1c40f" />
+              <span>{stars}</span>
+            </span>
           </a>
           <LanguageSwitcher />
         </div>

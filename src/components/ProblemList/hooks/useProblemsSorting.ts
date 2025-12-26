@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Problem, SortOption, LegacySortOption } from '../types';
+import { Problem, LegacySortOption } from '../types';
 
 // 排序字段映射
 const SORT_FIELD_MAP: Record<LegacySortOption, string> = {
@@ -15,14 +15,6 @@ interface InternalSortOption {
   field: string;
   direction: 'asc' | 'desc';
 }
-
-// 将传统排序选项转换为内部排序选项格式
-const convertLegacySort = (legacySort: LegacySortOption): InternalSortOption => {
-  return {
-    field: SORT_FIELD_MAP[legacySort] || '',
-    direction: 'asc'
-  };
-};
 
 // 获取排序后的值
 const getSortValue = (problem: Problem, field: string): any => {

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import '../ProblemList.css';
 import { useTranslation } from '../../i18n/useCustomTranslation';
 import SearchFilter from './SearchFilter';
@@ -7,6 +7,8 @@ import FilterMenu from './FilterMenu';
 import SelectedTags from './SelectedTags';
 import TableHeader from './TableHeader';
 import ProblemItem from './ProblemItem';
+import ViewModeSwitch, { ViewMode } from './ViewModeSwitch';
+import PathView from './PathView';
 import { useProblemsData } from './hooks/useProblemsData';
 import { useProblemsSorting } from './hooks/useProblemsSorting';
 import { useProblemsFiltering } from './hooks/useProblemsFiltering';
@@ -15,6 +17,9 @@ import { getSortOptionText } from './utils/localeUtils';
 
 const ProblemList: React.FC = () => {
   const { t, i18n } = useTranslation();
+  
+  // 视图模式状态
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
   
   // 使用自定义hooks加载和管理数据
   const { problems, setProblems, allTags } = useProblemsData();
@@ -95,77 +100,105 @@ const ProblemList: React.FC = () => {
   
   return (
     <div className="problem-list-container">
-      {/* 搜索筛选区域 */}
-      <SearchFilter 
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        showAnimationOnly={showAnimationOnly}
-        setShowAnimationOnly={setShowAnimationOnly}
-        showSortMenu={showSortMenu}
-        setShowSortMenu={setShowSortMenu}
-        showFilterMenu={showFilterMenu}
-        setShowFilterMenu={setShowFilterMenu}
-        currentSort={currentSort}
-        t={t}
-        sortButtonRef={sortButtonRef}
-        filterButtonRef={filterButtonRef}
-      >
-        {/* 排序菜单 */}
-        <SortMenu 
-          visible={showSortMenu}
-          currentSort={currentSort}
-          sortProblems={sortProblems}
-          getSortOptionText={(option) => getSortOptionText(option, t)}
-          renderSortDirectionIndicator={renderSortDirectionIndicator}
+      {/* 视图模式切换和搜索筛选区域 */}
+      <div className="view-mode-and-search">
+        <ViewModeSwitch 
+          currentMode={viewMode}
+          onModeChange={setViewMode}
           t={t}
-          ref={sortMenuRef}
         />
         
-        {/* 标签筛选菜单 */}
-        <FilterMenu 
-          visible={showFilterMenu}
-          selectedTags={selectedTags}
-          allTags={allTags}
-          toggleTag={toggleTag}
-          clearFilters={clearFilters}
-          currentLang={i18n.language}
-          t={t}
-          ref={filterMenuRef}
-        />
-      </SearchFilter>
+        {/* 搜索筛选区域 - 仅在列表模式下显示 */}
+        {viewMode === 'list' && (
+          <SearchFilter 
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            showAnimationOnly={showAnimationOnly}
+            setShowAnimationOnly={setShowAnimationOnly}
+            showSortMenu={showSortMenu}
+            setShowSortMenu={setShowSortMenu}
+            showFilterMenu={showFilterMenu}
+            setShowFilterMenu={setShowFilterMenu}
+            currentSort={currentSort}
+            t={t}
+            sortButtonRef={sortButtonRef}
+            filterButtonRef={filterButtonRef}
+          >
+            {/* 排序菜单 */}
+            <SortMenu 
+              visible={showSortMenu}
+              currentSort={currentSort}
+              sortProblems={sortProblems}
+              getSortOptionText={(option) => getSortOptionText(option, t)}
+              renderSortDirectionIndicator={renderSortDirectionIndicator}
+              t={t}
+              ref={sortMenuRef}
+            />
+            
+            {/* 标签筛选菜单 */}
+            <FilterMenu 
+              visible={showFilterMenu}
+              selectedTags={selectedTags}
+              allTags={allTags}
+              toggleTag={toggleTag}
+              clearFilters={clearFilters}
+              currentLang={i18n.language}
+              t={t}
+              ref={filterMenuRef}
+            />
+          </SearchFilter>
+        )}
+      </div>
       
-      {/* 已选标签列表 */}
-      <SelectedTags 
-        selectedTags={selectedTags}
-        allTags={allTags}
-        toggleTag={toggleTag}
-        clearFilters={clearFilters}
-        currentLang={i18n.language}
-        t={t}
-      />
-      
-      {/* 表格标题行 */}
-      <TableHeader 
-        t={t} 
-        currentSort={currentSort}
-        onSortChange={sortProblems}
-        renderSortDirectionIndicator={renderSortDirectionIndicator}
-      />
-      
-      {/* 问题列表 */}
-      <div className="problems-container">
-        {filteredProblems.map(problem => (
-          <ProblemItem 
-            key={problem.id}
-            problem={problem}
+      {/* 列表视图 */}
+      {viewMode === 'list' && (
+        <>
+          {/* 已选标签列表 */}
+          <SelectedTags 
             selectedTags={selectedTags}
+            allTags={allTags}
             toggleTag={toggleTag}
-            handleAnimationClick={handleAnimationClick}
+            clearFilters={clearFilters}
             currentLang={i18n.language}
             t={t}
           />
-        ))}
-      </div>
+          
+          {/* 表格标题行 */}
+          <TableHeader 
+            t={t} 
+            currentSort={currentSort}
+            onSortChange={sortProblems}
+            renderSortDirectionIndicator={renderSortDirectionIndicator}
+          />
+          
+          {/* 问题列表 */}
+          <div className="problems-container">
+            {filteredProblems.map(problem => (
+              <ProblemItem 
+                key={problem.id}
+                problem={problem}
+                selectedTags={selectedTags}
+                toggleTag={toggleTag}
+                handleAnimationClick={handleAnimationClick}
+                currentLang={i18n.language}
+                t={t}
+              />
+            ))}
+          </div>
+        </>
+      )}
+      
+      {/* 路径视图 */}
+      {viewMode === 'path' && (
+        <PathView 
+          problems={problems}
+          currentLang={i18n.language}
+          t={t}
+          selectedTags={selectedTags}
+          toggleTag={toggleTag}
+          handleAnimationClick={handleAnimationClick}
+        />
+      )}
     </div>
   );
 };

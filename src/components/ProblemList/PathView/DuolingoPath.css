@@ -1,0 +1,231 @@
+/* 多邻国风格路径容器 */
+.duolingo-path-container {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px 0 60px 0;
+  overflow: visible;
+}
+
+/* 空状态 */
+.duolingo-path-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.duolingo-path-empty .empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.duolingo-path-empty p {
+  font-size: 16px;
+  margin: 0;
+}
+
+/* SVG 路径背景 */
+.duolingo-path-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 节点容器 */
+.duolingo-nodes-container {
+  position: relative;
+  z-index: 2;
+}
+
+/* 节点包装器 */
+.duolingo-node-wrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transform: translateX(-50%);
+  transition: transform 0.2s ease;
+}
+
+.duolingo-node-wrapper:hover {
+  transform: translateX(-50%) scale(1.08);
+  z-index: 10;
+}
+
+/* 节点样式 - 多邻国风格 */
+.duolingo-node {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--node-bg, #f0f0f0);
+  border: 4px solid var(--node-color, #58cc02);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 0 var(--node-color, #58cc02),
+    0 6px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  cursor: pointer;
+}
+
+.duolingo-node:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 0 var(--node-color, #58cc02),
+    0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.duolingo-node:active {
+  transform: translateY(2px);
+  box-shadow: 
+    0 2px 0 var(--node-color, #58cc02),
+    0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.duolingo-node.has-animation {
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 
+      0 4px 0 var(--node-color, #58cc02),
+      0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  50% {
+    box-shadow: 
+      0 4px 0 var(--node-color, #58cc02),
+      0 6px 20px rgba(88, 204, 2, 0.4);
+  }
+}
+
+/* 节点内部 */
+.node-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.node-number {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+}
+
+/* 动画标记 */
+.node-animation-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 16px;
+  background: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* 节点标题标签 */
+.node-title-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b4b4b;
+  text-align: center;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* 里程碑标记 */
+.path-milestone-badge {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  padding: 8px 16px;
+  border-radius: 20px;
+  z-index: 5;
+}
+
+.path-milestone-badge.start {
+  background: linear-gradient(135deg, #58cc02 0%, #89e219 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(88, 204, 2, 0.3);
+}
+
+.path-milestone-badge.end {
+  background: linear-gradient(135deg, #ffc800 0%, #ffdd4b 100%);
+  color: #333;
+  box-shadow: 0 4px 12px rgba(255, 200, 0, 0.3);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .duolingo-path-container {
+    max-width: 100%;
+    padding: 20px 10px 60px 10px;
+  }
+  
+  .duolingo-node {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .node-number {
+    font-size: 16px;
+  }
+  
+  .node-title-label {
+    font-size: 11px;
+    max-width: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .duolingo-node {
+    width: 48px;
+    height: 48px;
+    border-width: 3px;
+  }
+  
+  .node-number {
+    font-size: 14px;
+  }
+  
+  .node-animation-badge {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+  }
+  
+  .node-title-label {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+  
+  .path-milestone-badge {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}

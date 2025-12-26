@@ -2,6 +2,12 @@
   "appTitle": "LeetCode Hot 100",
   "appSlogan": "Compress a day's learning into just one hour.",
   "searchPlaceholder": "Search problems",
+  "viewMode": {
+    "list": "List",
+    "path": "Path",
+    "listTooltip": "Display all problems in list view",
+    "pathTooltip": "Display by learning path, from easy to hard"
+  },
   "columns": {
     "problem": "Problem",
     "passRate": "Pass Rate",

@@ -9,6 +9,21 @@
   box-sizing: border-box;
 }
 
+/* 视图模式切换和搜索区域 */
+.view-mode-and-search {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.view-mode-and-search .search-container {
+  flex: 1;
+  min-width: 300px;
+  margin-bottom: 0;
+}
+
 .search-container {
   display: flex;
   justify-content: space-between;

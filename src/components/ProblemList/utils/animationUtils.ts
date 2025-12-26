@@ -1,20 +1,10 @@
 import React from 'react';
 
-// 题目ID到slug的映射（用于生成演示站点URL）
-const problemSlugMap: Record<string, string> = {
-  '46': 'permutations',
-  '94': 'binary-tree-inorder-traversal',
-  '136': 'single-number',
-  '160': 'intersection-of-two-linked-lists',
-  '283': 'move-zeroes',
-  '461': 'hamming-distance',
-};
-
 // 获取题目对应的动画演示网站URL
-export const getAnimationUrl = (questionId: string): string => {
-  const slug = problemSlugMap[questionId];
-  if (slug) {
-    return `https://fuck-algorithm.github.io/leetcode-${questionId}-${slug}/`;
+// 现在直接使用题目数据中的 repo.pagesUrl
+export const getAnimationUrl = (questionId: string, titleSlug?: string): string => {
+  if (titleSlug) {
+    return `https://fuck-algorithm.github.io/leetcode-${questionId}-${titleSlug}/`;
   }
   // 默认返回一个通用格式的URL
   return `https://fuck-algorithm.github.io/leetcode-${questionId}-problem/`;
@@ -38,14 +28,14 @@ export const handleAnimationClick = (
   questionId: string, 
   hasAnimation: boolean,
   title?: string,
-  t?: (key: string) => string
+  t?: (key: string) => string,
+  pagesUrl?: string | null
 ): void => {
   event.stopPropagation();
   
-  if (hasAnimation) {
-    // 有动画，跳转到动画演示页面
-    const demoUrl = getAnimationUrl(questionId);
-    window.open(demoUrl, '_blank');
+  if (hasAnimation && pagesUrl) {
+    // 有动画，跳转到 GitHub Pages 演示页面
+    window.open(pagesUrl, '_blank');
   } else if (title && t) {
     // 无动画，跳转到GitHub创建issue
     const issueUrl = getIssueUrl(questionId, title, t);
@@ -74,4 +64,4 @@ export const checkAnimationExists = async (questionId: string): Promise<boolean>
     }
   }
   return false;
-}; 
+};

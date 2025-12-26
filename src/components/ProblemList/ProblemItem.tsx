@@ -10,7 +10,7 @@ export interface ProblemItemProps {
   problem: Problem;
   selectedTags: string[];
   toggleTag: (tagSlug: string) => void;
-  handleAnimationClick: (event: React.MouseEvent, questionId: string, hasAnimation: boolean, title?: string, t?: (key: string) => string) => void;
+  handleAnimationClick: (event: React.MouseEvent, questionId: string, hasAnimation: boolean, title?: string, t?: (key: string) => string, pagesUrl?: string | null) => void;
   currentLang: string;
   t: (key: string) => string;
 }
@@ -18,7 +18,6 @@ export interface ProblemItemProps {
 // 获取LeetCode题目详情页URL
 const getLeetCodeProblemUrl = (problem: Problem, lang: string): string => {
   const baseUrl = lang === 'zh' ? 'https://leetcode.cn/problems/' : 'https://leetcode.com/problems/';
-  // 使用titleSlug而不是数字ID
   return `${baseUrl}${problem.titleSlug}/`;
 };
 
@@ -31,6 +30,7 @@ const ProblemItem: React.FC<ProblemItemProps> = ({
   t
 }) => {
   const title = currentLang === 'zh' ? problem.translatedTitle : problem.title;
+  const pagesUrl = problem.repo?.pagesUrl || null;
   
   // 处理题目序号点击事件
   const handleProblemIdClick = (event: React.MouseEvent) => {
@@ -54,7 +54,7 @@ const ProblemItem: React.FC<ProblemItemProps> = ({
         <Tooltip content={problem.hasAnimation ? title : t('animationTooltip.noAnimation')}>
           <span 
             className="problem-title" 
-            onClick={(e) => handleAnimationClick(e, problem.questionFrontendId, problem.hasAnimation, title, t)}
+            onClick={(e) => handleAnimationClick(e, problem.questionFrontendId, problem.hasAnimation, title, t, pagesUrl)}
             style={{ cursor: 'pointer' }}
           >
             {title}
@@ -64,7 +64,8 @@ const ProblemItem: React.FC<ProblemItemProps> = ({
           hasAnimation={problem.hasAnimation} 
           problemId={problem.questionFrontendId} 
           problemTitle={title}
-          animationUrl={problem.hasAnimation ? `/animations/${problem.questionFrontendId}.gif` : undefined}
+          animationUrl={pagesUrl || undefined}
+          pagesUrl={pagesUrl}
         />
         {problem.topicTags && problem.topicTags.length > 0 && (
           <ProblemTags 
@@ -86,4 +87,4 @@ const ProblemItem: React.FC<ProblemItemProps> = ({
   );
 };
 
-export default ProblemItem; 
+export default ProblemItem;

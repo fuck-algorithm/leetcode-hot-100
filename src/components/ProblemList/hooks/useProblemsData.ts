@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import leetcodeData from '../../../data/leetcode-hot-100.json';
-import animationList from '../../../data/animation-list.json';
 import { Problem, Tag } from '../types';
 
 export const useProblemsData = () => {
@@ -13,15 +12,12 @@ export const useProblemsData = () => {
       if (leetcodeData && leetcodeData.data && leetcodeData.data.favoriteQuestionList) {
         const originalProblems = leetcodeData.data.favoriteQuestionList.questions as any[];
         
-        // 直接从构建时生成的清单中读取动画信息，无需网络请求
-        const animationMap = animationList.animations as Record<string, { formats: string[], preferredFormat: string, type: string }>;
-        
-        // 为每个问题添加hasAnimation字段
+        // 直接使用数据中的 hasAnimation 字段（根据仓库是否公开判断）
         const problemsWithAnimation = originalProblems.map((problem) => {
-          const problemId = String(problem.questionFrontendId).replace(/^0+/, '');
           return {
             ...problem,
-            hasAnimation: !!animationMap[problemId]
+            // hasAnimation 已经在数据中设置好了（根据仓库是否公开）
+            hasAnimation: problem.hasAnimation === true
           };
         }) as Problem[];
       

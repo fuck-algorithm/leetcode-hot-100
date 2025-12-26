@@ -1,0 +1,602 @@
+{
+  "1": {
+    "name": "leetcode-1-two-sum",
+    "url": "https://github.com/fuck-algorithm/leetcode-1-two-sum",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-1-two-sum/"
+  },
+  "2": {
+    "name": "leetcode-2-add-two-numbers",
+    "url": "https://github.com/fuck-algorithm/leetcode-2-add-two-numbers",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-2-add-two-numbers/"
+  },
+  "3": {
+    "name": "leetcode-3-longest-substring-without-repeating-characters",
+    "url": "https://github.com/fuck-algorithm/leetcode-3-longest-substring-without-repeating-characters",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-3-longest-substring-without-repeating-characters/"
+  },
+  "4": {
+    "name": "leetcode-4-median-of-two-sorted-arrays",
+    "url": "https://github.com/fuck-algorithm/leetcode-4-median-of-two-sorted-arrays",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "5": {
+    "name": "leetcode-5-longest-palindromic-substring",
+    "url": "https://github.com/fuck-algorithm/leetcode-5-longest-palindromic-substring",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-5-longest-palindromic-substring/"
+  },
+  "11": {
+    "name": "leetcode-11-container-with-most-water",
+    "url": "https://github.com/fuck-algorithm/leetcode-11-container-with-most-water",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-11-container-with-most-water/"
+  },
+  "15": {
+    "name": "leetcode-15-3sum",
+    "url": "https://github.com/fuck-algorithm/leetcode-15-3sum",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-15-3sum/"
+  },
+  "17": {
+    "name": "leetcode-17-letter-combinations-of-a-phone-number",
+    "url": "https://github.com/fuck-algorithm/leetcode-17-letter-combinations-of-a-phone-number",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-17-letter-combinations-of-a-phone-number/"
+  },
+  "19": {
+    "name": "leetcode-19-remove-nth-node-from-end-of-list",
+    "url": "https://github.com/fuck-algorithm/leetcode-19-remove-nth-node-from-end-of-list",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "20": {
+    "name": "leetcode-20-valid-parentheses",
+    "url": "https://github.com/fuck-algorithm/leetcode-20-valid-parentheses",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-20-valid-parentheses/"
+  },
+  "21": {
+    "name": "leetcode-21-merge-two-sorted-lists",
+    "url": "https://github.com/fuck-algorithm/leetcode-21-merge-two-sorted-lists",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-21-merge-two-sorted-lists/"
+  },
+  "22": {
+    "name": "leetcode-22-generate-parentheses",
+    "url": "https://github.com/fuck-algorithm/leetcode-22-generate-parentheses",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-22-generate-parentheses/"
+  },
+  "23": {
+    "name": "leetcode-23-merge-k-sorted-lists",
+    "url": "https://github.com/fuck-algorithm/leetcode-23-merge-k-sorted-lists",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-23-merge-k-sorted-lists/"
+  },
+  "24": {
+    "name": "leetcode-24-swap-nodes-in-pairs",
+    "url": "https://github.com/fuck-algorithm/leetcode-24-swap-nodes-in-pairs",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-24-swap-nodes-in-pairs/"
+  },
+  "25": {
+    "name": "leetcode-25-reverse-nodes-in-k-group",
+    "url": "https://github.com/fuck-algorithm/leetcode-25-reverse-nodes-in-k-group",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-25-reverse-nodes-in-k-group/"
+  },
+  "31": {
+    "name": "leetcode-31-next-permutation",
+    "url": "https://github.com/fuck-algorithm/leetcode-31-next-permutation",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "32": {
+    "name": "leetcode-32-longest-valid-parentheses",
+    "url": "https://github.com/fuck-algorithm/leetcode-32-longest-valid-parentheses",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "33": {
+    "name": "leetcode-33-search-in-rotated-sorted-array",
+    "url": "https://github.com/fuck-algorithm/leetcode-33-search-in-rotated-sorted-array",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "34": {
+    "name": "leetcode-34-find-first-and-last-position-of-element-in-sorted-array",
+    "url": "https://github.com/fuck-algorithm/leetcode-34-find-first-and-last-position-of-element-in-sorted-array",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "35": {
+    "name": "leetcode-35-search-insert-position",
+    "url": "https://github.com/fuck-algorithm/leetcode-35-search-insert-position",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "39": {
+    "name": "leetcode-39-combination-sum",
+    "url": "https://github.com/fuck-algorithm/leetcode-39-combination-sum",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-39-combination-sum/"
+  },
+  "41": {
+    "name": "leetcode-41-first-missing-positive",
+    "url": "https://github.com/fuck-algorithm/leetcode-41-first-missing-positive",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "42": {
+    "name": "leetcode-42-trapping-rain-water",
+    "url": "https://github.com/fuck-algorithm/leetcode-42-trapping-rain-water",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-42-trapping-rain-water/"
+  },
+  "45": {
+    "name": "leetcode-45-jump-game-ii",
+    "url": "https://github.com/fuck-algorithm/leetcode-45-jump-game-ii",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "46": {
+    "name": "leetcode-46-permutations",
+    "url": "https://github.com/fuck-algorithm/leetcode-46-permutations",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-46-permutations/"
+  },
+  "48": {
+    "name": "leetcode-48-rotate-image",
+    "url": "https://github.com/fuck-algorithm/leetcode-48-rotate-image",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "49": {
+    "name": "leetcode-49-group-anagrams",
+    "url": "https://github.com/fuck-algorithm/leetcode-49-group-anagrams",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-49-group-anagrams/"
+  },
+  "51": {
+    "name": "leetcode-51-n-queens",
+    "url": "https://github.com/fuck-algorithm/leetcode-51-n-queens",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "53": {
+    "name": "leetcode-53-maximum-subarray",
+    "url": "https://github.com/fuck-algorithm/leetcode-53-maximum-subarray",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "54": {
+    "name": "leetcode-54-spiral-matrix",
+    "url": "https://github.com/fuck-algorithm/leetcode-54-spiral-matrix",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-54-spiral-matrix/"
+  },
+  "55": {
+    "name": "leetcode-55-jump-game",
+    "url": "https://github.com/fuck-algorithm/leetcode-55-jump-game",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-55-jump-game/"
+  },
+  "56": {
+    "name": "leetcode-56-merge-intervals",
+    "url": "https://github.com/fuck-algorithm/leetcode-56-merge-intervals",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-56-merge-intervals/"
+  },
+  "62": {
+    "name": "leetcode-62-unique-paths",
+    "url": "https://github.com/fuck-algorithm/leetcode-62-unique-paths",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-62-unique-paths/"
+  },
+  "64": {
+    "name": "leetcode-64-minimum-path-sum",
+    "url": "https://github.com/fuck-algorithm/leetcode-64-minimum-path-sum",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-64-minimum-path-sum/"
+  },
+  "70": {
+    "name": "leetcode-70-climbing-stairs",
+    "url": "https://github.com/fuck-algorithm/leetcode-70-climbing-stairs",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-70-climbing-stairs/"
+  },
+  "72": {
+    "name": "leetcode-72-edit-distance",
+    "url": "https://github.com/fuck-algorithm/leetcode-72-edit-distance",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-72-edit-distance/"
+  },
+  "73": {
+    "name": "leetcode-73-set-matrix-zeroes",
+    "url": "https://github.com/fuck-algorithm/leetcode-73-set-matrix-zeroes",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "74": {
+    "name": "leetcode-74-search-a-2d-matrix",
+    "url": "https://github.com/fuck-algorithm/leetcode-74-search-a-2d-matrix",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "75": {
+    "name": "leetcode-75-sort-colors",
+    "url": "https://github.com/fuck-algorithm/leetcode-75-sort-colors",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-75-sort-colors/"
+  },
+  "76": {
+    "name": "leetcode-76-minimum-window-substring",
+    "url": "https://github.com/fuck-algorithm/leetcode-76-minimum-window-substring",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-76-minimum-window-substring/"
+  },
+  "78": {
+    "name": "leetcode-78-subsets",
+    "url": "https://github.com/fuck-algorithm/leetcode-78-subsets",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "79": {
+    "name": "leetcode-79-word-search",
+    "url": "https://github.com/fuck-algorithm/leetcode-79-word-search",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "84": {
+    "name": "leetcode-84-largest-rectangle-in-histogram",
+    "url": "https://github.com/fuck-algorithm/leetcode-84-largest-rectangle-in-histogram",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "94": {
+    "name": "leetcode-94-binary-tree-inorder-traversal",
+    "url": "https://github.com/fuck-algorithm/leetcode-94-binary-tree-inorder-traversal",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-94-binary-tree-inorder-traversal/"
+  },
+  "98": {
+    "name": "leetcode-98-validate-binary-search-tree",
+    "url": "https://github.com/fuck-algorithm/leetcode-98-validate-binary-search-tree",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-98-validate-binary-search-tree/"
+  },
+  "101": {
+    "name": "leetcode-101-symmetric-tree",
+    "url": "https://github.com/fuck-algorithm/leetcode-101-symmetric-tree",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-101-symmetric-tree/"
+  },
+  "102": {
+    "name": "leetcode-102-binary-tree-level-order-traversal",
+    "url": "https://github.com/fuck-algorithm/leetcode-102-binary-tree-level-order-traversal",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-102-binary-tree-level-order-traversal/"
+  },
+  "104": {
+    "name": "leetcode-104-maximum-depth-of-binary-tree",
+    "url": "https://github.com/fuck-algorithm/leetcode-104-maximum-depth-of-binary-tree",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-104-maximum-depth-of-binary-tree/"
+  },
+  "105": {
+    "name": "leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal",
+    "url": "https://github.com/fuck-algorithm/leetcode-105-construct-binary-tree-from-preorder-and-inorder-traversal",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "108": {
+    "name": "leetcode-108-convert-sorted-array-to-binary-search-tree",
+    "url": "https://github.com/fuck-algorithm/leetcode-108-convert-sorted-array-to-binary-search-tree",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-108-convert-sorted-array-to-binary-search-tree/"
+  },
+  "114": {
+    "name": "leetcode-114-flatten-binary-tree-to-linked-list",
+    "url": "https://github.com/fuck-algorithm/leetcode-114-flatten-binary-tree-to-linked-list",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "118": {
+    "name": "leetcode-118-pascals-triangle",
+    "url": "https://github.com/fuck-algorithm/leetcode-118-pascals-triangle",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-118-pascals-triangle/"
+  },
+  "121": {
+    "name": "leetcode-121-best-time-to-buy-and-sell-stock",
+    "url": "https://github.com/fuck-algorithm/leetcode-121-best-time-to-buy-and-sell-stock",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-121-best-time-to-buy-and-sell-stock/"
+  },
+  "124": {
+    "name": "leetcode-124-binary-tree-maximum-path-sum",
+    "url": "https://github.com/fuck-algorithm/leetcode-124-binary-tree-maximum-path-sum",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "128": {
+    "name": "leetcode-128-longest-consecutive-sequence",
+    "url": "https://github.com/fuck-algorithm/leetcode-128-longest-consecutive-sequence",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-128-longest-consecutive-sequence/"
+  },
+  "131": {
+    "name": "leetcode-131-palindrome-partitioning",
+    "url": "https://github.com/fuck-algorithm/leetcode-131-palindrome-partitioning",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-131-palindrome-partitioning/"
+  },
+  "136": {
+    "name": "leetcode-136-single-number",
+    "url": "https://github.com/fuck-algorithm/leetcode-136-single-number",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-136-single-number/"
+  },
+  "138": {
+    "name": "leetcode-138-copy-list-with-random-pointer",
+    "url": "https://github.com/fuck-algorithm/leetcode-138-copy-list-with-random-pointer",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-138-copy-list-with-random-pointer/"
+  },
+  "139": {
+    "name": "leetcode-139-word-break",
+    "url": "https://github.com/fuck-algorithm/leetcode-139-word-break",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-139-word-break/"
+  },
+  "141": {
+    "name": "leetcode-141-linked-list-cycle",
+    "url": "https://github.com/fuck-algorithm/leetcode-141-linked-list-cycle",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-141-linked-list-cycle/"
+  },
+  "142": {
+    "name": "leetcode-142-linked-list-cycle-ii",
+    "url": "https://github.com/fuck-algorithm/leetcode-142-linked-list-cycle-ii",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "146": {
+    "name": "leetcode-146-lru-cache",
+    "url": "https://github.com/fuck-algorithm/leetcode-146-lru-cache",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "148": {
+    "name": "leetcode-148-sort-list",
+    "url": "https://github.com/fuck-algorithm/leetcode-148-sort-list",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-148-sort-list/"
+  },
+  "152": {
+    "name": "leetcode-152-maximum-product-subarray",
+    "url": "https://github.com/fuck-algorithm/leetcode-152-maximum-product-subarray",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-152-maximum-product-subarray/"
+  },
+  "153": {
+    "name": "leetcode-153-find-minimum-in-rotated-sorted-array",
+    "url": "https://github.com/fuck-algorithm/leetcode-153-find-minimum-in-rotated-sorted-array",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "155": {
+    "name": "leetcode-155-min-stack",
+    "url": "https://github.com/fuck-algorithm/leetcode-155-min-stack",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-155-min-stack/"
+  },
+  "160": {
+    "name": "leetcode-160-intersection-of-two-linked-lists",
+    "url": "https://github.com/fuck-algorithm/leetcode-160-intersection-of-two-linked-lists",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-160-intersection-of-two-linked-lists/"
+  },
+  "169": {
+    "name": "leetcode-169-majority-element",
+    "url": "https://github.com/fuck-algorithm/leetcode-169-majority-element",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-169-majority-element/"
+  },
+  "189": {
+    "name": "leetcode-189-rotate-array",
+    "url": "https://github.com/fuck-algorithm/leetcode-189-rotate-array",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "198": {
+    "name": "leetcode-198-house-robber",
+    "url": "https://github.com/fuck-algorithm/leetcode-198-house-robber",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-198-house-robber/"
+  },
+  "199": {
+    "name": "leetcode-199-binary-tree-right-side-view",
+    "url": "https://github.com/fuck-algorithm/leetcode-199-binary-tree-right-side-view",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-199-binary-tree-right-side-view/"
+  },
+  "200": {
+    "name": "leetcode-200-number-of-islands",
+    "url": "https://github.com/fuck-algorithm/leetcode-200-number-of-islands",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-200-number-of-islands/"
+  },
+  "206": {
+    "name": "leetcode-206-reverse-linked-list",
+    "url": "https://github.com/fuck-algorithm/leetcode-206-reverse-linked-list",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-206-reverse-linked-list/"
+  },
+  "207": {
+    "name": "leetcode-207-course-schedule",
+    "url": "https://github.com/fuck-algorithm/leetcode-207-course-schedule",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-207-course-schedule/"
+  },
+  "208": {
+    "name": "leetcode-208-implement-trie-prefix-tree",
+    "url": "https://github.com/fuck-algorithm/leetcode-208-implement-trie-prefix-tree",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "215": {
+    "name": "leetcode-215-kth-largest-element-in-an-array",
+    "url": "https://github.com/fuck-algorithm/leetcode-215-kth-largest-element-in-an-array",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-215-kth-largest-element-in-an-array/"
+  },
+  "226": {
+    "name": "leetcode-226-invert-binary-tree",
+    "url": "https://github.com/fuck-algorithm/leetcode-226-invert-binary-tree",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-226-invert-binary-tree/"
+  },
+  "230": {
+    "name": "leetcode-230-kth-smallest-element-in-a-bst",
+    "url": "https://github.com/fuck-algorithm/leetcode-230-kth-smallest-element-in-a-bst",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-230-kth-smallest-element-in-a-bst/"
+  },
+  "234": {
+    "name": "leetcode-234-palindrome-linked-list",
+    "url": "https://github.com/fuck-algorithm/leetcode-234-palindrome-linked-list",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-234-palindrome-linked-list/"
+  },
+  "236": {
+    "name": "leetcode-236-lowest-common-ancestor-of-a-binary-tree",
+    "url": "https://github.com/fuck-algorithm/leetcode-236-lowest-common-ancestor-of-a-binary-tree",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-236-lowest-common-ancestor-of-a-binary-tree/"
+  },
+  "238": {
+    "name": "leetcode-238-product-of-array-except-self",
+    "url": "https://github.com/fuck-algorithm/leetcode-238-product-of-array-except-self",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-238-product-of-array-except-self/"
+  },
+  "239": {
+    "name": "leetcode-239-sliding-window-maximum",
+    "url": "https://github.com/fuck-algorithm/leetcode-239-sliding-window-maximum",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "240": {
+    "name": "leetcode-240-search-a-2d-matrix-ii",
+    "url": "https://github.com/fuck-algorithm/leetcode-240-search-a-2d-matrix-ii",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "279": {
+    "name": "leetcode-279-perfect-squares",
+    "url": "https://github.com/fuck-algorithm/leetcode-279-perfect-squares",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "283": {
+    "name": "leetcode-283-move-zeroes",
+    "url": "https://github.com/fuck-algorithm/leetcode-283-move-zeroes",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-283-move-zeroes/"
+  },
+  "287": {
+    "name": "leetcode-287-find-the-duplicate-number",
+    "url": "https://github.com/fuck-algorithm/leetcode-287-find-the-duplicate-number",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-287-find-the-duplicate-number/"
+  },
+  "295": {
+    "name": "leetcode-295-find-median-from-data-stream",
+    "url": "https://github.com/fuck-algorithm/leetcode-295-find-median-from-data-stream",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "300": {
+    "name": "leetcode-300-longest-increasing-subsequence",
+    "url": "https://github.com/fuck-algorithm/leetcode-300-longest-increasing-subsequence",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-300-longest-increasing-subsequence/"
+  },
+  "322": {
+    "name": "leetcode-322-coin-change",
+    "url": "https://github.com/fuck-algorithm/leetcode-322-coin-change",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-322-coin-change/"
+  },
+  "347": {
+    "name": "leetcode-347-top-k-frequent-elements",
+    "url": "https://github.com/fuck-algorithm/leetcode-347-top-k-frequent-elements",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "394": {
+    "name": "leetcode-394-decode-string",
+    "url": "https://github.com/fuck-algorithm/leetcode-394-decode-string",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "416": {
+    "name": "leetcode-416-partition-equal-subset-sum",
+    "url": "https://github.com/fuck-algorithm/leetcode-416-partition-equal-subset-sum",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-416-partition-equal-subset-sum/"
+  },
+  "437": {
+    "name": "leetcode-437-path-sum-iii",
+    "url": "https://github.com/fuck-algorithm/leetcode-437-path-sum-iii",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "438": {
+    "name": "leetcode-438-find-all-anagrams-in-a-string",
+    "url": "https://github.com/fuck-algorithm/leetcode-438-find-all-anagrams-in-a-string",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "543": {
+    "name": "leetcode-543-diameter-of-binary-tree",
+    "url": "https://github.com/fuck-algorithm/leetcode-543-diameter-of-binary-tree",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-543-diameter-of-binary-tree/"
+  },
+  "560": {
+    "name": "leetcode-560-subarray-sum-equals-k",
+    "url": "https://github.com/fuck-algorithm/leetcode-560-subarray-sum-equals-k",
+    "isPublic": false,
+    "pagesUrl": null
+  },
+  "739": {
+    "name": "leetcode-739-daily-temperatures",
+    "url": "https://github.com/fuck-algorithm/leetcode-739-daily-temperatures",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-739-daily-temperatures/"
+  },
+  "763": {
+    "name": "leetcode-763-partition-labels",
+    "url": "https://github.com/fuck-algorithm/leetcode-763-partition-labels",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-763-partition-labels/"
+  },
+  "994": {
+    "name": "leetcode-994-rotting-oranges",
+    "url": "https://github.com/fuck-algorithm/leetcode-994-rotting-oranges",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-994-rotting-oranges/"
+  },
+  "1143": {
+    "name": "leetcode-1143-longest-common-subsequence",
+    "url": "https://github.com/fuck-algorithm/leetcode-1143-longest-common-subsequence",
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-1143-longest-common-subsequence/"
+  }
+}

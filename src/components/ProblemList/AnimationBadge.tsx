@@ -13,6 +13,7 @@ export interface AnimationBadgeProps {
   animationUrl?: string;
   problemId?: string;
   problemTitle?: string;
+  pagesUrl?: string | null;
 }
 
 // 媒体类型
@@ -36,7 +37,8 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
   hasAnimation,
   animationUrl,
   problemId,
-  problemTitle
+  problemTitle,
+  pagesUrl
 }) => {
   const [showPreview, setShowPreview] = useState(false);
   const [previewStyle, setPreviewStyle] = useState<PreviewStyle>({});
@@ -128,9 +130,8 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
 
   // 处理点击事件 - 点击图标时打开动画详情页
   const handleBadgeClick = () => {
-    if (hasAnimation && problemId) {
-      const { getAnimationUrl } = require('./utils/animationUtils');
-      window.open(getAnimationUrl(problemId), '_blank');
+    if (hasAnimation && pagesUrl) {
+      window.open(pagesUrl, '_blank');
     }
   };
 

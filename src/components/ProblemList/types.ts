@@ -1,3 +1,11 @@
+// 定义仓库信息类型
+export interface RepoInfo {
+  name: string;
+  url: string;
+  isPublic: boolean;
+  pagesUrl: string | null;
+}
+
 // 定义问题类型接口
 export interface Problem {
   id: number;
@@ -9,6 +17,8 @@ export interface Problem {
   acRate: number;
   frequency: number | null;
   hasAnimation: boolean;
+  category?: string;
+  repo?: RepoInfo;
   topicTags: Array<{
     name: string;
     nameTranslated: string;
@@ -31,4 +41,4 @@ export type LegacySortOption = '默认' | '难度' | '通过率' | '题号' | '�
 export type SortOption = LegacySortOption | {
   field: string;
   direction: 'asc' | 'desc';
-}; 
+};

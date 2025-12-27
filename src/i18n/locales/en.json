@@ -4,9 +4,9 @@
   "searchPlaceholder": "Search problems",
   "viewMode": {
     "list": "List",
-    "path": "Path",
+    "path": "Learning Path",
     "listTooltip": "Display all problems in list view",
-    "pathTooltip": "Display by learning path, from easy to hard"
+    "pathTooltip": "Display by learning path dependency, from easy to hard"
   },
   "columns": {
     "problem": "Problem",

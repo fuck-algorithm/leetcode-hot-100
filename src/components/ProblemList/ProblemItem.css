@@ -8,8 +8,8 @@
 }
 
 .completion-checkbox {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border: 2px solid #d9d9d9;
   border-radius: 50%;
   cursor: pointer;
@@ -26,13 +26,14 @@
 }
 
 .completion-checkbox.checked {
-  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  background: white;
   border-color: #52c41a;
+  border-width: 2px;
 }
 
 .completion-checkbox .checkmark {
-  color: white;
-  font-size: 14px;
+  color: #52c41a;
+  font-size: 16px;
   font-weight: bold;
   line-height: 1;
 }

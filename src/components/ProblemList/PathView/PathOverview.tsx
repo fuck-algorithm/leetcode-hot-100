@@ -53,16 +53,16 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  // 多邻国风格的蜿蜒路径位置计算
+  // 多邻国风格的蜿蜒路径位置计算 - 增加蜿蜒程度
   const getNodePosition = (index: number) => {
-    const amplitude = 25;
-    const period = 2.5;
+    const amplitude = 25; // 适度振幅，让路径蜿蜒但不过度
+    const period = 3; // 调整周期，让蜿蜒更平缓
     
     const phase = (index / period) * Math.PI;
     const xOffset = Math.sin(phase) * amplitude;
     const xPercent = 50 + xOffset;
     
-    const yPosition = index * 220 + 120; // 增加间距到220px
+    const yPosition = index * 320 + 160; // 增加间距到320px，避免遮挡
     
     return {
       xPercent,
@@ -147,7 +147,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     });
   };
 
-  const containerHeight = pathsWithProblems.length * 220 + 180;
+  const containerHeight = pathsWithProblems.length * 320 + 260;
 
   return (
     <div className="path-overview-container" ref={containerRef}>

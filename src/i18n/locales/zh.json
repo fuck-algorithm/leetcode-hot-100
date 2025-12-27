@@ -4,9 +4,9 @@
   "searchPlaceholder": "搜索题目",
   "viewMode": {
     "list": "列表",
-    "path": "路径",
+    "path": "路径依赖",
     "listTooltip": "以列表形式展示所有题目",
-    "pathTooltip": "按学习路径展示，从简单到困难循序渐进"
+    "pathTooltip": "按学习路径依赖展示，从简单到困难循序渐进"
   },
   "columns": {
     "problem": "题目",

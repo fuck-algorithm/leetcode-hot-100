@@ -45,17 +45,17 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  // 多邻国风格的蜿蜒路径位置计算 - 增加间距
+  // 多邻国风格的蜿蜒路径位置计算 - 增加间距和蜿蜒程度
   const getNodePosition = (index: number) => {
-    const amplitude = 25;
-    const period = 3;
+    const amplitude = 25; // 适度振幅，让路径蜿蜒但不过度
+    const period = 3; // 调整周期，让蜿蜒更平缓
     
     const phase = (index / period) * Math.PI;
     const xOffset = Math.sin(phase) * amplitude;
     const xPercent = 50 + xOffset;
     
-    // 增加节点间距到160px，避免遮挡
-    const yPosition = index * 160 + 80;
+    // 增加节点间距到280px，避免遮挡
+    const yPosition = index * 280 + 120;
     
     return {
       xPercent,
@@ -154,7 +154,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   };
 
   // 计算容器高度
-  const containerHeight = problems.length * 160 + 100;
+  const containerHeight = problems.length * 280 + 180;
 
   if (problems.length === 0) {
     return (

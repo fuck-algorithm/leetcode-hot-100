@@ -44,27 +44,24 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  // 蜿蜒路径位置计算
+  // 蜿蜒路径位置计算 - 更自然的S形曲线
   const getNodePosition = (index: number) => {
-    const margin = 120;
+    const margin = 100;
     const leftBound = margin;
     const rightBound = containerWidth - margin;
     const centerX = containerWidth / 2;
+    const amplitude = (containerWidth - margin * 2) / 3; // 波动幅度
     
-    let xPixel: number;
-    const pattern = index % 4;
-    if (pattern === 0) {
-      xPixel = centerX;
-    } else if (pattern === 1) {
-      xPixel = leftBound;
-    } else if (pattern === 2) {
-      xPixel = centerX;
-    } else {
-      xPixel = rightBound;
-    }
+    // 使用正弦函数创建更自然的蜿蜒效果
+    const phase = (index * Math.PI) / 1.8;
+    const xOffset = Math.sin(phase) * amplitude;
+    let xPixel = centerX + xOffset;
+    
+    // 确保不超出边界
+    xPixel = Math.max(leftBound, Math.min(rightBound, xPixel));
     
     const xPercent = (xPixel / containerWidth) * 100;
-    const yPosition = index * 160 + 100;
+    const yPosition = index * 140 + 80;
     
     return {
       xPercent,
@@ -114,7 +111,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     }
   };
 
-  // 生成SVG路径连接线
+  // 生成SVG路径连接线 - 多邻国风格蜿蜒曲线
   const generatePathConnections = () => {
     const paths: JSX.Element[] = [];
     
@@ -127,32 +124,85 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
       const nextX = next.xPixel;
       const nextY = next.yPosition;
       
+      // 计算平滑的贝塞尔曲线控制点
       const midY = (currentY + nextY) / 2;
+      
+      // 创建更平滑的S形曲线
+      const pathD = `M ${currentX} ${currentY} C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`;
       
       const currentCompleted = isCompleted(problems[i].questionFrontendId);
       
-      // 背景路径（灰色）
+      // 外层阴影路径 - 3D效果
+      paths.push(
+        <path
+          key={`path-shadow-${i}`}
+          d={pathD}
+          stroke="#d8d8d8"
+          strokeWidth="16"
+          fill="none"
+          strokeLinecap="round"
+          style={{ transform: 'translateY(3px)' }}
+        />
+      );
+      
+      // 主路径背景
       paths.push(
         <path
           key={`path-bg-${i}`}
-          d={`M ${currentX} ${currentY} 
-              C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`}
-          stroke="#e5e5e5"
-          strokeWidth="12"
+          d={pathD}
+          stroke="#e8e8e8"
+          strokeWidth="14"
           fill="none"
           strokeLinecap="round"
         />
       );
       
-      // 前景路径（根据完成状态）
+      // 路径内部 - 浅色
+      paths.push(
+        <path
+          key={`path-inner-${i}`}
+          d={pathD}
+          stroke="#f2f2f2"
+          strokeWidth="8"
+          fill="none"
+          strokeLinecap="round"
+        />
+      );
+      
+      // 完成状态的金色路径
       if (currentCompleted) {
+        // 金色阴影
         paths.push(
           <path
-            key={`path-fg-${i}`}
-            d={`M ${currentX} ${currentY} 
-                C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`}
-            stroke="#ffd700"
-            strokeWidth="10"
+            key={`path-gold-shadow-${i}`}
+            d={pathD}
+            stroke="#cd7800"
+            strokeWidth="14"
+            fill="none"
+            strokeLinecap="round"
+            style={{ transform: 'translateY(3px)' }}
+          />
+        );
+        
+        // 金色主路径
+        paths.push(
+          <path
+            key={`path-gold-${i}`}
+            d={pathD}
+            stroke="url(#goldGradient)"
+            strokeWidth="12"
+            fill="none"
+            strokeLinecap="round"
+          />
+        );
+        
+        // 金色高光
+        paths.push(
+          <path
+            key={`path-gold-highlight-${i}`}
+            d={pathD}
+            stroke="url(#goldHighlight)"
+            strokeWidth="5"
             fill="none"
             strokeLinecap="round"
           />
@@ -163,7 +213,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return paths;
   };
 
-  const containerHeight = problems.length * 160 + 140;
+  const containerHeight = problems.length * 140 + 140;
 
   if (problems.length === 0) {
     return (
@@ -188,6 +238,26 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         viewBox={`0 0 ${containerWidth} ${containerHeight}`}
         preserveAspectRatio="xMidYMid meet"
       >
+        {/* 渐变定义 */}
+        <defs>
+          {/* 金色渐变 - 主路径 */}
+          <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#ffd900" />
+            <stop offset="50%" stopColor="#ffb800" />
+            <stop offset="100%" stopColor="#ffd900" />
+          </linearGradient>
+          {/* 金色高光渐变 */}
+          <linearGradient id="goldHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.6)" />
+            <stop offset="50%" stopColor="rgba(255, 255, 255, 0.3)" />
+            <stop offset="100%" stopColor="rgba(255, 255, 255, 0.6)" />
+          </linearGradient>
+          {/* 绿色渐变 - 进行中 */}
+          <linearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#89e219" />
+            <stop offset="100%" stopColor="#58cc02" />
+          </linearGradient>
+        </defs>
         {generatePathConnections()}
       </svg>
       
@@ -217,7 +287,8 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
               className={`duolingo-node-wrapper ${completed ? 'completed' : ''}`}
               style={{
                 left: `${position.xPercent}%`,
-                top: position.yPosition - 40
+                top: position.yPosition - 40,
+                animationDelay: `${index * 0.05}s`
               }}
             >
               <Tooltip 

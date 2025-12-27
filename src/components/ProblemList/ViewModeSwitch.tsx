@@ -14,24 +14,36 @@ const ViewModeSwitch: React.FC<ViewModeSwitchProps> = ({
   onModeChange,
   t
 }) => {
+  const isPathMode = currentMode === 'path';
+  
+  const handleToggle = () => {
+    onModeChange(isPathMode ? 'list' : 'path');
+  };
+
   return (
-    <div className="view-mode-switch">
-      <button
-        className={`view-mode-btn ${currentMode === 'list' ? 'active' : ''}`}
+    <div className="view-mode-switch-container">
+      <span 
+        className={`switch-label ${!isPathMode ? 'active' : ''}`}
         onClick={() => onModeChange('list')}
-        title={t('viewMode.listTooltip')}
       >
-        <span className="view-mode-icon">📋</span>
-        <span className="view-mode-text">{t('viewMode.list')}</span>
-      </button>
+        📋 {t('viewMode.list')}
+      </span>
+      
       <button
-        className={`view-mode-btn ${currentMode === 'path' ? 'active' : ''}`}
-        onClick={() => onModeChange('path')}
-        title={t('viewMode.pathTooltip')}
+        className={`toggle-switch ${isPathMode ? 'path-active' : 'list-active'}`}
+        onClick={handleToggle}
+        title={isPathMode ? t('viewMode.listTooltip') : t('viewMode.pathTooltip')}
+        aria-label="Toggle view mode"
       >
-        <span className="view-mode-icon">🛤️</span>
-        <span className="view-mode-text">{t('viewMode.path')}</span>
+        <span className="toggle-slider" />
       </button>
+      
+      <span 
+        className={`switch-label ${isPathMode ? 'active' : ''}`}
+        onClick={() => onModeChange('path')}
+      >
+        🛤️ {t('viewMode.path')}
+      </span>
     </div>
   );
 };

@@ -18,8 +18,8 @@ import { getSortOptionText } from './utils/localeUtils';
 const ProblemList: React.FC = () => {
   const { t, i18n } = useTranslation();
   
-  // 视图模式状态
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  // 视图模式状态 - 默认使用路径视图
+  const [viewMode, setViewMode] = useState<ViewMode>('path');
   
   // 使用自定义hooks加载和管理数据
   const { problems, setProblems, allTags } = useProblemsData();

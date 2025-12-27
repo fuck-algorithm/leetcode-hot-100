@@ -309,7 +309,7 @@
 
 .problem-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   padding: 15px 20px;
   border-bottom: 1px solid #f0f0f0;
@@ -325,7 +325,10 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  max-width: 70%;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  justify-content: flex-start;
 }
 
 .problem-id {
@@ -385,6 +388,8 @@
   display: flex;
   align-items: center;
   gap: 15px;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .pass-rate {

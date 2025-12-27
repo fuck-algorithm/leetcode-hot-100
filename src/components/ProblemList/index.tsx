@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import '../ProblemList.css';
 import { useTranslation } from '../../i18n/useCustomTranslation';
 import SearchFilter from './SearchFilter';
@@ -18,11 +18,53 @@ import { getSortOptionText } from './utils/localeUtils';
 import ResetProgressButton from './ResetProgressButton';
 import ConfirmDialog from './ConfirmDialog';
 
+// 从URL hash获取视图模式
+const getViewModeFromHash = (): ViewMode => {
+  const hash = window.location.hash;
+  if (hash === '#/list') return 'list';
+  if (hash === '#/path' || hash === '' || hash === '#/') return 'path';
+  return 'path'; // 默认路径视图
+};
+
+// 更新URL hash
+const updateHash = (mode: ViewMode) => {
+  const newHash = mode === 'list' ? '#/list' : '#/path';
+  if (window.location.hash !== newHash) {
+    window.history.pushState(null, '', newHash);
+  }
+};
+
 const ProblemList: React.FC = () => {
   const { t, i18n } = useTranslation();
   
-  // 视图模式状态 - 默认使用路径视图
-  const [viewMode, setViewMode] = useState<ViewMode>('path');
+  // 视图模式状态 - 从URL hash初始化
+  const [viewMode, setViewMode] = useState<ViewMode>(getViewModeFromHash);
+  
+  // 处理视图模式变化
+  const handleViewModeChange = useCallback((mode: ViewMode) => {
+    setViewMode(mode);
+    updateHash(mode);
+  }, []);
+  
+  // 监听浏览器前进/后退
+  useEffect(() => {
+    const handleHashChange = () => {
+      setViewMode(getViewModeFromHash());
+    };
+    
+    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handleHashChange);
+    
+    // 初始化时设置hash（如果没有的话）
+    if (!window.location.hash || window.location.hash === '#/') {
+      updateHash(viewMode);
+    }
+    
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handleHashChange);
+    };
+  }, [viewMode]);
   
   // 重置确认对话框状态
   const [showResetDialog, setShowResetDialog] = useState(false);
@@ -128,7 +170,7 @@ const ProblemList: React.FC = () => {
       <div className="view-mode-and-search">
         <ViewModeSwitch 
           currentMode={viewMode}
-          onModeChange={setViewMode}
+          onModeChange={handleViewModeChange}
           t={t}
         />
         

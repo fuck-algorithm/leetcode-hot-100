@@ -1,6 +1,3 @@
-/* 导入多邻国路径样式 */
-@import './DuolingoPath.css';
-
 /* 路径视图容器 */
 .path-view-container {
   padding: 20px 0;

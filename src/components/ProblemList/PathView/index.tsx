@@ -5,6 +5,7 @@ import PathOverview from './PathOverview';
 import PathDetail from './PathDetail';
 import './PathView.css';
 import './PathOverview.css';
+import './DuolingoPath.css';
 
 interface CompletionStats {
   total: number;

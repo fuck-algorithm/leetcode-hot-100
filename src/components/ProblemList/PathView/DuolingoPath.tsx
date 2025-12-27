@@ -44,24 +44,25 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  // 蜿蜒路径位置计算 - 更自然的S形曲线
+  // 多邻国风格蜿蜒路径 - 更明显的S形曲线布局
   const getNodePosition = (index: number) => {
-    const margin = 100;
-    const leftBound = margin;
-    const rightBound = containerWidth - margin;
     const centerX = containerWidth / 2;
-    const amplitude = (containerWidth - margin * 2) / 3; // 波动幅度
+    // 更大的波动幅度，创建更明显的蜿蜒效果
+    const amplitude = Math.min(100, (containerWidth - 160) / 3);
     
-    // 使用正弦函数创建更自然的蜿蜒效果
-    const phase = (index * Math.PI) / 1.8;
+    // 使用正弦函数创建平滑的蜿蜒效果
+    // 每3个节点完成一个完整的左右摆动周期
+    const phase = (index * Math.PI) / 1.5;
     const xOffset = Math.sin(phase) * amplitude;
     let xPixel = centerX + xOffset;
     
     // 确保不超出边界
-    xPixel = Math.max(leftBound, Math.min(rightBound, xPixel));
+    const margin = 70;
+    xPixel = Math.max(margin, Math.min(containerWidth - margin, xPixel));
     
     const xPercent = (xPixel / containerWidth) * 100;
-    const yPosition = index * 140 + 80;
+    // 垂直间距
+    const yPosition = index * 120 + 100;
     
     return {
       xPercent,
@@ -111,7 +112,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     }
   };
 
-  // 生成SVG路径连接线 - 多邻国风格蜿蜒曲线
+  // 生成SVG路径连接线 - 多邻国风格圆点路径（优化版）
   const generatePathConnections = () => {
     const paths: JSX.Element[] = [];
     
@@ -124,87 +125,99 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
       const nextX = next.xPixel;
       const nextY = next.yPosition;
       
-      // 计算平滑的贝塞尔曲线控制点
+      // 计算控制点，创建更自然的S形曲线
       const midY = (currentY + nextY) / 2;
+      const controlX1 = currentX;
+      const controlY1 = midY;
+      const controlX2 = nextX;
+      const controlY2 = midY;
       
-      // 创建更平滑的S形曲线
-      const pathD = `M ${currentX} ${currentY} C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`;
+      // 创建平滑的贝塞尔曲线
+      const pathD = `M ${currentX} ${currentY} C ${controlX1} ${controlY1}, ${controlX2} ${controlY2}, ${nextX} ${nextY}`;
       
       const currentCompleted = isCompleted(problems[i].questionFrontendId);
+      const nextCompleted = isCompleted(problems[i + 1].questionFrontendId);
+      const bothCompleted = currentCompleted && nextCompleted;
       
-      // 外层阴影路径 - 3D效果
+      // 路径底部深色阴影 - 增强3D效果
       paths.push(
         <path
-          key={`path-shadow-${i}`}
+          key={`path-shadow-bottom-${i}`}
           d={pathD}
-          stroke="#d8d8d8"
-          strokeWidth="16"
+          stroke="rgba(0, 0, 0, 0.15)"
+          strokeWidth="22"
           fill="none"
           strokeLinecap="round"
-          style={{ transform: 'translateY(3px)' }}
+          strokeDasharray="4 14"
+          style={{ transform: 'translateY(4px)' }}
         />
       );
       
-      // 主路径背景
+      // 路径中间阴影层
+      paths.push(
+        <path
+          key={`path-shadow-mid-${i}`}
+          d={pathD}
+          stroke="rgba(0, 0, 0, 0.08)"
+          strokeWidth="20"
+          fill="none"
+          strokeLinecap="round"
+          strokeDasharray="4 14"
+          style={{ transform: 'translateY(2px)' }}
+        />
+      );
+      
+      // 主路径背景 - 更粗的灰色底
       paths.push(
         <path
           key={`path-bg-${i}`}
           d={pathD}
-          stroke="#e8e8e8"
-          strokeWidth="14"
+          stroke={bothCompleted ? '#d4a000' : '#c8c8c8'}
+          strokeWidth="18"
           fill="none"
           strokeLinecap="round"
+          strokeDasharray="4 14"
         />
       );
       
-      // 路径内部 - 浅色
+      // 主路径 - 圆点效果（多邻国风格）- 更大更明显
       paths.push(
         <path
-          key={`path-inner-${i}`}
+          key={`path-dots-${i}`}
           d={pathD}
-          stroke="#f2f2f2"
-          strokeWidth="8"
+          stroke={bothCompleted ? '#ffd700' : '#e8e8e8'}
+          strokeWidth="16"
           fill="none"
           strokeLinecap="round"
+          strokeDasharray="4 14"
         />
       );
       
-      // 完成状态的金色路径
-      if (currentCompleted) {
-        // 金色阴影
+      // 完成状态的金色光晕 - 更强烈
+      if (bothCompleted) {
         paths.push(
           <path
-            key={`path-gold-shadow-${i}`}
+            key={`path-glow-outer-${i}`}
             d={pathD}
-            stroke="#cd7800"
-            strokeWidth="14"
+            stroke="rgba(255, 215, 0, 0.3)"
+            strokeWidth="28"
             fill="none"
             strokeLinecap="round"
-            style={{ transform: 'translateY(3px)' }}
+            strokeDasharray="4 14"
+            style={{ filter: 'blur(8px)' }}
           />
         );
         
-        // 金色主路径
         paths.push(
           <path
-            key={`path-gold-${i}`}
+            key={`path-glow-inner-${i}`}
             d={pathD}
-            stroke="url(#goldGradient)"
-            strokeWidth="12"
+            stroke="rgba(255, 215, 0, 0.5)"
+            strokeWidth="20"
             fill="none"
             strokeLinecap="round"
-          />
-        );
-        
-        // 金色高光
-        paths.push(
-          <path
-            key={`path-gold-highlight-${i}`}
-            d={pathD}
-            stroke="url(#goldHighlight)"
-            strokeWidth="5"
-            fill="none"
-            strokeLinecap="round"
+            strokeDasharray="4 14"
+            style={{ filter: 'blur(4px)' }}
           />
         );
       }
@@ -213,7 +226,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return paths;
   };
 
-  const containerHeight = problems.length * 140 + 140;
+  const containerHeight = problems.length * 120 + 180;
 
   if (problems.length === 0) {
     return (
@@ -230,6 +243,11 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
       style={{ minHeight: containerHeight }}
       ref={containerRef}
     >
+      {/* 背景装饰元素 */}
+      <div className="path-decoration path-decoration-1"></div>
+      <div className="path-decoration path-decoration-2"></div>
+      <div className="path-decoration path-decoration-3"></div>
+      
       {/* SVG 背景路径 */}
       <svg 
         className="duolingo-path-svg"
@@ -266,7 +284,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         className="path-milestone-badge start"
         style={{
           left: `${getNodePosition(0).xPercent}%`,
-          top: 20
+          top: 30
         }}
       >
         🚀 {currentLang === 'zh' ? '开始' : 'Start'}
@@ -281,21 +299,24 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
           const difficultyClass = getDifficultyClass(problem.difficulty);
           const pagesUrl = problem.repo?.pagesUrl || null;
           
+          // 判断是否是当前进度节点（第一个未完成的节点）
+          const isCurrentNode = !completed && (index === 0 || isCompleted(problems[index - 1].questionFrontendId));
+          
           return (
             <div
               key={problem.id}
-              className={`duolingo-node-wrapper ${completed ? 'completed' : ''}`}
+              className={`duolingo-node-wrapper ${completed ? 'completed' : ''} ${isCurrentNode ? 'current' : ''}`}
               style={{
                 left: `${position.xPercent}%`,
-                top: position.yPosition - 40,
-                animationDelay: `${index * 0.05}s`
+                top: position.yPosition - 35,
+                animationDelay: `${index * 0.03}s`
               }}
             >
               <Tooltip 
                 content={`#${problem.questionFrontendId} ${title} | ${t(`difficulties.${problem.difficulty.toLowerCase()}`)} | ${(problem.acRate * 100).toFixed(1)}%${problem.hasAnimation ? ' | 🎬' : ''}${completed ? ' | ✓' : ''}`}
               >
                 <div 
-                  className={`duolingo-node ${difficultyClass} ${completed ? 'is-completed' : ''}`}
+                  className={`duolingo-node ${difficultyClass} ${completed ? 'is-completed' : ''} ${isCurrentNode ? 'is-current' : ''}`}
                   onClick={(e) => handleNodeClick(e, problem)}
                 >
                   <div className="node-inner">
@@ -305,6 +326,9 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                       <span className="node-number">{problem.questionFrontendId}</span>
                     )}
                   </div>
+                  
+                  {/* 当前节点的脉冲动画环 */}
+                  {isCurrentNode && <div className="node-pulse-ring"></div>}
                   
                   {problem.hasAnimation && (
                     <div 
@@ -320,9 +344,8 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                 </div>
               </Tooltip>
               
-              {/* 题目标题 */}
+              {/* 题目标题 - 仅在悬停时显示 */}
               <div className="node-title-label">
-                <span className="node-title-id">#{problem.questionFrontendId}</span>
                 <span className="node-title-text">{title}</span>
               </div>
             </div>

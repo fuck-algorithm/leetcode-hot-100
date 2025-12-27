@@ -6,6 +6,12 @@ import PathDetail from './PathDetail';
 import './PathView.css';
 import './PathOverview.css';
 
+interface CompletionStats {
+  total: number;
+  completed: number;
+  percentage: number;
+}
+
 interface PathViewProps {
   problems: Problem[];
   currentLang: string;
@@ -20,6 +26,9 @@ interface PathViewProps {
     t?: (key: string) => string,
     pagesUrl?: string | null
   ) => void;
+  isCompleted: (problemId: string) => boolean;
+  onToggleCompletion: (problemId: string) => Promise<void>;
+  getStatsForProblems: (problemIds: string[]) => CompletionStats;
 }
 
 const PathView: React.FC<PathViewProps> = ({
@@ -28,7 +37,10 @@ const PathView: React.FC<PathViewProps> = ({
   t,
   selectedTags,
   toggleTag,
-  handleAnimationClick
+  handleAnimationClick,
+  isCompleted,
+  onToggleCompletion,
+  getStatsForProblems
 }) => {
   const [expandedPath, setExpandedPath] = useState<string | null>(null);
 
@@ -89,6 +101,9 @@ const PathView: React.FC<PathViewProps> = ({
           toggleTag={toggleTag}
           handleAnimationClick={handleAnimationClick}
           onBack={handleBackToOverview}
+          isCompleted={isCompleted}
+          onToggleCompletion={onToggleCompletion}
+          getStatsForProblems={getStatsForProblems}
         />
       );
     }
@@ -100,6 +115,8 @@ const PathView: React.FC<PathViewProps> = ({
       pathsWithProblems={pathsWithProblems}
       currentLang={currentLang}
       onPathClick={handlePathClick}
+      isCompleted={isCompleted}
+      getStatsForProblems={getStatsForProblems}
     />
   );
 };

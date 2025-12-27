@@ -11,6 +11,12 @@ interface PathStats {
   hasAnimation: number;
 }
 
+interface CompletionStats {
+  total: number;
+  completed: number;
+  percentage: number;
+}
+
 interface PathDetailProps {
   path: LearningPath;
   problems: Problem[];
@@ -28,6 +34,9 @@ interface PathDetailProps {
     pagesUrl?: string | null
   ) => void;
   onBack: () => void;
+  isCompleted: (problemId: string) => boolean;
+  onToggleCompletion: (problemId: string) => Promise<void>;
+  getStatsForProblems: (problemIds: string[]) => CompletionStats;
 }
 
 const PathDetail: React.FC<PathDetailProps> = ({
@@ -39,7 +48,10 @@ const PathDetail: React.FC<PathDetailProps> = ({
   selectedTags,
   toggleTag,
   handleAnimationClick,
-  onBack
+  onBack,
+  isCompleted,
+  onToggleCompletion,
+  getStatsForProblems
 }) => {
   const name = currentLang === 'zh' ? path.name : path.nameEn;
   const description = currentLang === 'zh' ? path.description : path.descriptionEn;
@@ -52,6 +64,9 @@ const PathDetail: React.FC<PathDetailProps> = ({
     if (difficultyFilter === 'all') return true;
     return p.difficulty.toLowerCase() === difficultyFilter;
   });
+
+  // 获取完成统计
+  const completionStats = getStatsForProblems(problems.map(p => p.questionFrontendId));
 
   return (
     <div className="path-detail-container">
@@ -67,9 +82,9 @@ const PathDetail: React.FC<PathDetailProps> = ({
         </div>
         <div className="path-detail-stats">
           <div className="detail-stat">
-            <span className="detail-stat-value">{stats.total}</span>
+            <span className="detail-stat-value">{completionStats.completed}/{stats.total}</span>
             <span className="detail-stat-label">
-              {currentLang === 'zh' ? '总题数' : 'Total'}
+              {currentLang === 'zh' ? '已完成' : 'Completed'}
             </span>
           </div>
           <div className="detail-stat">
@@ -119,8 +134,8 @@ const PathDetail: React.FC<PathDetailProps> = ({
         <span className="instruction-icon">💡</span>
         <span className="instruction-text">
           {currentLang === 'zh' 
-            ? '点击节点查看题目详情，带 🎬 标记的题目有动画演示' 
-            : 'Click nodes to view problem details. Nodes with 🎬 have animations'}
+            ? '点击节点查看题目详情，双击标记完成状态，带 🎬 标记的题目有动画演示' 
+            : 'Click nodes to view details, double-click to mark completion. Nodes with 🎬 have animations'}
         </span>
       </div>
 
@@ -132,6 +147,8 @@ const PathDetail: React.FC<PathDetailProps> = ({
         selectedTags={selectedTags}
         toggleTag={toggleTag}
         handleAnimationClick={handleAnimationClick}
+        isCompleted={isCompleted}
+        onToggleCompletion={onToggleCompletion}
       />
     </div>
   );

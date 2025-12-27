@@ -222,6 +222,54 @@
   font-weight: 600;
 }
 
+/* 开始按钮 */
+.node-start-btn {
+  margin-top: 8px;
+  padding: 6px 16px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.node-start-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+.path-overview-node.completed .node-start-btn {
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+}
+
+.path-overview-node.not-started .node-start-btn {
+  background: linear-gradient(135deg, #8c8c8c 0%, #bfbfbf 100%);
+}
+
+/* 未开始状态的节点 */
+.path-overview-node.not-started .node-content {
+  opacity: 0.7;
+}
+
+/* 已完成状态的节点 */
+.path-overview-node.completed .node-icon {
+  font-size: 32px;
+  color: white;
+}
+
+/* 可点击的里程碑 */
+.path-overview-milestone.clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.path-overview-milestone.clickable:hover {
+  transform: translateX(-50%) scale(1.05);
+}
+
 .diff-easy {
   color: #00af9b;
   background: #e6fff9;

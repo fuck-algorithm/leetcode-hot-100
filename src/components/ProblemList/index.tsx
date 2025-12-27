@@ -12,8 +12,11 @@ import PathView from './PathView';
 import { useProblemsData } from './hooks/useProblemsData';
 import { useProblemsSorting } from './hooks/useProblemsSorting';
 import { useProblemsFiltering } from './hooks/useProblemsFiltering';
+import { useCompletionStatus } from './hooks/useCompletionStatus';
 import { handleAnimationClick } from './utils/animationUtils';
 import { getSortOptionText } from './utils/localeUtils';
+import ResetProgressButton from './ResetProgressButton';
+import ConfirmDialog from './ConfirmDialog';
 
 const ProblemList: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -21,8 +24,19 @@ const ProblemList: React.FC = () => {
   // 视图模式状态 - 默认使用路径视图
   const [viewMode, setViewMode] = useState<ViewMode>('path');
   
+  // 重置确认对话框状态
+  const [showResetDialog, setShowResetDialog] = useState(false);
+  
   // 使用自定义hooks加载和管理数据
   const { problems, setProblems, allTags } = useProblemsData();
+  
+  // 使用完成状态hook
+  const {
+    isCompleted,
+    toggleCompletion,
+    resetAllProgress,
+    getStatsForProblems
+  } = useCompletionStatus();
   
   // 使用自定义hooks处理排序逻辑
   const { 
@@ -97,6 +111,16 @@ const ProblemList: React.FC = () => {
   useEffect(() => {
     console.log('当前排序状态:', currentSort, '排序后问题数量:', sortedProblems.length);
   }, [currentSort, sortedProblems]);
+
+  // 处理重置进度
+  const handleResetProgress = async () => {
+    try {
+      await resetAllProgress();
+      setShowResetDialog(false);
+    } catch (error) {
+      console.error('重置进度失败:', error);
+    }
+  };
   
   return (
     <div className="problem-list-container">
@@ -105,6 +129,12 @@ const ProblemList: React.FC = () => {
         <ViewModeSwitch 
           currentMode={viewMode}
           onModeChange={setViewMode}
+          t={t}
+        />
+        
+        {/* 重新开始按钮 */}
+        <ResetProgressButton 
+          onClick={() => setShowResetDialog(true)}
           t={t}
         />
         
@@ -182,6 +212,8 @@ const ProblemList: React.FC = () => {
                 handleAnimationClick={handleAnimationClick}
                 currentLang={i18n.language}
                 t={t}
+                isCompleted={isCompleted(problem.questionFrontendId)}
+                onToggleCompletion={toggleCompletion}
               />
             ))}
           </div>
@@ -197,8 +229,23 @@ const ProblemList: React.FC = () => {
           selectedTags={selectedTags}
           toggleTag={toggleTag}
           handleAnimationClick={handleAnimationClick}
+          isCompleted={isCompleted}
+          onToggleCompletion={toggleCompletion}
+          getStatsForProblems={getStatsForProblems}
         />
       )}
+
+      {/* 重置确认对话框 */}
+      <ConfirmDialog
+        isOpen={showResetDialog}
+        title={t('resetProgress.title')}
+        message={t('resetProgress.message')}
+        confirmText={t('resetProgress.confirm')}
+        cancelText={t('resetProgress.cancel')}
+        onConfirm={handleResetProgress}
+        onCancel={() => setShowResetDialog(false)}
+        danger
+      />
     </div>
   );
 };

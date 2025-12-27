@@ -1,0 +1,67 @@
+/* 题目完成状态复选框 */
+.problem-completion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.completion-checkbox {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #d9d9d9;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.completion-checkbox:hover {
+  border-color: #52c41a;
+  background: #f6ffed;
+}
+
+.completion-checkbox.checked {
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  border-color: #52c41a;
+}
+
+.completion-checkbox .checkmark {
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* 已完成的题目行样式 */
+.problem-row.completed {
+  background: linear-gradient(90deg, #f6ffed 0%, transparent 100%);
+}
+
+.problem-row.completed .problem-title {
+  color: #8c8c8c;
+}
+
+.problem-row.completed .problem-id {
+  color: #8c8c8c;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .completion-checkbox {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .completion-checkbox .checkmark {
+    font-size: 12px;
+  }
+  
+  .problem-completion {
+    margin-right: 8px;
+  }
+}

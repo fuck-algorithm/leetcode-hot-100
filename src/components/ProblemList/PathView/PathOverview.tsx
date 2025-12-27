@@ -17,16 +17,26 @@ interface PathWithStats {
   stats: PathStats;
 }
 
+interface CompletionStats {
+  total: number;
+  completed: number;
+  percentage: number;
+}
+
 interface PathOverviewProps {
   pathsWithProblems: PathWithStats[];
   currentLang: string;
   onPathClick: (pathId: string) => void;
+  isCompleted: (problemId: string) => boolean;
+  getStatsForProblems: (problemIds: string[]) => CompletionStats;
 }
 
 const PathOverview: React.FC<PathOverviewProps> = ({
   pathsWithProblems,
   currentLang,
-  onPathClick
+  onPathClick,
+  isCompleted,
+  getStatsForProblems
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(600);
@@ -45,14 +55,14 @@ const PathOverview: React.FC<PathOverviewProps> = ({
 
   // 多邻国风格的蜿蜒路径位置计算
   const getNodePosition = (index: number) => {
-    const amplitude = 25; // 左右摆动幅度（百分比）
-    const period = 2.5; // 周期
+    const amplitude = 25;
+    const period = 2.5;
     
     const phase = (index / period) * Math.PI;
     const xOffset = Math.sin(phase) * amplitude;
     const xPercent = 50 + xOffset;
     
-    const yPosition = index * 200 + 120; // 每个节点间隔200px，增加间距避免遮挡
+    const yPosition = index * 220 + 120; // 增加间距到220px
     
     return {
       xPercent,
@@ -62,7 +72,13 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     };
   };
 
-  // 生成SVG路径连接线
+  // 获取每个路径的完成统计
+  const getPathCompletionStats = (problems: any[]): CompletionStats => {
+    const problemIds = problems.map(p => p.questionFrontendId);
+    return getStatsForProblems(problemIds);
+  };
+
+  // 生成SVG路径连接线 - 根据完成状态显示不同颜色
   const generatePathConnections = () => {
     const paths: JSX.Element[] = [];
     
@@ -77,7 +93,12 @@ const PathOverview: React.FC<PathOverviewProps> = ({
       
       const midY = (currentY + nextY) / 2;
       
-      // 背景路径（更粗的灰色）
+      // 获取当前路径的完成状态
+      const currentStats = getPathCompletionStats(pathsWithProblems[i].problems);
+      const isPathStarted = currentStats.completed > 0;
+      const isPathCompleted = currentStats.percentage === 100;
+      
+      // 背景路径
       paths.push(
         <path
           key={`path-bg-${i}`}
@@ -90,13 +111,19 @@ const PathOverview: React.FC<PathOverviewProps> = ({
         />
       );
       
-      // 前景路径（渐变色）
+      // 前景路径 - 根据完成状态显示不同颜色
+      const pathColor = isPathCompleted 
+        ? '#52c41a' 
+        : isPathStarted 
+          ? `url(#gradient-${i})` 
+          : '#d9d9d9';
+      
       paths.push(
         <path
           key={`path-fg-${i}`}
           d={`M ${currentX} ${currentY} 
               C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`}
-          stroke={`url(#gradient-${i})`}
+          stroke={pathColor}
           strokeWidth="10"
           fill="none"
           strokeLinecap="round"
@@ -120,7 +147,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     });
   };
 
-  const containerHeight = pathsWithProblems.length * 200 + 180;
+  const containerHeight = pathsWithProblems.length * 220 + 180;
 
   return (
     <div className="path-overview-container" ref={containerRef}>
@@ -155,11 +182,12 @@ const PathOverview: React.FC<PathOverviewProps> = ({
 
         {/* 起点标记 */}
         <div 
-          className="path-overview-milestone start"
+          className="path-overview-milestone start clickable"
           style={{
             left: `${getNodePosition(0).xPercent}%`,
             top: 20
           }}
+          onClick={() => onPathClick(pathsWithProblems[0]?.path.id)}
         >
           <span className="milestone-icon">🚀</span>
           <span className="milestone-text">
@@ -171,24 +199,25 @@ const PathOverview: React.FC<PathOverviewProps> = ({
         <div className="path-overview-nodes">
           {pathsWithProblems.map((item, index) => {
             const position = getNodePosition(index);
-            const { path, stats } = item;
+            const { path, stats, problems } = item;
             const name = currentLang === 'zh' ? path.name : path.nameEn;
             const description = currentLang === 'zh' ? path.description : path.descriptionEn;
             const isLast = index === pathsWithProblems.length - 1;
             
-            // 计算完成度（这里用动画覆盖率作为示例）
-            const completionRate = stats.total > 0 
-              ? Math.round((stats.hasAnimation / stats.total) * 100) 
-              : 0;
+            // 获取真实的完成统计
+            const completionStats = getPathCompletionStats(problems);
+            const completionRate = completionStats.percentage;
+            const isStarted = completionStats.completed > 0;
+            const isAllCompleted = completionRate === 100;
             
             return (
               <div
                 key={path.id}
-                className={`path-overview-node ${isLast ? 'is-last' : ''}`}
+                className={`path-overview-node ${isLast ? 'is-last' : ''} ${isAllCompleted ? 'completed' : ''} ${!isStarted ? 'not-started' : ''}`}
                 style={{
                   left: `${position.xPercent}%`,
                   top: position.yPosition - 50,
-                  '--node-color': path.color
+                  '--node-color': isAllCompleted ? '#52c41a' : (isStarted ? path.color : '#d9d9d9')
                 } as React.CSSProperties}
                 onClick={() => onPathClick(path.id)}
               >
@@ -213,13 +242,18 @@ const PathOverview: React.FC<PathOverviewProps> = ({
                         strokeWidth="8"
                         strokeDasharray={`${completionRate * 2.83} 283`}
                         strokeLinecap="round"
-                        style={{ stroke: path.color }}
+                        style={{ stroke: isAllCompleted ? '#52c41a' : path.color }}
                       />
                     </svg>
                     
                     {/* 节点内容 */}
-                    <div className="node-content" style={{ backgroundColor: path.color }}>
-                      <span className="node-icon">{path.icon}</span>
+                    <div 
+                      className="node-content" 
+                      style={{ 
+                        backgroundColor: isAllCompleted ? '#52c41a' : (isStarted ? path.color : '#d9d9d9')
+                      }}
+                    >
+                      <span className="node-icon">{isAllCompleted ? '✓' : path.icon}</span>
                     </div>
                     
                     {/* 动画标记 */}
@@ -235,13 +269,30 @@ const PathOverview: React.FC<PathOverviewProps> = ({
                 <div className="node-info">
                   <h3 className="node-name">{name}</h3>
                   <div className="node-stats">
-                    <span className="stat-total">{stats.total} {currentLang === 'zh' ? '题' : 'problems'}</span>
+                    <span className="stat-total">
+                      {completionStats.completed}/{stats.total} {currentLang === 'zh' ? '题' : 'problems'}
+                    </span>
                     <div className="stat-difficulty">
                       <span className="diff-easy">{stats.easy}</span>
                       <span className="diff-medium">{stats.medium}</span>
                       <span className="diff-hard">{stats.hard}</span>
                     </div>
                   </div>
+                  {/* 开始按钮 */}
+                  <button 
+                    className="node-start-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onPathClick(path.id);
+                    }}
+                  >
+                    {isAllCompleted 
+                      ? (currentLang === 'zh' ? '复习' : 'Review')
+                      : isStarted 
+                        ? (currentLang === 'zh' ? '继续' : 'Continue')
+                        : (currentLang === 'zh' ? '开始' : 'Start')
+                    }
+                  </button>
                 </div>
               </div>
             );

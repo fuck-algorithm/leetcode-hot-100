@@ -50,5 +50,19 @@
   },
   "tooltips": {
     "openLeetcode": "Click to open LeetCode problem page"
+  },
+  "resetProgress": {
+    "button": "Reset",
+    "tooltip": "Clear all learning progress and start over",
+    "title": "Confirm Reset?",
+    "message": "This will clear all your learning progress, including completed problem marks. This action cannot be undone.",
+    "confirm": "Confirm Reset",
+    "cancel": "Cancel"
+  },
+  "completion": {
+    "markComplete": "Mark as complete",
+    "markIncomplete": "Mark as incomplete",
+    "completed": "Completed",
+    "notStarted": "Not started"
   }
 } 

@@ -50,15 +50,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
   transform: translateX(-50%);
   transition: transform 0.2s ease;
 }
 
 .duolingo-node-wrapper:hover {
-  transform: translateX(-50%) scale(1.08);
+  transform: translateX(-50%) scale(1.05);
   z-index: 10;
+}
+
+/* 已完成的节点包装器 */
+.duolingo-node-wrapper.completed {
+  opacity: 1;
 }
 
 /* 节点样式 - 多邻国风格 */
@@ -93,21 +98,19 @@
     0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.duolingo-node.has-animation {
-  animation: glow 2s ease-in-out infinite;
+/* 已完成的节点样式 */
+.duolingo-node.is-completed {
+  background: linear-gradient(135deg, #d9f7be 0%, #b7eb8f 100%);
+  border-color: #52c41a;
+  box-shadow: 
+    0 4px 0 #389e0d,
+    0 6px 12px rgba(82, 196, 26, 0.3);
 }
 
-@keyframes glow {
-  0%, 100% {
-    box-shadow: 
-      0 4px 0 var(--node-color, #58cc02),
-      0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-  50% {
-    box-shadow: 
-      0 4px 0 var(--node-color, #58cc02),
-      0 6px 20px rgba(88, 204, 2, 0.4);
-  }
+.duolingo-node.is-completed:hover {
+  box-shadow: 
+    0 6px 0 #389e0d,
+    0 8px 16px rgba(82, 196, 26, 0.4);
 }
 
 /* 节点内部 */
@@ -124,36 +127,57 @@
   color: #333;
 }
 
-/* 动画标记 */
-.node-animation-badge {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  font-size: 16px;
-  background: white;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+.node-checkmark {
+  font-size: 24px;
+  font-weight: 700;
+  color: #52c41a;
 }
 
-/* 节点标题标签 */
+/* 动画标记包装器 */
+.node-animation-badge-wrapper {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  z-index: 5;
+}
+
+/* 节点标题标签 - 显示完整信息 */
 .node-title-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
   font-size: 12px;
   font-weight: 600;
   color: #4b4b4b;
   text-align: center;
-  max-width: 100px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 4px 8px;
+  max-width: 160px;
+  padding: 6px 10px;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.node-title-id {
+  font-size: 11px;
+  color: #8c8c8c;
+  font-weight: 500;
+}
+
+.node-title-text {
+  font-size: 12px;
+  color: #333;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+/* 已完成节点的标题样式 */
+.duolingo-node-wrapper.completed .node-title-label {
+  background: linear-gradient(135deg, #f6ffed 0%, #d9f7be 100%);
+}
+
+.duolingo-node-wrapper.completed .node-title-text {
+  color: #389e0d;
 }
 
 /* 里程碑标记 */
@@ -197,8 +221,12 @@
   }
   
   .node-title-label {
+    max-width: 140px;
+    padding: 4px 8px;
+  }
+  
+  .node-title-text {
     font-size: 11px;
-    max-width: 80px;
   }
 }
 
@@ -213,15 +241,27 @@
     font-size: 14px;
   }
   
-  .node-animation-badge {
-    width: 20px;
-    height: 20px;
-    font-size: 12px;
+  .node-checkmark {
+    font-size: 20px;
+  }
+  
+  .node-animation-badge-wrapper {
+    top: -6px;
+    right: -6px;
   }
   
   .node-title-label {
+    max-width: 120px;
     font-size: 10px;
-    padding: 2px 6px;
+    padding: 3px 6px;
+  }
+  
+  .node-title-id {
+    font-size: 9px;
+  }
+  
+  .node-title-text {
+    font-size: 10px;
   }
   
   .path-milestone-badge {

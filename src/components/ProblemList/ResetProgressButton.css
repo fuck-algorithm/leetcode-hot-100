@@ -1,0 +1,49 @@
+/* 重新开始按钮 */
+.reset-progress-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #fff1f0 0%, #ffccc7 100%);
+  border: 1px solid #ffa39e;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+  color: #cf1322;
+}
+
+.reset-progress-btn:hover {
+  background: linear-gradient(135deg, #ffccc7 0%, #ffa39e 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(207, 19, 34, 0.2);
+}
+
+.reset-progress-btn:active {
+  transform: translateY(0);
+}
+
+.reset-icon {
+  font-size: 16px;
+}
+
+.reset-text {
+  white-space: nowrap;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .reset-progress-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  
+  .reset-text {
+    display: none;
+  }
+  
+  .reset-icon {
+    font-size: 18px;
+  }
+}

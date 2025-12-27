@@ -14,6 +14,7 @@ export interface AnimationBadgeProps {
   problemId?: string;
   problemTitle?: string;
   pagesUrl?: string | null;
+  showPreview?: boolean; // 是否显示预览功能，默认true
 }
 
 // 媒体类型
@@ -38,7 +39,8 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
   animationUrl,
   problemId,
   problemTitle,
-  pagesUrl
+  pagesUrl,
+  showPreview: enablePreview = true
 }) => {
   const [showPreview, setShowPreview] = useState(false);
   const [previewStyle, setPreviewStyle] = useState<PreviewStyle>({});
@@ -103,7 +105,7 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
 
   // 鼠标进入徽章区域
   const handleMouseEnter = () => {
-    if (hasAnimation) {
+    if (hasAnimation && enablePreview) {
       previewTimeoutRef.current = window.setTimeout(async () => {
         setShowPreview(true);
         // 每次都重新加载，确保显示正确的内容

@@ -4,6 +4,7 @@ import AnimationBadge from './AnimationBadge';
 import ProblemTags from './ProblemTags';
 import DifficultyBadge from './DifficultyBadge';
 import { Problem } from './types';
+import './ProblemItem.css';
 
 // 问题项组件接口
 export interface ProblemItemProps {
@@ -13,6 +14,8 @@ export interface ProblemItemProps {
   handleAnimationClick: (event: React.MouseEvent, questionId: string, hasAnimation: boolean, title?: string, t?: (key: string) => string, pagesUrl?: string | null) => void;
   currentLang: string;
   t: (key: string) => string;
+  isCompleted?: boolean;
+  onToggleCompletion?: (problemId: string) => void;
 }
 
 // 获取LeetCode题目详情页URL
@@ -27,7 +30,9 @@ const ProblemItem: React.FC<ProblemItemProps> = ({
   toggleTag, 
   handleAnimationClick, 
   currentLang,
-  t
+  t,
+  isCompleted = false,
+  onToggleCompletion
 }) => {
   const title = currentLang === 'zh' ? problem.translatedTitle : problem.title;
   const pagesUrl = problem.repo?.pagesUrl || null;
@@ -38,9 +43,26 @@ const ProblemItem: React.FC<ProblemItemProps> = ({
     const url = getLeetCodeProblemUrl(problem, currentLang);
     window.open(url, '_blank');
   };
+
+  // 处理完成状态切换
+  const handleCompletionToggle = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    if (onToggleCompletion) {
+      onToggleCompletion(problem.questionFrontendId);
+    }
+  };
   
   return (
-    <div className="problem-row">
+    <div className={`problem-row ${isCompleted ? 'completed' : ''}`}>
+      {/* 完成状态复选框 */}
+      <div className="problem-completion" onClick={handleCompletionToggle}>
+        <Tooltip content={isCompleted ? (currentLang === 'zh' ? '标记为未完成' : 'Mark as incomplete') : (currentLang === 'zh' ? '标记为已完成' : 'Mark as complete')}>
+          <div className={`completion-checkbox ${isCompleted ? 'checked' : ''}`}>
+            {isCompleted && <span className="checkmark">✓</span>}
+          </div>
+        </Tooltip>
+      </div>
+      
       <div className="problem-info">
         <Tooltip content={`${t('tooltips.openLeetcode')}: #${problem.questionFrontendId}`}>
           <span 

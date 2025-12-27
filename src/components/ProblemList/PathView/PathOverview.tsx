@@ -91,7 +91,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     return getStatsForProblems(problemIds);
   };
 
-  // 生成SVG路径连接线 - 根据完成状态显示不同颜色
+  // 生成SVG路径连接线 - 多邻国风格：简洁的灰色虚线
   const generatePathConnections = () => {
     const paths: JSX.Element[] = [];
     
@@ -108,53 +108,25 @@ const PathOverview: React.FC<PathOverviewProps> = ({
       
       // 获取当前路径的完成状态
       const currentStats = getPathCompletionStats(pathsWithProblems[i].problems);
-      const isPathCompleted = currentStats.percentage === 100;
+      const nextStats = getPathCompletionStats(pathsWithProblems[i + 1].problems);
+      const bothCompleted = currentStats.percentage === 100 && nextStats.percentage === 100;
       
-      // 背景路径
+      // 简洁的连接线 - 多邻国风格
       paths.push(
         <path
-          key={`path-bg-${i}`}
+          key={`path-${i}`}
           d={`M ${currentX} ${currentY} 
               C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`}
-          stroke="#e8e8e8"
-          strokeWidth="16"
+          stroke={bothCompleted ? '#58cc02' : '#e5e5e5'}
+          strokeWidth="8"
           fill="none"
           strokeLinecap="round"
-        />
-      );
-      
-      // 前景路径 - 默认显示彩色渐变，完成后显示绿色
-      const pathColor = isPathCompleted 
-        ? '#52c41a' 
-        : `url(#gradient-${i})`;
-      
-      paths.push(
-        <path
-          key={`path-fg-${i}`}
-          d={`M ${currentX} ${currentY} 
-              C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`}
-          stroke={pathColor}
-          strokeWidth="10"
-          fill="none"
-          strokeLinecap="round"
+          strokeDasharray={bothCompleted ? 'none' : '12 8'}
         />
       );
     }
     
     return paths;
-  };
-
-  // 生成渐变定义
-  const generateGradients = () => {
-    return pathsWithProblems.slice(0, -1).map((item, i) => {
-      const nextItem = pathsWithProblems[i + 1];
-      return (
-        <linearGradient key={`gradient-${i}`} id={`gradient-${i}`} x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor={item.path.color} />
-          <stop offset="100%" stopColor={nextItem.path.color} />
-        </linearGradient>
-      );
-    });
   };
 
   const containerHeight = pathsWithProblems.length * 280 + 260;
@@ -184,26 +156,8 @@ const PathOverview: React.FC<PathOverviewProps> = ({
           viewBox={`0 0 ${containerWidth} ${containerHeight}`}
           preserveAspectRatio="xMidYMid meet"
         >
-          <defs>
-            {generateGradients()}
-          </defs>
           {generatePathConnections()}
         </svg>
-
-        {/* 起点标记 */}
-        <div 
-          className="path-overview-milestone start clickable"
-          style={{
-            left: `${getNodePosition(0).xPercent}%`,
-            top: 20
-          }}
-          onClick={() => onPathClick(pathsWithProblems[0]?.path.id)}
-        >
-          <span className="milestone-icon">🚀</span>
-          <span className="milestone-text">
-            {currentLang === 'zh' ? '开始学习' : 'Start Learning'}
-          </span>
-        </div>
 
         {/* 路径节点 */}
         <div className="path-overview-nodes">
@@ -220,10 +174,14 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             const isStarted = completionStats.completed > 0;
             const isAllCompleted = completionRate === 100;
             
+            // 判断是否是当前进度节点（第一个未完成的节点）
+            const isCurrentNode = !isAllCompleted && (index === 0 || 
+              getPathCompletionStats(pathsWithProblems[index - 1].problems).percentage === 100);
+            
             return (
               <div
                 key={path.id}
-                className={`path-overview-node ${isLast ? 'is-last' : ''} ${isAllCompleted ? 'completed' : ''}`}
+                className={`path-overview-node ${isLast ? 'is-last' : ''} ${isAllCompleted ? 'completed' : ''} ${isCurrentNode ? 'is-current' : ''}`}
                 style={{
                   left: `${position.xPercent}%`,
                   top: position.yPosition - 50,
@@ -231,6 +189,16 @@ const PathOverview: React.FC<PathOverviewProps> = ({
                 } as React.CSSProperties}
                 onClick={() => onPathClick(path.id)}
               >
+                {/* 当前节点的"开始"标签 - 多邻国风格 */}
+                {isCurrentNode && (
+                  <div className="current-node-label">
+                    {isStarted 
+                      ? (currentLang === 'zh' ? '继续' : 'Continue')
+                      : (currentLang === 'zh' ? '开始' : 'Start')
+                    }
+                  </div>
+                )}
+                
                 <Tooltip content={description}>
                   <div className="node-main">
                     {/* 进度环 */}
@@ -272,6 +240,9 @@ const PathOverview: React.FC<PathOverviewProps> = ({
                         🎬 {stats.hasAnimation}
                       </div>
                     )}
+                    
+                    {/* 当前节点脉冲动画 */}
+                    {isCurrentNode && <div className="node-pulse-ring"></div>}
                   </div>
                 </Tooltip>
                 

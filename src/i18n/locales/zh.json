@@ -57,12 +57,19 @@
     "title": "确认重新开始？",
     "message": "此操作将清空您所有的学习进度记录，包括已完成的题目标记。此操作不可撤销，请谨慎操作。",
     "confirm": "确认重置",
-    "cancel": "取消"
+    "cancel": "取消",
+    "success": "重置成功！所有学习进度已清空，可以重新开始学习了。"
   },
   "completion": {
     "markComplete": "标记为已完成",
     "markIncomplete": "标记为未完成",
     "completed": "已完成",
     "notStarted": "未开始"
+  },
+  "completionFilter": {
+    "tooltip": "按完成状态筛选题目",
+    "all": "全部题目",
+    "completed": "已完成",
+    "incomplete": "未完成"
   }
 } 

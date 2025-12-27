@@ -1,6 +1,7 @@
 import React from 'react';
 import Tooltip from '../Tooltip';
 import { LegacySortOption } from './types';
+import { CompletionFilterType } from '../../services/completionStorage';
 
 // 搜索和筛选组件接口
 export interface SearchFilterProps {
@@ -17,6 +18,8 @@ export interface SearchFilterProps {
   children?: React.ReactNode;
   sortButtonRef?: React.RefObject<HTMLButtonElement>;
   filterButtonRef?: React.RefObject<HTMLButtonElement>;
+  completionFilter?: CompletionFilterType;
+  onCompletionFilterChange?: (filter: CompletionFilterType) => void;
 }
 
 const SearchFilter: React.FC<SearchFilterProps> = ({
@@ -32,7 +35,9 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
   t,
   children,
   sortButtonRef,
-  filterButtonRef
+  filterButtonRef,
+  completionFilter = 'all',
+  onCompletionFilterChange
 }) => {
   return (
     <div className="search-container">
@@ -45,6 +50,22 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
         />
       </div>
       <div className="filter-buttons">
+        {/* 完成状态筛选 */}
+        {onCompletionFilterChange && (
+          <div className="completion-filter">
+            <Tooltip content={t('completionFilter.tooltip')}>
+              <select
+                className="completion-filter-select"
+                value={completionFilter}
+                onChange={(e) => onCompletionFilterChange(e.target.value as CompletionFilterType)}
+              >
+                <option value="all">{t('completionFilter.all')}</option>
+                <option value="completed">{t('completionFilter.completed')}</option>
+                <option value="incomplete">{t('completionFilter.incomplete')}</option>
+              </select>
+            </Tooltip>
+          </div>
+        )}
         <div className="animation-filter">
           <Tooltip content={t('animationFilter')}>
             <label 

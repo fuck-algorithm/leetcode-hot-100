@@ -57,12 +57,19 @@
     "title": "Confirm Reset?",
     "message": "This will clear all your learning progress, including completed problem marks. This action cannot be undone.",
     "confirm": "Confirm Reset",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "success": "Reset successful! All learning progress has been cleared. You can start learning again."
   },
   "completion": {
     "markComplete": "Mark as complete",
     "markIncomplete": "Mark as incomplete",
     "completed": "Completed",
     "notStarted": "Not started"
+  },
+  "completionFilter": {
+    "tooltip": "Filter by completion status",
+    "all": "All Problems",
+    "completed": "Completed",
+    "incomplete": "Incomplete"
   }
 } 

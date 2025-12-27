@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Problem, Tag } from '../types';
+import { completionStorage, CompletionFilterType } from '../../../services/completionStorage';
 
 export interface UseProblemsFilteringProps {
   problems: Problem[];
   allTags: Tag[];
   currentLang: string;
+  isCompleted?: (problemId: string) => boolean;
 }
 
-export const useProblemsFiltering = ({ problems, allTags, currentLang }: UseProblemsFilteringProps) => {
+export const useProblemsFiltering = ({ problems, allTags, currentLang, isCompleted }: UseProblemsFilteringProps) => {
   // 从localStorage恢复状态或使用默认值
   const getStoredValue = <T,>(key: string, defaultValue: T): T => {
     const stored = localStorage.getItem(key);
@@ -18,6 +20,35 @@ export const useProblemsFiltering = ({ problems, allTags, currentLang }: UseProb
   const [selectedTags, setSelectedTags] = useState<string[]>(() => getStoredValue('selectedTags', []));
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [showAnimationOnly, setShowAnimationOnly] = useState(() => getStoredValue('showAnimationOnly', true));
+  
+  // 完成状态筛选 - 从IndexedDB加载
+  const [completionFilter, setCompletionFilter] = useState<CompletionFilterType>('all');
+  const [isLoadingPreferences, setIsLoadingPreferences] = useState(true);
+
+  // 从IndexedDB加载完成状态筛选偏好
+  useEffect(() => {
+    const loadPreferences = async () => {
+      try {
+        const savedFilter = await completionStorage.getPreference<CompletionFilterType>('completionFilter', 'all');
+        setCompletionFilter(savedFilter);
+      } catch (error) {
+        console.error('加载筛选偏好失败:', error);
+      } finally {
+        setIsLoadingPreferences(false);
+      }
+    };
+    loadPreferences();
+  }, []);
+
+  // 保存完成状态筛选到IndexedDB
+  const handleCompletionFilterChange = useCallback(async (filter: CompletionFilterType) => {
+    setCompletionFilter(filter);
+    try {
+      await completionStorage.setPreference('completionFilter', filter);
+    } catch (error) {
+      console.error('保存筛选偏好失败:', error);
+    }
+  }, []);
 
   // 保存搜索条件到localStorage
   useEffect(() => {
@@ -81,7 +112,18 @@ export const useProblemsFiltering = ({ problems, allTags, currentLang }: UseProb
     // 动画筛选 - 如果启用动画筛选，只显示有动画的题目
     const matchesAnimation = showAnimationOnly === false || problem.hasAnimation === true;
     
-    return matchesSearch && matchesTags && matchesAnimation;
+    // 完成状态筛选
+    let matchesCompletion = true;
+    if (isCompleted && completionFilter !== 'all') {
+      const completed = isCompleted(problem.questionFrontendId);
+      if (completionFilter === 'completed') {
+        matchesCompletion = completed;
+      } else if (completionFilter === 'incomplete') {
+        matchesCompletion = !completed;
+      }
+    }
+    
+    return matchesSearch && matchesTags && matchesAnimation && matchesCompletion;
   });
 
   return {
@@ -92,6 +134,9 @@ export const useProblemsFiltering = ({ problems, allTags, currentLang }: UseProb
     setShowFilterMenu,
     showAnimationOnly,
     setShowAnimationOnly,
+    completionFilter,
+    setCompletionFilter: handleCompletionFilterChange,
+    isLoadingPreferences,
     toggleTag,
     clearFilters,
     filteredProblems

@@ -1,15 +1,25 @@
 /**
- * IndexedDB存储服务 - 用于保存题目完成状态
+ * IndexedDB存储服务 - 用于保存题目完成状态和用户偏好
  */
 
 const DB_NAME = 'leetcode-hot-100-progress';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORE_NAME = 'completions';
+const PREFERENCES_STORE = 'preferences';
 
 export interface CompletionRecord {
   problemId: string;
   completed: boolean;
   completedAt: number | null;
+}
+
+// 完成状态筛选类型
+export type CompletionFilterType = 'all' | 'completed' | 'incomplete';
+
+// 用户偏好设置
+export interface UserPreferences {
+  key: string;
+  value: string | number | boolean | object;
 }
 
 class CompletionStorage {
@@ -42,11 +52,16 @@ class CompletionStorage {
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
         
-        // 创建对象存储
+        // 创建完成状态对象存储
         if (!db.objectStoreNames.contains(STORE_NAME)) {
           const store = db.createObjectStore(STORE_NAME, { keyPath: 'problemId' });
           store.createIndex('completed', 'completed', { unique: false });
           store.createIndex('completedAt', 'completedAt', { unique: false });
+        }
+        
+        // 创建用户偏好对象存储
+        if (!db.objectStoreNames.contains(PREFERENCES_STORE)) {
+          db.createObjectStore(PREFERENCES_STORE, { keyPath: 'key' });
         }
       };
     });
@@ -184,6 +199,42 @@ class CompletionStorage {
       
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);
+    });
+  }
+
+  /**
+   * 保存用户偏好设置
+   */
+  async setPreference<T>(key: string, value: T): Promise<void> {
+    const db = await this.ensureDb();
+    
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction([PREFERENCES_STORE], 'readwrite');
+      const store = transaction.objectStore(PREFERENCES_STORE);
+      
+      const request = store.put({ key, value });
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve();
+    });
+  }
+
+  /**
+   * 获取用户偏好设置
+   */
+  async getPreference<T>(key: string, defaultValue: T): Promise<T> {
+    const db = await this.ensureDb();
+    
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction([PREFERENCES_STORE], 'readonly');
+      const store = transaction.objectStore(PREFERENCES_STORE);
+      const request = store.get(key);
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const result = request.result as UserPreferences | undefined;
+        resolve(result ? (result.value as T) : defaultValue);
+      };
     });
   }
 }

@@ -1,0 +1,86 @@
+/* Toast 通知组件样式 */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  min-width: 300px;
+  max-width: 500px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toast-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  flex: 1;
+  line-height: 1.4;
+}
+
+/* 不同类型的样式 */
+.toast-success {
+  background: linear-gradient(135deg, #f6ffed 0%, #d9f7be 100%);
+  border: 1px solid #b7eb8f;
+  color: #389e0d;
+}
+
+.toast-error {
+  background: linear-gradient(135deg, #fff2f0 0%, #ffccc7 100%);
+  border: 1px solid #ffa39e;
+  color: #cf1322;
+}
+
+.toast-warning {
+  background: linear-gradient(135deg, #fffbe6 0%, #fff1b8 100%);
+  border: 1px solid #ffe58f;
+  color: #d48806;
+}
+
+.toast-info {
+  background: linear-gradient(135deg, #f0f9ff 0%, #bae7ff 100%);
+  border: 1px solid #91d5ff;
+  color: #0958d9;
+}
+
+/* 进入动画 */
+.toast-enter {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* 退出动画 */
+.toast-exit {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* 初始状态 */
+.toast {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .toast {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    min-width: auto;
+    max-width: none;
+  }
+}

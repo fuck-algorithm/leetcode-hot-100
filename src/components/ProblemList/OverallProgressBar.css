@@ -1,0 +1,107 @@
+/* 整体进度条样式 */
+.overall-progress-bar {
+  width: 100%;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 12px;
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  font-family: 'DIN Round Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.progress-completed {
+  color: #58cc02;
+  font-size: 20px;
+}
+
+.progress-separator {
+  color: #999;
+  margin: 0 4px;
+}
+
+.progress-total {
+  color: #666;
+}
+
+.progress-percentage {
+  font-size: 14px;
+  font-weight: 600;
+  color: #58cc02;
+  background: rgba(88, 204, 2, 0.1);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 10px;
+  background: #e8e8e8;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #58cc02 0%, #7ac70c 100%);
+  border-radius: 5px;
+  transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 1px 3px rgba(88, 204, 2, 0.4);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .overall-progress-bar {
+    padding: 10px 12px;
+  }
+  
+  .progress-text {
+    font-size: 14px;
+  }
+  
+  .progress-completed {
+    font-size: 18px;
+  }
+  
+  .progress-percentage {
+    font-size: 12px;
+    padding: 3px 8px;
+  }
+  
+  .progress-track {
+    height: 8px;
+  }
+}
+
+/* 暗色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .overall-progress-bar {
+    background: linear-gradient(135deg, #1a1f2e 0%, #2a2f3e 100%);
+    border-color: #3a3f4e;
+  }
+  
+  .progress-text {
+    color: #e0e0e0;
+  }
+  
+  .progress-total {
+    color: #aaa;
+  }
+  
+  .progress-track {
+    background: #3a3f4e;
+  }
+}

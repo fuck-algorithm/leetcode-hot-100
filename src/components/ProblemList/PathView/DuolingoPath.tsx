@@ -31,6 +31,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(600);
+  const [forceUpdate, setForceUpdate] = useState(0);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -42,6 +43,16 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     updateWidth();
     window.addEventListener('resize', updateWidth);
     return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
+  // 监听storage事件，确保重置后能重新绘制
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setForceUpdate(prev => prev + 1);
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   // 多邻国风格蜿蜒路径 - 更明显的S形曲线布局

@@ -53,6 +53,39 @@
   align-items: center;
 }
 
+/* 完成状态筛选下拉框 */
+.completion-filter {
+  margin-right: 5px;
+}
+
+.completion-filter-select {
+  padding: 6px 28px 6px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  font-size: 13px;
+  background-color: #f5f5f5;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  min-width: 100px;
+}
+
+.completion-filter-select:hover {
+  background-color: #e6f7ff;
+  border-color: #1890ff;
+}
+
+.completion-filter-select:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
 /* 动画筛选复选框样式 */
 .animation-filter {
   margin-right: 5px;

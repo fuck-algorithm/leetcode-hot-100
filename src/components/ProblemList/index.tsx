@@ -18,6 +18,9 @@ import { handleAnimationClick } from './utils/animationUtils';
 import { getSortOptionText } from './utils/localeUtils';
 import ResetProgressButton from './ResetProgressButton';
 import ConfirmDialog from './ConfirmDialog';
+import ToastContainer from '../ToastContainer';
+import { useToast } from '../../hooks/useToast';
+import OverallProgressBar from './OverallProgressBar';
 
 interface ProblemListProps {
   viewMode?: ViewMode;
@@ -27,6 +30,9 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { pathId } = useParams<{ pathId?: string }>();
+  
+  // Toast 通知
+  const { toasts, showSuccess, showError, removeToast } = useToast();
   
   // 视图模式状态 - 从props获取
   const viewMode = propViewMode || 'path';
@@ -61,7 +67,8 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
     isCompleted,
     toggleCompletion,
     resetAllProgress,
-    getStatsForProblems
+    getStatsForProblems,
+    refreshCompletions
   } = useCompletionStatus();
   
   // 使用自定义hooks处理排序逻辑
@@ -83,13 +90,16 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
     setShowFilterMenu,
     showAnimationOnly,
     setShowAnimationOnly,
+    completionFilter,
+    setCompletionFilter,
     toggleTag,
     clearFilters,
     filteredProblems
   } = useProblemsFiltering({ 
     problems: sortedProblems,
     allTags, 
-    currentLang: i18n.language 
+    currentLang: i18n.language,
+    isCompleted
   });
 
   // 创建引用来保存菜单和按钮的DOM元素
@@ -134,8 +144,19 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
     try {
       await resetAllProgress();
       setShowResetDialog(false);
+      
+      // 显示成功提示
+      showSuccess(t('resetProgress.success'));
+      
+      // 刷新完成状态，确保页面重新绘制
+      await refreshCompletions();
+      
+      // 强制重新渲染组件
+      window.dispatchEvent(new Event('storage'));
+      
     } catch (error) {
       console.error('重置进度失败:', error);
+      showError('重置进度失败，请重试');
     }
   };
   
@@ -170,6 +191,8 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
             t={t}
             sortButtonRef={sortButtonRef}
             filterButtonRef={filterButtonRef}
+            completionFilter={completionFilter}
+            onCompletionFilterChange={setCompletionFilter}
           >
             {/* 排序菜单 */}
             <SortMenu 
@@ -196,6 +219,13 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
           </SearchFilter>
         )}
       </div>
+      
+      {/* 整体进度条 */}
+      <OverallProgressBar 
+        completed={getStatsForProblems(problems.map(p => p.questionFrontendId)).completed}
+        total={problems.length}
+        t={t}
+      />
       
       {/* 列表视图 */}
       {viewMode === 'list' && (
@@ -265,6 +295,12 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
         onConfirm={handleResetProgress}
         onCancel={() => setShowResetDialog(false)}
         danger
+      />
+
+      {/* Toast 通知容器 */}
+      <ToastContainer 
+        toasts={toasts}
+        onRemoveToast={removeToast}
       />
     </div>
   );

@@ -45,14 +45,14 @@ const PathOverview: React.FC<PathOverviewProps> = ({
 
   // 多邻国风格的蜿蜒路径位置计算
   const getNodePosition = (index: number) => {
-    const amplitude = 28; // 左右摆动幅度（百分比）
+    const amplitude = 25; // 左右摆动幅度（百分比）
     const period = 2.5; // 周期
     
     const phase = (index / period) * Math.PI;
     const xOffset = Math.sin(phase) * amplitude;
     const xPercent = 50 + xOffset;
     
-    const yPosition = index * 160 + 100; // 每个节点间隔160px
+    const yPosition = index * 200 + 120; // 每个节点间隔200px，增加间距避免遮挡
     
     return {
       xPercent,
@@ -120,7 +120,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     });
   };
 
-  const containerHeight = pathsWithProblems.length * 160 + 150;
+  const containerHeight = pathsWithProblems.length * 200 + 180;
 
   return (
     <div className="path-overview-container" ref={containerRef}>
@@ -243,18 +243,6 @@ const PathOverview: React.FC<PathOverviewProps> = ({
                     </div>
                   </div>
                 </div>
-                
-                {/* 装饰元素 */}
-                {index % 3 === 0 && (
-                  <div className="node-decoration left">
-                    {['🌟', '✨', '💫'][index % 3]}
-                  </div>
-                )}
-                {index % 3 === 1 && (
-                  <div className="node-decoration right">
-                    {['🎯', '🏆', '⭐'][index % 3]}
-                  </div>
-                )}
               </div>
             );
           })}
@@ -272,13 +260,6 @@ const PathOverview: React.FC<PathOverviewProps> = ({
           <span className="milestone-text">
             {currentLang === 'zh' ? '算法大师' : 'Algorithm Master'}
           </span>
-        </div>
-
-        {/* 装饰性角色 */}
-        <div className="path-decoration-characters">
-          <div className="decoration-char char-1">🦊</div>
-          <div className="decoration-char char-2">🐻</div>
-          <div className="decoration-char char-3">🐼</div>
         </div>
       </div>
 

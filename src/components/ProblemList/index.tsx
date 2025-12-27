@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import '../ProblemList.css';
 import { useTranslation } from '../../i18n/useCustomTranslation';
 import SearchFilter from './SearchFilter';
@@ -18,53 +19,36 @@ import { getSortOptionText } from './utils/localeUtils';
 import ResetProgressButton from './ResetProgressButton';
 import ConfirmDialog from './ConfirmDialog';
 
-// 从URL hash获取视图模式
-const getViewModeFromHash = (): ViewMode => {
-  const hash = window.location.hash;
-  if (hash === '#/list') return 'list';
-  if (hash === '#/path' || hash === '' || hash === '#/') return 'path';
-  return 'path'; // 默认路径视图
-};
+interface ProblemListProps {
+  viewMode?: ViewMode;
+}
 
-// 更新URL hash
-const updateHash = (mode: ViewMode) => {
-  const newHash = mode === 'list' ? '#/list' : '#/path';
-  if (window.location.hash !== newHash) {
-    window.history.pushState(null, '', newHash);
-  }
-};
-
-const ProblemList: React.FC = () => {
+const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const { pathId } = useParams<{ pathId?: string }>();
   
-  // 视图模式状态 - 从URL hash初始化
-  const [viewMode, setViewMode] = useState<ViewMode>(getViewModeFromHash);
+  // 视图模式状态 - 从props获取
+  const viewMode = propViewMode || 'path';
   
   // 处理视图模式变化
   const handleViewModeChange = useCallback((mode: ViewMode) => {
-    setViewMode(mode);
-    updateHash(mode);
-  }, []);
-  
-  // 监听浏览器前进/后退
-  useEffect(() => {
-    const handleHashChange = () => {
-      setViewMode(getViewModeFromHash());
-    };
-    
-    window.addEventListener('hashchange', handleHashChange);
-    window.addEventListener('popstate', handleHashChange);
-    
-    // 初始化时设置hash（如果没有的话）
-    if (!window.location.hash || window.location.hash === '#/') {
-      updateHash(viewMode);
+    if (mode === 'list') {
+      navigate('/list');
+    } else {
+      navigate('/path');
     }
-    
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-      window.removeEventListener('popstate', handleHashChange);
-    };
-  }, [viewMode]);
+  }, [navigate]);
+  
+  // 处理路径点击 - 导航到路径详情页
+  const handlePathClick = useCallback((clickedPathId: string) => {
+    navigate(`/path/${clickedPathId}`);
+  }, [navigate]);
+  
+  // 处理返回路径概览
+  const handleBackToOverview = useCallback(() => {
+    navigate('/path');
+  }, [navigate]);
   
   // 重置确认对话框状态
   const [showResetDialog, setShowResetDialog] = useState(false);
@@ -103,7 +87,7 @@ const ProblemList: React.FC = () => {
     clearFilters,
     filteredProblems
   } = useProblemsFiltering({ 
-    problems: sortedProblems, // 使用排序后的问题列表
+    problems: sortedProblems,
     allTags, 
     currentLang: i18n.language 
   });
@@ -117,7 +101,6 @@ const ProblemList: React.FC = () => {
   // 添加点击事件监听器，处理点击空白区域关闭菜单
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // 如果排序菜单可见且点击位置不在排序菜单或排序按钮上
       if (
         showSortMenu && 
         sortMenuRef.current && 
@@ -128,7 +111,6 @@ const ProblemList: React.FC = () => {
         setShowSortMenu(false);
       }
 
-      // 如果筛选菜单可见且点击位置不在筛选菜单或筛选按钮上
       if (
         showFilterMenu && 
         filterMenuRef.current && 
@@ -140,19 +122,12 @@ const ProblemList: React.FC = () => {
       }
     };
 
-    // 添加全局点击事件监听器
     document.addEventListener('mousedown', handleClickOutside);
     
-    // 组件卸载时移除事件监听器
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showSortMenu, showFilterMenu, setShowSortMenu, setShowFilterMenu]);
-  
-  // 用于调试的effect
-  useEffect(() => {
-    console.log('当前排序状态:', currentSort, '排序后问题数量:', sortedProblems.length);
-  }, [currentSort, sortedProblems]);
 
   // 处理重置进度
   const handleResetProgress = async () => {
@@ -274,6 +249,9 @@ const ProblemList: React.FC = () => {
           isCompleted={isCompleted}
           onToggleCompletion={toggleCompletion}
           getStatsForProblems={getStatsForProblems}
+          selectedPathId={pathId}
+          onPathClick={handlePathClick}
+          onBackToOverview={handleBackToOverview}
         />
       )}
 
@@ -292,4 +270,4 @@ const ProblemList: React.FC = () => {
   );
 };
 
-export default ProblemList; 
+export default ProblemList;

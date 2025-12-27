@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import ProblemList from './components/ProblemList';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -57,7 +58,12 @@ const App: React.FC = () => {
         </div>
       </header>
       <main className="app-content">
-        <ProblemList />
+        <Routes>
+          <Route path="/" element={<Navigate to="/path" replace />} />
+          <Route path="/list" element={<ProblemList viewMode="list" />} />
+          <Route path="/path" element={<ProblemList viewMode="path" />} />
+          <Route path="/path/:pathId" element={<ProblemList viewMode="path" />} />
+        </Routes>
       </main>
       <WeChatFloat />
     </div>

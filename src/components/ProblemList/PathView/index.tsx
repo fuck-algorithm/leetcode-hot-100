@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Problem } from '../types';
 import { learningPaths, getDifficultyWeight } from '../data/learningPaths';
 import PathOverview from './PathOverview';
@@ -29,6 +29,10 @@ interface PathViewProps {
   isCompleted: (problemId: string) => boolean;
   onToggleCompletion: (problemId: string) => Promise<void>;
   getStatsForProblems: (problemIds: string[]) => CompletionStats;
+  // 新增：路由相关props
+  selectedPathId?: string;
+  onPathClick: (pathId: string) => void;
+  onBackToOverview: () => void;
 }
 
 const PathView: React.FC<PathViewProps> = ({
@@ -40,10 +44,11 @@ const PathView: React.FC<PathViewProps> = ({
   handleAnimationClick,
   isCompleted,
   onToggleCompletion,
-  getStatsForProblems
+  getStatsForProblems,
+  selectedPathId,
+  onPathClick,
+  onBackToOverview
 }) => {
-  const [expandedPath, setExpandedPath] = useState<string | null>(null);
-
   // 按学习路径分组题目
   const pathsWithProblems = useMemo(() => {
     return learningPaths.map(path => {
@@ -78,17 +83,9 @@ const PathView: React.FC<PathViewProps> = ({
     }).filter(item => item.problems.length > 0); // 只显示有题目的路径
   }, [problems]);
 
-  const handlePathClick = (pathId: string) => {
-    setExpandedPath(expandedPath === pathId ? null : pathId);
-  };
-
-  const handleBackToOverview = () => {
-    setExpandedPath(null);
-  };
-
-  // 如果选中了某个路径，显示详情视图
-  if (expandedPath) {
-    const selectedPathData = pathsWithProblems.find(item => item.path.id === expandedPath);
+  // 如果URL中有路径ID，显示详情视图
+  if (selectedPathId) {
+    const selectedPathData = pathsWithProblems.find(item => item.path.id === selectedPathId);
     if (selectedPathData) {
       return (
         <PathDetail
@@ -100,7 +97,7 @@ const PathView: React.FC<PathViewProps> = ({
           selectedTags={selectedTags}
           toggleTag={toggleTag}
           handleAnimationClick={handleAnimationClick}
-          onBack={handleBackToOverview}
+          onBack={onBackToOverview}
           isCompleted={isCompleted}
           onToggleCompletion={onToggleCompletion}
           getStatsForProblems={getStatsForProblems}
@@ -114,7 +111,7 @@ const PathView: React.FC<PathViewProps> = ({
     <PathOverview
       pathsWithProblems={pathsWithProblems}
       currentLang={currentLang}
-      onPathClick={handlePathClick}
+      onPathClick={onPathClick}
       isCompleted={isCompleted}
       getStatsForProblems={getStatsForProblems}
     />

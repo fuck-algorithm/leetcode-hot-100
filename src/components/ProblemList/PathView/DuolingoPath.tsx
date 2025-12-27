@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Problem } from '../types';
 import Tooltip from '../../Tooltip';
-import AnimationBadge from '../AnimationBadge';
 import './DuolingoPath.css';
 
 interface DuolingoPathProps {
@@ -45,34 +44,27 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  // 蜿蜒路径位置计算 - 在容器宽度内充分左右蜿蜒
+  // 蜿蜒路径位置计算
   const getNodePosition = (index: number) => {
-    // 留出边距给节点和标签
-    const margin = 140;
+    const margin = 120;
     const leftBound = margin;
     const rightBound = containerWidth - margin;
     const centerX = containerWidth / 2;
     
-    // 简单的交替左右：奇数在左，偶数在右（或反过来）
-    // index % 2 === 0 -> 中间, index % 2 === 1 -> 左或右交替
     let xPixel: number;
-    
-    // 使用模式：中 -> 左 -> 中 -> 右 -> 中 -> 左 ...
     const pattern = index % 4;
     if (pattern === 0) {
-      xPixel = centerX; // 中间
+      xPixel = centerX;
     } else if (pattern === 1) {
-      xPixel = leftBound; // 左边
+      xPixel = leftBound;
     } else if (pattern === 2) {
-      xPixel = centerX; // 中间
+      xPixel = centerX;
     } else {
-      xPixel = rightBound; // 右边
+      xPixel = rightBound;
     }
     
     const xPercent = (xPixel / containerWidth) * 100;
-    
-    // 节点间距140px
-    const yPosition = index * 140 + 80;
+    const yPosition = index * 160 + 100;
     
     return {
       xPercent,
@@ -82,7 +74,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     };
   };
 
-  // 使用定时器来区分单击和双击
+  // 单击/双击处理
   const clickTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const clickCountRef = React.useRef(0);
 
@@ -93,9 +85,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     clickCountRef.current += 1;
     
     if (clickCountRef.current === 1) {
-      // 第一次点击，设置定时器等待可能的第二次点击
       clickTimeoutRef.current = setTimeout(() => {
-        // 单击：打开题目详情
         if (clickCountRef.current === 1) {
           if (problem.hasAnimation && problem.repo?.pagesUrl) {
             window.open(problem.repo.pagesUrl, '_blank');
@@ -106,7 +96,6 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         clickCountRef.current = 0;
       }, 250);
     } else if (clickCountRef.current === 2) {
-      // 双击：切换完成状态
       if (clickTimeoutRef.current) {
         clearTimeout(clickTimeoutRef.current);
       }
@@ -115,27 +104,17 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     }
   };
 
-  const getDifficultyColor = (difficulty: string, completed: boolean) => {
-    if (completed) return '#52c41a';
+  // 获取难度类名
+  const getDifficultyClass = (difficulty: string) => {
     switch (difficulty) {
-      case 'EASY': return '#58cc02';
-      case 'MEDIUM': return '#ffc800';
-      case 'HARD': return '#ff4b4b';
-      default: return '#999';
+      case 'EASY': return 'difficulty-easy';
+      case 'MEDIUM': return 'difficulty-medium';
+      case 'HARD': return 'difficulty-hard';
+      default: return 'difficulty-medium';
     }
   };
 
-  const getDifficultyBgColor = (difficulty: string, completed: boolean) => {
-    if (completed) return '#d9f7be';
-    switch (difficulty) {
-      case 'EASY': return '#d7ffb8';
-      case 'MEDIUM': return '#fff4d4';
-      case 'HARD': return '#ffdfe0';
-      default: return '#f0f0f0';
-    }
-  };
-
-  // 生成SVG路径连接线 - 根据完成状态显示不同颜色
+  // 生成SVG路径连接线
   const generatePathConnections = () => {
     const paths: JSX.Element[] = [];
     
@@ -150,28 +129,41 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
       
       const midY = (currentY + nextY) / 2;
       
-      // 检查当前节点是否已完成
       const currentCompleted = isCompleted(problems[i].questionFrontendId);
-      const pathColor = currentCompleted ? '#52c41a' : '#e5e5e5';
       
+      // 背景路径（灰色）
       paths.push(
         <path
-          key={`path-${i}`}
+          key={`path-bg-${i}`}
           d={`M ${currentX} ${currentY} 
               C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`}
-          stroke={pathColor}
-          strokeWidth="8"
+          stroke="#e5e5e5"
+          strokeWidth="12"
           fill="none"
           strokeLinecap="round"
         />
       );
+      
+      // 前景路径（根据完成状态）
+      if (currentCompleted) {
+        paths.push(
+          <path
+            key={`path-fg-${i}`}
+            d={`M ${currentX} ${currentY} 
+                C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`}
+            stroke="#ffd700"
+            strokeWidth="10"
+            fill="none"
+            strokeLinecap="round"
+          />
+        );
+      }
     }
     
     return paths;
   };
 
-  // 计算容器高度
-  const containerHeight = problems.length * 140 + 120;
+  const containerHeight = problems.length * 160 + 140;
 
   if (problems.length === 0) {
     return (
@@ -204,7 +196,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         className="path-milestone-badge start"
         style={{
           left: `${getNodePosition(0).xPercent}%`,
-          top: 10
+          top: 20
         }}
       >
         🚀 {currentLang === 'zh' ? '开始' : 'Start'}
@@ -216,29 +208,23 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
           const position = getNodePosition(index);
           const title = currentLang === 'zh' ? problem.translatedTitle : problem.title;
           const completed = isCompleted(problem.questionFrontendId);
-          const difficultyColor = getDifficultyColor(problem.difficulty, completed);
-          const difficultyBgColor = getDifficultyBgColor(problem.difficulty, completed);
-          const isLast = index === problems.length - 1;
+          const difficultyClass = getDifficultyClass(problem.difficulty);
           const pagesUrl = problem.repo?.pagesUrl || null;
           
           return (
             <div
               key={problem.id}
-              className={`duolingo-node-wrapper ${isLast ? 'is-last' : ''} ${completed ? 'completed' : ''}`}
+              className={`duolingo-node-wrapper ${completed ? 'completed' : ''}`}
               style={{
                 left: `${position.xPercent}%`,
-                top: position.yPosition - 32
+                top: position.yPosition - 40
               }}
             >
               <Tooltip 
                 content={`#${problem.questionFrontendId} ${title} | ${t(`difficulties.${problem.difficulty.toLowerCase()}`)} | ${(problem.acRate * 100).toFixed(1)}%${problem.hasAnimation ? ' | 🎬' : ''}${completed ? ' | ✓' : ''}`}
               >
                 <div 
-                  className={`duolingo-node ${completed ? 'is-completed' : ''}`}
-                  style={{
-                    '--node-color': difficultyColor,
-                    '--node-bg': difficultyBgColor
-                  } as React.CSSProperties}
+                  className={`duolingo-node ${difficultyClass} ${completed ? 'is-completed' : ''}`}
                   onClick={(e) => handleNodeClick(e, problem)}
                 >
                   <div className="node-inner">
@@ -248,6 +234,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                       <span className="node-number">{problem.questionFrontendId}</span>
                     )}
                   </div>
+                  
                   {problem.hasAnimation && (
                     <div 
                       className="node-animation-badge-wrapper"
@@ -256,20 +243,13 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                         handleAnimationClick(e, problem.questionFrontendId, problem.hasAnimation, title, t, pagesUrl);
                       }}
                     >
-                      <AnimationBadge 
-                        hasAnimation={problem.hasAnimation} 
-                        problemId={problem.questionFrontendId} 
-                        problemTitle={title}
-                        animationUrl={pagesUrl || undefined}
-                        pagesUrl={pagesUrl}
-                        showPreview={true}
-                      />
+                      <div className="node-animation-icon">🎬</div>
                     </div>
                   )}
                 </div>
               </Tooltip>
               
-              {/* 题目标题 - 显示完整的题号和名称 */}
+              {/* 题目标题 */}
               <div className="node-title-label">
                 <span className="node-title-id">#{problem.questionFrontendId}</span>
                 <span className="node-title-text">{title}</span>
@@ -284,7 +264,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         className="path-milestone-badge end"
         style={{
           left: `${getNodePosition(problems.length - 1).xPercent}%`,
-          top: containerHeight - 40
+          top: containerHeight - 50
         }}
       >
         🏆 {currentLang === 'zh' ? '完成' : 'Complete'}

@@ -245,15 +245,6 @@
   background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
 }
 
-.path-overview-node.not-started .node-start-btn {
-  background: linear-gradient(135deg, #8c8c8c 0%, #bfbfbf 100%);
-}
-
-/* 未开始状态的节点 */
-.path-overview-node.not-started .node-content {
-  opacity: 0.7;
-}
-
 /* 已完成状态的节点 */
 .path-overview-node.completed .node-icon {
   font-size: 32px;

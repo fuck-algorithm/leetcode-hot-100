@@ -45,21 +45,38 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  // 多邻国风格的蜿蜒路径位置计算 - 增加间距和蜿蜒程度
+  // 蜿蜒路径位置计算 - 在容器宽度内充分左右蜿蜒
   const getNodePosition = (index: number) => {
-    const amplitude = 80; // 增大振幅，让路径更蜿蜒
-    const period = 2; // 减小周期，让蜿蜒更频繁
+    // 留出边距给节点和标签
+    const margin = 140;
+    const leftBound = margin;
+    const rightBound = containerWidth - margin;
+    const centerX = containerWidth / 2;
     
-    const phase = (index / period) * Math.PI;
-    const xOffset = Math.sin(phase) * amplitude;
-    const xPercent = 50 + xOffset;
+    // 简单的交替左右：奇数在左，偶数在右（或反过来）
+    // index % 2 === 0 -> 中间, index % 2 === 1 -> 左或右交替
+    let xPixel: number;
     
-    // 增加节点间距到280px，避免遮挡
-    const yPosition = index * 280 + 120;
+    // 使用模式：中 -> 左 -> 中 -> 右 -> 中 -> 左 ...
+    const pattern = index % 4;
+    if (pattern === 0) {
+      xPixel = centerX; // 中间
+    } else if (pattern === 1) {
+      xPixel = leftBound; // 左边
+    } else if (pattern === 2) {
+      xPixel = centerX; // 中间
+    } else {
+      xPixel = rightBound; // 右边
+    }
+    
+    const xPercent = (xPixel / containerWidth) * 100;
+    
+    // 节点间距140px
+    const yPosition = index * 140 + 80;
     
     return {
       xPercent,
-      xPixel: (xPercent / 100) * containerWidth,
+      xPixel,
       yPosition,
       index
     };
@@ -154,7 +171,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   };
 
   // 计算容器高度
-  const containerHeight = problems.length * 280 + 180;
+  const containerHeight = problems.length * 140 + 120;
 
   if (problems.length === 0) {
     return (

@@ -53,20 +53,33 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  // 多邻国风格的蜿蜒路径位置计算 - 增加蜿蜒程度
+  // 多邻国风格的蜿蜒路径位置计算 - 列表页面使用更大的蜿蜒幅度
   const getNodePosition = (index: number) => {
-    const amplitude = 80; // 增大振幅，让路径更蜿蜒
-    const period = 2; // 减小周期，让蜿蜒更频繁
+    // 留出边距给节点和标签
+    const margin = 160;
+    const leftBound = margin;
+    const rightBound = containerWidth - margin;
+    const centerX = containerWidth / 2;
     
-    const phase = (index / period) * Math.PI;
-    const xOffset = Math.sin(phase) * amplitude;
-    const xPercent = 50 + xOffset;
+    // 使用模式：中 -> 左 -> 中 -> 右 -> 中 -> 左 ... 实现大幅度蜿蜒
+    let xPixel: number;
+    const pattern = index % 4;
+    if (pattern === 0) {
+      xPixel = centerX; // 中间
+    } else if (pattern === 1) {
+      xPixel = leftBound; // 左边
+    } else if (pattern === 2) {
+      xPixel = centerX; // 中间
+    } else {
+      xPixel = rightBound; // 右边
+    }
     
-    const yPosition = index * 320 + 160; // 增加间距到320px，避免遮挡
+    const xPercent = (xPixel / containerWidth) * 100;
+    const yPosition = index * 280 + 160; // 节点间距
     
     return {
       xPercent,
-      xPixel: (xPercent / 100) * containerWidth,
+      xPixel,
       yPosition,
       index
     };
@@ -95,7 +108,6 @@ const PathOverview: React.FC<PathOverviewProps> = ({
       
       // 获取当前路径的完成状态
       const currentStats = getPathCompletionStats(pathsWithProblems[i].problems);
-      const isPathStarted = currentStats.completed > 0;
       const isPathCompleted = currentStats.percentage === 100;
       
       // 背景路径
@@ -111,12 +123,10 @@ const PathOverview: React.FC<PathOverviewProps> = ({
         />
       );
       
-      // 前景路径 - 根据完成状态显示不同颜色
+      // 前景路径 - 默认显示彩色渐变，完成后显示绿色
       const pathColor = isPathCompleted 
         ? '#52c41a' 
-        : isPathStarted 
-          ? `url(#gradient-${i})` 
-          : '#d9d9d9';
+        : `url(#gradient-${i})`;
       
       paths.push(
         <path
@@ -147,7 +157,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     });
   };
 
-  const containerHeight = pathsWithProblems.length * 320 + 260;
+  const containerHeight = pathsWithProblems.length * 280 + 260;
 
   return (
     <div className="path-overview-container" ref={containerRef}>
@@ -213,11 +223,11 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             return (
               <div
                 key={path.id}
-                className={`path-overview-node ${isLast ? 'is-last' : ''} ${isAllCompleted ? 'completed' : ''} ${!isStarted ? 'not-started' : ''}`}
+                className={`path-overview-node ${isLast ? 'is-last' : ''} ${isAllCompleted ? 'completed' : ''}`}
                 style={{
                   left: `${position.xPercent}%`,
                   top: position.yPosition - 50,
-                  '--node-color': isAllCompleted ? '#52c41a' : (isStarted ? path.color : '#d9d9d9')
+                  '--node-color': isAllCompleted ? '#52c41a' : path.color
                 } as React.CSSProperties}
                 onClick={() => onPathClick(path.id)}
               >
@@ -250,7 +260,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
                     <div 
                       className="node-content" 
                       style={{ 
-                        backgroundColor: isAllCompleted ? '#52c41a' : (isStarted ? path.color : '#d9d9d9')
+                        backgroundColor: isAllCompleted ? '#52c41a' : path.color
                       }}
                     >
                       <span className="node-icon">{isAllCompleted ? '✓' : path.icon}</span>
@@ -280,7 +290,12 @@ const PathOverview: React.FC<PathOverviewProps> = ({
                   </div>
                   {/* 开始按钮 */}
                   <button 
-                    className="node-start-btn"
+                    className={`node-start-btn ${isAllCompleted ? 'completed' : ''}`}
+                    style={{
+                      background: isAllCompleted 
+                        ? 'linear-gradient(135deg, #52c41a 0%, #73d13d 100%)'
+                        : `linear-gradient(135deg, ${path.color} 0%, ${path.color}dd 100%)`
+                    }}
                     onClick={(e) => {
                       e.stopPropagation();
                       onPathClick(path.id);

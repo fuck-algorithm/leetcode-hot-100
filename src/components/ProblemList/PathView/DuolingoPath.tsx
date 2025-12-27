@@ -1,6 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Problem } from '../types';
 import Tooltip from '../../Tooltip';
+import AnimationBadge from '../AnimationBadge';
 import './DuolingoPath.css';
 
 interface DuolingoPathProps {
@@ -31,6 +32,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(600);
+  const [expandedNodeId, setExpandedNodeId] = useState<string | null>(null);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -43,6 +45,18 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     window.addEventListener('resize', updateWidth);
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
+
+  // 点击外部关闭展开的节点
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (expandedNodeId && !(e.target as Element).closest('.duolingo-node-wrapper')) {
+        setExpandedNodeId(null);
+      }
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [expandedNodeId]);
 
   // 简化的蜿蜒路径布局
   const getNodePosition = (index: number) => {
@@ -68,6 +82,24 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   const clickTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const clickCountRef = React.useRef(0);
 
+  // 切换节点展开状态
+  const toggleNodeExpand = useCallback((problemId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedNodeId(prev => prev === problemId ? null : problemId);
+  }, []);
+
+  // 处理完成状态切换
+  const handleToggleCompletion = useCallback((problemId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleCompletion(problemId);
+  }, [onToggleCompletion]);
+
+  // 打开LeetCode题目页面
+  const openLeetCodePage = useCallback((problem: Problem, e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.open(`https://leetcode.cn/problems/${problem.titleSlug}/`, '_blank');
+  }, []);
+
   const handleNodeClick = (e: React.MouseEvent, problem: Problem) => {
     e.preventDefault();
     e.stopPropagation();
@@ -77,11 +109,8 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     if (clickCountRef.current === 1) {
       clickTimeoutRef.current = setTimeout(() => {
         if (clickCountRef.current === 1) {
-          if (problem.hasAnimation && problem.repo?.pagesUrl) {
-            window.open(problem.repo.pagesUrl, '_blank');
-          } else {
-            window.open(`https://leetcode.cn/problems/${problem.titleSlug}/`, '_blank');
-          }
+          // 单击展开/收起节点详情
+          toggleNodeExpand(problem.questionFrontendId, e);
         }
         clickCountRef.current = 0;
       }, 250);
@@ -90,7 +119,12 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         clearTimeout(clickTimeoutRef.current);
       }
       clickCountRef.current = 0;
-      onToggleCompletion(problem.questionFrontendId);
+      // 双击打开LeetCode页面
+      if (problem.hasAnimation && problem.repo?.pagesUrl) {
+        window.open(problem.repo.pagesUrl, '_blank');
+      } else {
+        window.open(`https://leetcode.cn/problems/${problem.titleSlug}/`, '_blank');
+      }
     }
   };
 
@@ -188,6 +222,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
           const completed = isCompleted(problem.questionFrontendId);
           const difficultyClass = getDifficultyClass(problem.difficulty);
           const pagesUrl = problem.repo?.pagesUrl || null;
+          const isExpanded = expandedNodeId === problem.questionFrontendId;
           
           // 当前进度节点（第一个未完成的节点）
           const isCurrentNode = !completed && (index === 0 || isCompleted(problems[index - 1].questionFrontendId));
@@ -195,7 +230,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
           return (
             <div
               key={problem.id}
-              className={`duolingo-node-wrapper ${completed ? 'completed' : ''} ${isCurrentNode ? 'current' : ''}`}
+              className={`duolingo-node-wrapper ${completed ? 'completed' : ''} ${isCurrentNode ? 'current' : ''} ${isExpanded ? 'expanded' : ''}`}
               style={{
                 left: `${position.xPercent}%`,
                 top: position.yPosition - 35
@@ -220,23 +255,62 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                   {isCurrentNode && <div className="node-pulse-ring"></div>}
                   
                   {problem.hasAnimation && (
-                    <div 
-                      className="node-animation-badge-wrapper"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAnimationClick(e, problem.questionFrontendId, problem.hasAnimation, title, t, pagesUrl);
-                      }}
-                    >
-                      <div className="node-animation-icon">🎬</div>
+                    <div className="node-animation-badge-wrapper">
+                      <AnimationBadge
+                        hasAnimation={problem.hasAnimation}
+                        problemId={problem.questionFrontendId}
+                        problemTitle={title}
+                        pagesUrl={pagesUrl}
+                        showPreview={true}
+                      />
                     </div>
                   )}
                 </div>
               </Tooltip>
               
+              {/* 展开的详情面板 */}
+              {isExpanded && (
+                <div className="node-detail-panel">
+                  <div className="node-detail-header">
+                    <span className="node-detail-id">#{problem.questionFrontendId}</span>
+                    <span className={`node-detail-difficulty ${difficultyClass}`}>
+                      {t(`difficulties.${problem.difficulty.toLowerCase()}`)}
+                    </span>
+                  </div>
+                  <div className="node-detail-title" onClick={(e) => openLeetCodePage(problem, e)}>
+                    {title}
+                  </div>
+                  <div className="node-detail-stats">
+                    <span className="node-detail-rate">
+                      {currentLang === 'zh' ? '通过率' : 'AC Rate'}: {(problem.acRate * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="node-detail-actions">
+                    <button 
+                      className={`node-action-btn ${completed ? 'completed' : 'incomplete'}`}
+                      onClick={(e) => handleToggleCompletion(problem.questionFrontendId, e)}
+                    >
+                      {completed 
+                        ? (currentLang === 'zh' ? '✓ 已完成 (点击取消)' : '✓ Completed (click to undo)')
+                        : (currentLang === 'zh' ? '○ 标记为已完成' : '○ Mark as complete')
+                      }
+                    </button>
+                    <button 
+                      className="node-action-btn leetcode-btn"
+                      onClick={(e) => openLeetCodePage(problem, e)}
+                    >
+                      {currentLang === 'zh' ? '打开 LeetCode' : 'Open LeetCode'}
+                    </button>
+                  </div>
+                </div>
+              )}
+              
               {/* 题目标题 - 悬停显示 */}
-              <div className="node-title-label">
-                <span className="node-title-text">{title}</span>
-              </div>
+              {!isExpanded && (
+                <div className="node-title-label">
+                  <span className="node-title-text">{title}</span>
+                </div>
+              )}
             </div>
           );
         })}

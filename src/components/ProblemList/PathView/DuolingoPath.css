@@ -207,6 +207,22 @@
   z-index: 10;
 }
 
+.node-animation-badge-wrapper .animation-badge-container {
+  display: block;
+}
+
+.node-animation-badge-wrapper .animation-badge {
+  width: 26px;
+  height: 26px;
+  font-size: 12px;
+  border: 2px solid white;
+  box-shadow: 0 3px 0 #6d28d9;
+}
+
+.node-animation-badge-wrapper .animation-badge:hover {
+  transform: scale(1.1);
+}
+
 .node-animation-icon {
   width: 26px;
   height: 26px;
@@ -278,6 +294,160 @@
 
 .duolingo-node-wrapper.completed .node-title-text { 
   color: #7a5c00; 
+}
+
+/* 展开状态的节点包装器 */
+.duolingo-node-wrapper.expanded {
+  z-index: 100;
+}
+
+/* 节点详情面板 */
+.node-detail-panel {
+  position: absolute;
+  top: 85px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 0 #d0d0d0, 0 12px 24px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  z-index: 100;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.node-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.node-detail-id {
+  font-size: 14px;
+  font-weight: 800;
+  color: #666;
+}
+
+.node-detail-difficulty {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  color: white;
+}
+
+.node-detail-difficulty.difficulty-easy {
+  background: #58cc02;
+}
+
+.node-detail-difficulty.difficulty-medium {
+  background: #ff9500;
+}
+
+.node-detail-difficulty.difficulty-hard {
+  background: #ea4335;
+}
+
+.node-detail-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  word-break: break-word;
+}
+
+.node-detail-title:hover {
+  color: #1a73e8;
+  text-decoration: underline;
+}
+
+.node-detail-stats {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.node-detail-rate {
+  display: inline-block;
+}
+
+.node-detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.node-action-btn {
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.node-action-btn.incomplete {
+  background: #58cc02;
+  color: white;
+  box-shadow: 0 4px 0 #46a302;
+}
+
+.node-action-btn.incomplete:hover {
+  transform: translateY(-2px);
+}
+
+.node-action-btn.incomplete:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #46a302;
+}
+
+.node-action-btn.completed {
+  background: #ffd700;
+  color: #5c4200;
+  box-shadow: 0 4px 0 #b89700;
+}
+
+.node-action-btn.completed:hover {
+  transform: translateY(-2px);
+}
+
+.node-action-btn.completed:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #b89700;
+}
+
+.node-action-btn.leetcode-btn {
+  background: #f0f0f0;
+  color: #333;
+  box-shadow: 0 4px 0 #d0d0d0;
+}
+
+.node-action-btn.leetcode-btn:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.node-action-btn.leetcode-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #d0d0d0;
 }
 
 /* 里程碑标记 - 3D按钮风格 */
@@ -357,6 +527,11 @@
     height: 24px; 
     font-size: 11px; 
   }
+  .node-animation-badge-wrapper .animation-badge {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
   .path-milestone-badge { 
     font-size: 12px; 
     padding: 8px 16px; 
@@ -364,6 +539,18 @@
   .node-pulse-ring { 
     width: 75px; 
     height: 75px; 
+  }
+  .node-detail-panel {
+    width: 250px;
+    padding: 14px;
+    top: 75px;
+  }
+  .node-detail-title {
+    font-size: 15px;
+  }
+  .node-action-btn {
+    padding: 8px 14px;
+    font-size: 13px;
   }
 }
 
@@ -394,6 +581,11 @@
     font-size: 10px; 
     border-width: 2px; 
   }
+  .node-animation-badge-wrapper .animation-badge {
+    width: 22px;
+    height: 22px;
+    font-size: 10px;
+  }
   .node-title-label { 
     max-width: 110px; 
     padding: 5px 8px; 
@@ -411,6 +603,38 @@
   .node-pulse-ring { 
     width: 68px; 
     height: 68px; 
+  }
+  .node-detail-panel {
+    width: 220px;
+    padding: 12px;
+    top: 68px;
+    border-radius: 12px;
+  }
+  .node-detail-header {
+    margin-bottom: 6px;
+  }
+  .node-detail-id {
+    font-size: 13px;
+  }
+  .node-detail-difficulty {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+  .node-detail-title {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  .node-detail-stats {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  .node-detail-actions {
+    gap: 6px;
+  }
+  .node-action-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 10px;
   }
 }
 
@@ -436,4 +660,36 @@
 
 [data-theme="dark"] .duolingo-node-wrapper.completed .node-title-text { 
   color: #ffd54f; 
+}
+
+/* 暗色模式 - 详情面板 */
+[data-theme="dark"] .node-detail-panel {
+  background: #2a2f3e;
+  box-shadow: 0 8px 0 #1a1f2e, 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .node-detail-id {
+  color: #aaa;
+}
+
+[data-theme="dark"] .node-detail-title {
+  color: #e0e0e0;
+}
+
+[data-theme="dark"] .node-detail-title:hover {
+  color: #64b5f6;
+}
+
+[data-theme="dark"] .node-detail-stats {
+  color: #aaa;
+}
+
+[data-theme="dark"] .node-action-btn.leetcode-btn {
+  background: #3a3f4e;
+  color: #e0e0e0;
+  box-shadow: 0 4px 0 #2a2f3e;
+}
+
+[data-theme="dark"] .node-action-btn.leetcode-btn:hover {
+  background: #4a4f5e;
 }

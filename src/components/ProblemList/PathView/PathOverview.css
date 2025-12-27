@@ -1,0 +1,421 @@
+/* 路径概览容器 */
+.path-overview-container {
+  padding: 0 20px 40px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* 标题区域 */
+.path-overview-header {
+  text-align: center;
+  padding: 30px 20px 40px;
+  position: relative;
+}
+
+.header-mascot {
+  font-size: 64px;
+  margin-bottom: 16px;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.path-overview-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #3c3c3c;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.5px;
+}
+
+.path-overview-subtitle {
+  font-size: 16px;
+  color: #777;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* 路径区域 */
+.path-overview-path {
+  position: relative;
+  width: 100%;
+}
+
+/* SVG 路径 */
+.path-overview-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 里程碑标记 */
+.path-overview-milestone {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 10;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-5px); }
+}
+
+.milestone-icon {
+  font-size: 36px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+.milestone-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #4b4b4b;
+  background: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+.path-overview-milestone.start .milestone-text {
+  background: linear-gradient(135deg, #58cc02 0%, #89e219 100%);
+  color: white;
+}
+
+.path-overview-milestone.end .milestone-text {
+  background: linear-gradient(135deg, #ffc800 0%, #ffdd4b 100%);
+  color: #333;
+}
+
+/* 节点容器 */
+.path-overview-nodes {
+  position: relative;
+  z-index: 5;
+}
+
+/* 单个节点 */
+.path-overview-node {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.path-overview-node:hover {
+  transform: translateX(-50%) scale(1.05);
+  z-index: 20;
+}
+
+/* 节点主体 */
+.node-main {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+/* 进度环 */
+.node-progress-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-bg {
+  stroke: #e8e8e8;
+}
+
+.progress-fill {
+  transition: stroke-dasharray 0.5s ease;
+}
+
+/* 节点内容 */
+.node-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 6px 0 rgba(0, 0, 0, 0.15),
+    0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.path-overview-node:hover .node-content {
+  transform: translate(-50%, -52%);
+  box-shadow: 
+    0 8px 0 rgba(0, 0, 0, 0.15),
+    0 12px 24px rgba(0, 0, 0, 0.25);
+}
+
+.path-overview-node:active .node-content {
+  transform: translate(-50%, -48%);
+  box-shadow: 
+    0 4px 0 rgba(0, 0, 0, 0.15),
+    0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.node-icon {
+  font-size: 36px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* 动画计数 */
+.node-animation-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.4);
+  white-space: nowrap;
+}
+
+/* 节点信息 */
+.node-info {
+  margin-top: 12px;
+  text-align: center;
+  background: white;
+  padding: 10px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  min-width: 120px;
+}
+
+.node-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #3c3c3c;
+  margin: 0 0 6px 0;
+}
+
+.node-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-total {
+  font-size: 12px;
+  color: #777;
+  font-weight: 500;
+}
+
+.stat-difficulty {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.diff-easy {
+  color: #00af9b;
+  background: #e6fff9;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.diff-medium {
+  color: #d48806;
+  background: #fff7e6;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.diff-hard {
+  color: #cf1322;
+  background: #fff1f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* 装饰元素 */
+.node-decoration {
+  position: absolute;
+  font-size: 24px;
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.node-decoration.left {
+  left: -50px;
+  top: 20px;
+}
+
+.node-decoration.right {
+  right: -50px;
+  top: 20px;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.9); }
+}
+
+/* 装饰性角色 */
+.path-decoration-characters {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.decoration-char {
+  position: absolute;
+  font-size: 40px;
+  opacity: 0.3;
+  animation: sway 4s ease-in-out infinite;
+}
+
+.decoration-char.char-1 {
+  top: 15%;
+  left: 5%;
+  animation-delay: 0s;
+}
+
+.decoration-char.char-2 {
+  top: 45%;
+  right: 5%;
+  animation-delay: 1s;
+}
+
+.decoration-char.char-3 {
+  top: 75%;
+  left: 8%;
+  animation-delay: 2s;
+}
+
+@keyframes sway {
+  0%, 100% { transform: translateX(0) rotate(-5deg); }
+  50% { transform: translateX(10px) rotate(5deg); }
+}
+
+/* 底部提示 */
+.path-overview-tip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #f0f5ff 0%, #e6f7ff 100%);
+  border-radius: 12px;
+  margin-top: 30px;
+}
+
+.tip-icon {
+  font-size: 20px;
+}
+
+.tip-text {
+  font-size: 14px;
+  color: #1890ff;
+  font-weight: 500;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .path-overview-container {
+    padding: 0 10px 30px;
+  }
+  
+  .header-mascot {
+    font-size: 48px;
+  }
+  
+  .path-overview-title {
+    font-size: 24px;
+  }
+  
+  .path-overview-subtitle {
+    font-size: 14px;
+  }
+  
+  .node-main {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .node-content {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .node-icon {
+    font-size: 28px;
+  }
+  
+  .node-info {
+    min-width: 100px;
+    padding: 8px 12px;
+  }
+  
+  .node-name {
+    font-size: 13px;
+  }
+  
+  .node-decoration {
+    display: none;
+  }
+  
+  .decoration-char {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .node-main {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .node-content {
+    width: 52px;
+    height: 52px;
+  }
+  
+  .node-icon {
+    font-size: 24px;
+  }
+  
+  .node-animation-count {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+  
+  .milestone-icon {
+    font-size: 28px;
+  }
+  
+  .milestone-text {
+    font-size: 12px;
+    padding: 4px 12px;
+  }
+}

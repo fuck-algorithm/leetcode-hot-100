@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { Problem } from '../types';
 import { learningPaths, getDifficultyWeight } from '../data/learningPaths';
-import PathCard from './PathCard';
+import PathOverview from './PathOverview';
 import PathDetail from './PathDetail';
 import './PathView.css';
+import './PathOverview.css';
 
 interface PathViewProps {
   problems: Problem[];
@@ -93,32 +94,13 @@ const PathView: React.FC<PathViewProps> = ({
     }
   }
 
-  // 显示路径概览
+  // 显示路径概览 - 多邻国风格
   return (
-    <div className="path-view-container">
-      <div className="path-view-header">
-        <h2 className="path-view-title">
-          {currentLang === 'zh' ? '🛤️ 学习路径' : '🛤️ Learning Paths'}
-        </h2>
-        <p className="path-view-subtitle">
-          {currentLang === 'zh' 
-            ? '按算法类型分类，从简单到困难循序渐进' 
-            : 'Organized by algorithm type, from easy to hard'}
-        </p>
-      </div>
-      
-      <div className="path-cards-grid">
-        {pathsWithProblems.map(({ path, problems: pathProblems, stats }) => (
-          <PathCard
-            key={path.id}
-            path={path}
-            stats={stats}
-            currentLang={currentLang}
-            onClick={() => handlePathClick(path.id)}
-          />
-        ))}
-      </div>
-    </div>
+    <PathOverview
+      pathsWithProblems={pathsWithProblems}
+      currentLang={currentLang}
+      onPathClick={handlePathClick}
+    />
   );
 };
 

@@ -47,8 +47,8 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
 
   // 多邻国风格的蜿蜒路径位置计算 - 增加间距和蜿蜒程度
   const getNodePosition = (index: number) => {
-    const amplitude = 25; // 适度振幅，让路径蜿蜒但不过度
-    const period = 3; // 调整周期，让蜿蜒更平缓
+    const amplitude = 80; // 增大振幅，让路径更蜿蜒
+    const period = 2; // 减小周期，让蜿蜒更频繁
     
     const phase = (index / period) * Math.PI;
     const xOffset = Math.sin(phase) * amplitude;

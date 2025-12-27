@@ -31,7 +31,6 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(600);
-  const [forceUpdate, setForceUpdate] = useState(0);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -45,42 +44,24 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  // 监听storage事件，确保重置后能重新绘制
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setForceUpdate(prev => prev + 1);
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
-  // 多邻国风格蜿蜒路径 - 更明显的S形曲线布局
+  // 简化的蜿蜒路径布局
   const getNodePosition = (index: number) => {
     const centerX = containerWidth / 2;
-    // 更大的波动幅度，创建更明显的蜿蜒效果
-    const amplitude = Math.min(100, (containerWidth - 160) / 3);
+    const amplitude = Math.min(80, (containerWidth - 140) / 3);
     
-    // 使用正弦函数创建平滑的蜿蜒效果
-    // 每3个节点完成一个完整的左右摆动周期
+    // 平滑的S形曲线
     const phase = (index * Math.PI) / 1.5;
     const xOffset = Math.sin(phase) * amplitude;
     let xPixel = centerX + xOffset;
     
-    // 确保不超出边界
-    const margin = 70;
+    // 边界限制
+    const margin = 60;
     xPixel = Math.max(margin, Math.min(containerWidth - margin, xPixel));
     
     const xPercent = (xPixel / containerWidth) * 100;
-    // 垂直间距
     const yPosition = index * 120 + 100;
     
-    return {
-      xPercent,
-      xPixel,
-      yPosition,
-      index
-    };
+    return { xPercent, xPixel, yPosition, index };
   };
 
   // 单击/双击处理
@@ -123,7 +104,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     }
   };
 
-  // 生成SVG路径连接线 - 多邻国风格圆点路径（优化版）
+  // 简化的SVG路径连接线
   const generatePathConnections = () => {
     const paths: JSX.Element[] = [];
     
@@ -136,102 +117,25 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
       const nextX = next.xPixel;
       const nextY = next.yPosition;
       
-      // 计算控制点，创建更自然的S形曲线
+      // 贝塞尔曲线控制点
       const midY = (currentY + nextY) / 2;
-      const controlX1 = currentX;
-      const controlY1 = midY;
-      const controlX2 = nextX;
-      const controlY2 = midY;
-      
-      // 创建平滑的贝塞尔曲线
-      const pathD = `M ${currentX} ${currentY} C ${controlX1} ${controlY1}, ${controlX2} ${controlY2}, ${nextX} ${nextY}`;
+      const pathD = `M ${currentX} ${currentY} C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`;
       
       const currentCompleted = isCompleted(problems[i].questionFrontendId);
       const nextCompleted = isCompleted(problems[i + 1].questionFrontendId);
       const bothCompleted = currentCompleted && nextCompleted;
       
-      // 路径底部深色阴影 - 增强3D效果
+      // 简单的单色连接线
       paths.push(
         <path
-          key={`path-shadow-bottom-${i}`}
+          key={`path-${i}`}
           d={pathD}
-          stroke="rgba(0, 0, 0, 0.15)"
-          strokeWidth="22"
+          stroke={bothCompleted ? '#ffd700' : '#d0d0d0'}
+          strokeWidth="8"
           fill="none"
           strokeLinecap="round"
-          strokeDasharray="4 14"
-          style={{ transform: 'translateY(4px)' }}
         />
       );
-      
-      // 路径中间阴影层
-      paths.push(
-        <path
-          key={`path-shadow-mid-${i}`}
-          d={pathD}
-          stroke="rgba(0, 0, 0, 0.08)"
-          strokeWidth="20"
-          fill="none"
-          strokeLinecap="round"
-          strokeDasharray="4 14"
-          style={{ transform: 'translateY(2px)' }}
-        />
-      );
-      
-      // 主路径背景 - 更粗的灰色底
-      paths.push(
-        <path
-          key={`path-bg-${i}`}
-          d={pathD}
-          stroke={bothCompleted ? '#d4a000' : '#c8c8c8'}
-          strokeWidth="18"
-          fill="none"
-          strokeLinecap="round"
-          strokeDasharray="4 14"
-        />
-      );
-      
-      // 主路径 - 圆点效果（多邻国风格）- 更大更明显
-      paths.push(
-        <path
-          key={`path-dots-${i}`}
-          d={pathD}
-          stroke={bothCompleted ? '#ffd700' : '#e8e8e8'}
-          strokeWidth="16"
-          fill="none"
-          strokeLinecap="round"
-          strokeDasharray="4 14"
-        />
-      );
-      
-      // 完成状态的金色光晕 - 更强烈
-      if (bothCompleted) {
-        paths.push(
-          <path
-            key={`path-glow-outer-${i}`}
-            d={pathD}
-            stroke="rgba(255, 215, 0, 0.3)"
-            strokeWidth="28"
-            fill="none"
-            strokeLinecap="round"
-            strokeDasharray="4 14"
-            style={{ filter: 'blur(8px)' }}
-          />
-        );
-        
-        paths.push(
-          <path
-            key={`path-glow-inner-${i}`}
-            d={pathD}
-            stroke="rgba(255, 215, 0, 0.5)"
-            strokeWidth="20"
-            fill="none"
-            strokeLinecap="round"
-            strokeDasharray="4 14"
-            style={{ filter: 'blur(4px)' }}
-          />
-        );
-      }
     }
     
     return paths;
@@ -254,12 +158,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
       style={{ minHeight: containerHeight }}
       ref={containerRef}
     >
-      {/* 背景装饰元素 */}
-      <div className="path-decoration path-decoration-1"></div>
-      <div className="path-decoration path-decoration-2"></div>
-      <div className="path-decoration path-decoration-3"></div>
-      
-      {/* SVG 背景路径 */}
+      {/* SVG 连接线 */}
       <svg 
         className="duolingo-path-svg"
         style={{ height: containerHeight }}
@@ -267,26 +166,6 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         viewBox={`0 0 ${containerWidth} ${containerHeight}`}
         preserveAspectRatio="xMidYMid meet"
       >
-        {/* 渐变定义 */}
-        <defs>
-          {/* 金色渐变 - 主路径 */}
-          <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#ffd900" />
-            <stop offset="50%" stopColor="#ffb800" />
-            <stop offset="100%" stopColor="#ffd900" />
-          </linearGradient>
-          {/* 金色高光渐变 */}
-          <linearGradient id="goldHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.6)" />
-            <stop offset="50%" stopColor="rgba(255, 255, 255, 0.3)" />
-            <stop offset="100%" stopColor="rgba(255, 255, 255, 0.6)" />
-          </linearGradient>
-          {/* 绿色渐变 - 进行中 */}
-          <linearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#89e219" />
-            <stop offset="100%" stopColor="#58cc02" />
-          </linearGradient>
-        </defs>
         {generatePathConnections()}
       </svg>
       
@@ -310,7 +189,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
           const difficultyClass = getDifficultyClass(problem.difficulty);
           const pagesUrl = problem.repo?.pagesUrl || null;
           
-          // 判断是否是当前进度节点（第一个未完成的节点）
+          // 当前进度节点（第一个未完成的节点）
           const isCurrentNode = !completed && (index === 0 || isCompleted(problems[index - 1].questionFrontendId));
           
           return (
@@ -319,8 +198,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
               className={`duolingo-node-wrapper ${completed ? 'completed' : ''} ${isCurrentNode ? 'current' : ''}`}
               style={{
                 left: `${position.xPercent}%`,
-                top: position.yPosition - 35,
-                animationDelay: `${index * 0.03}s`
+                top: position.yPosition - 35
               }}
             >
               <Tooltip 
@@ -338,7 +216,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                     )}
                   </div>
                   
-                  {/* 当前节点的脉冲动画环 */}
+                  {/* 当前节点脉冲动画 */}
                   {isCurrentNode && <div className="node-pulse-ring"></div>}
                   
                   {problem.hasAnimation && (
@@ -355,7 +233,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                 </div>
               </Tooltip>
               
-              {/* 题目标题 - 仅在悬停时显示 */}
+              {/* 题目标题 - 悬停显示 */}
               <div className="node-title-label">
                 <span className="node-title-text">{title}</span>
               </div>

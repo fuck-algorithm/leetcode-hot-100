@@ -149,6 +149,7 @@ const PathDetail: React.FC<PathDetailProps> = ({
         handleAnimationClick={handleAnimationClick}
         isCompleted={isCompleted}
         onToggleCompletion={onToggleCompletion}
+        pathId={path.id}
       />
     </div>
   );

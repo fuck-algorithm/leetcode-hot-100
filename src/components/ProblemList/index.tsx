@@ -21,6 +21,8 @@ import ConfirmDialog from './ConfirmDialog';
 import ToastContainer from '../ToastContainer';
 import { useToast } from '../../hooks/useToast';
 import OverallProgressBar from './OverallProgressBar';
+import ExperienceBar from '../ExperienceBar';
+import { Problem } from './types';
 
 interface ProblemListProps {
   viewMode?: ViewMode;
@@ -68,8 +70,22 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
     toggleCompletion,
     resetAllProgress,
     getStatsForProblems,
-    refreshCompletions
+    refreshCompletions,
+    experience
   } = useCompletionStatus();
+  
+  // 创建一个包装函数，用于在切换完成状态时传递难度
+  const problemsMap = React.useMemo(() => {
+    const map = new Map<string, Problem>();
+    problems.forEach(p => map.set(p.questionFrontendId, p));
+    return map;
+  }, [problems]);
+  
+  const handleToggleCompletion = useCallback(async (problemId: string) => {
+    const problem = problemsMap.get(problemId);
+    const difficulty = problem?.difficulty as 'EASY' | 'MEDIUM' | 'HARD' | undefined;
+    await toggleCompletion(problemId, difficulty);
+  }, [toggleCompletion, problemsMap]);
   
   // 使用自定义hooks处理排序逻辑
   const { 
@@ -222,6 +238,14 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
         </div>
       )}
       
+      {/* 经验值条 - 仅在路径视图显示 */}
+      {viewMode === 'path' && (
+        <ExperienceBar 
+          currentLang={i18n.language}
+          refreshTrigger={experience.totalExp}
+        />
+      )}
+      
       {/* 整体进度条 */}
       <OverallProgressBar 
         completed={getStatsForProblems(problems.map(p => p.questionFrontendId)).completed}
@@ -262,7 +286,7 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
                 currentLang={i18n.language}
                 t={t}
                 isCompleted={isCompleted(problem.questionFrontendId)}
-                onToggleCompletion={toggleCompletion}
+                onToggleCompletion={handleToggleCompletion}
               />
             ))}
           </div>
@@ -279,7 +303,7 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
           toggleTag={toggleTag}
           handleAnimationClick={handleAnimationClick}
           isCompleted={isCompleted}
-          onToggleCompletion={toggleCompletion}
+          onToggleCompletion={handleToggleCompletion}
           getStatsForProblems={getStatsForProblems}
           selectedPathId={pathId}
           onPathClick={handlePathClick}

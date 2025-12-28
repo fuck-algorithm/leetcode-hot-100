@@ -3,7 +3,7 @@
  */
 
 const DB_NAME = 'leetcode-hot-100-progress';
-const DB_VERSION = 2;
+const DB_VERSION = 4;
 const STORE_NAME = 'completions';
 const PREFERENCES_STORE = 'preferences';
 

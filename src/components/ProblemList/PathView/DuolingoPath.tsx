@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
 import { Problem } from '../types';
 import Tooltip from '../../Tooltip';
 import AnimationBadge from '../AnimationBadge';
+import TreasureNode from './TreasureNode';
 import './DuolingoPath.css';
 
 interface DuolingoPathProps {
@@ -20,12 +21,13 @@ interface DuolingoPathProps {
   ) => void;
   isCompleted: (problemId: string) => boolean;
   onToggleCompletion: (problemId: string) => Promise<void>;
+  pathId?: string; // 用于生成唯一的宝箱ID
 }
 
 // 分段配置：每段的题目数量
 const SEGMENT_SIZE = 5;
-// 分段之间的额外间距（包含分隔区域）
-const SEGMENT_GAP = 200;
+// 分段之间的额外间距（包含宝箱节点）
+const SEGMENT_GAP = 220;
 // 节点之间的基础间距
 const NODE_SPACING = 180;
 
@@ -34,11 +36,13 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   currentLang,
   t,
   isCompleted,
-  onToggleCompletion
+  onToggleCompletion,
+  pathId = 'default'
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(600);
   const [expandedNodeId, setExpandedNodeId] = useState<string | null>(null);
+  const [, setRefreshKey] = useState(0);
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -75,11 +79,16 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     };
   }, []);
 
-  // 计算分段信息
+  // 计算分段信息和宝箱位置
   const segmentInfo = useMemo(() => {
     const totalProblems = problems.length;
     const segmentCount = Math.ceil(totalProblems / SEGMENT_SIZE);
-    const segments: { startIndex: number; endIndex: number; completedCount: number }[] = [];
+    const segments: { 
+      startIndex: number; 
+      endIndex: number; 
+      completedCount: number;
+      isComplete: boolean;
+    }[] = [];
     
     for (let i = 0; i < segmentCount; i++) {
       const startIndex = i * SEGMENT_SIZE;
@@ -93,7 +102,13 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         }
       }
       
-      segments.push({ startIndex, endIndex, completedCount });
+      const segmentSize = endIndex - startIndex + 1;
+      segments.push({ 
+        startIndex, 
+        endIndex, 
+        completedCount,
+        isComplete: completedCount === segmentSize
+      });
     }
     
     return { segmentCount, segments };
@@ -125,7 +140,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     
     const xPercent = (xPixel / containerWidth) * 100;
     
-    // 计算Y位置，考虑分段间距
+    // 计算Y位置，考虑分段间距（宝箱节点）
     const segmentIndex = getSegmentIndex(index);
     const baseY = index * NODE_SPACING + 100;
     const segmentGapOffset = segmentIndex * SEGMENT_GAP;
@@ -133,6 +148,19 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     
     return { xPercent, xPixel, yPosition, index };
   }, [containerWidth, getSegmentIndex]);
+
+  // 获取宝箱节点位置
+  const getTreasurePosition = useCallback((segmentIndex: number) => {
+    const lastNodeIndex = (segmentIndex + 1) * SEGMENT_SIZE - 1;
+    const lastNodePos = getNodePosition(Math.min(lastNodeIndex, problems.length - 1));
+    
+    // 宝箱放在分段最后一个节点下方
+    return {
+      xPercent: 50,
+      xPixel: containerWidth / 2,
+      yPosition: lastNodePos.yPosition + NODE_SPACING / 2 + 30
+    };
+  }, [getNodePosition, problems.length, containerWidth]);
 
   // 清除隐藏定时器
   const clearHideTimeout = useCallback(() => {
@@ -146,7 +174,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   const hideMenuWithDelay = useCallback(() => {
     hideTimeoutRef.current = setTimeout(() => {
       setExpandedNodeId(null);
-    }, 300); // 300ms 延迟，给用户足够时间移动到菜单
+    }, 300);
   }, []);
 
   // 隐藏菜单（立即）
@@ -183,7 +211,6 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     e.preventDefault();
     e.stopPropagation();
     
-    // 左键单击直接跳转
     if (problem.hasAnimation && problem.repo?.pagesUrl) {
       window.open(problem.repo.pagesUrl, '_blank');
     } else {
@@ -200,23 +227,23 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
 
   // 鼠标悬停 - 显示菜单
   const handleNodeMouseEnter = useCallback((problemId: string) => {
-    clearHideTimeout(); // 清除任何待执行的隐藏操作
+    clearHideTimeout();
     setExpandedNodeId(problemId);
   }, [clearHideTimeout]);
 
   // 鼠标离开节点区域
   const handleNodeMouseLeave = useCallback(() => {
-    hideMenuWithDelay(); // 使用延迟隐藏
+    hideMenuWithDelay();
   }, [hideMenuWithDelay]);
 
   // 鼠标进入菜单区域
   const handleMenuMouseEnter = useCallback(() => {
-    clearHideTimeout(); // 取消隐藏
+    clearHideTimeout();
   }, [clearHideTimeout]);
 
   // 鼠标离开菜单区域
   const handleMenuMouseLeave = useCallback(() => {
-    hideMenuWithDelay(); // 使用延迟隐藏
+    hideMenuWithDelay();
   }, [hideMenuWithDelay]);
 
   // 获取难度类名
@@ -228,6 +255,11 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
       default: return 'difficulty-medium';
     }
   };
+
+  // 处理宝箱开启
+  const handleTreasureOpen = useCallback(() => {
+    setRefreshKey(prev => prev + 1);
+  }, []);
 
   // 简化的SVG路径连接线
   const generatePathConnections = () => {
@@ -242,102 +274,96 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
       const nextX = next.xPixel;
       const nextY = next.yPosition;
       
-      // 贝塞尔曲线控制点
-      const midY = (currentY + nextY) / 2;
-      const pathD = `M ${currentX} ${currentY} C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`;
-      
       const currentCompleted = isCompleted(problems[i].questionFrontendId);
       const nextCompleted = isCompleted(problems[i + 1].questionFrontendId);
       const bothCompleted = currentCompleted && nextCompleted;
       
-      // 简单的单色连接线
-      paths.push(
-        <path
-          key={`path-${i}`}
-          d={pathD}
-          stroke={bothCompleted ? '#ffd700' : '#d0d0d0'}
-          strokeWidth="8"
-          fill="none"
-          strokeLinecap="round"
-        />
-      );
+      // 检查是否是分段末尾（需要连接到宝箱）
+      if (isSegmentEnd(i)) {
+        const segmentIndex = getSegmentIndex(i);
+        const treasurePos = getTreasurePosition(segmentIndex);
+        const segment = segmentInfo.segments[segmentIndex];
+        
+        // 第一段：从当前节点到宝箱
+        const midY1 = (currentY + treasurePos.yPosition - 50) / 2;
+        paths.push(
+          <path
+            key={`path-${i}-a`}
+            d={`M ${currentX} ${currentY} 
+                C ${currentX} ${midY1}, ${treasurePos.xPixel} ${midY1}, ${treasurePos.xPixel} ${treasurePos.yPosition - 50}`}
+            stroke={currentCompleted ? '#ffd700' : '#d0d0d0'}
+            strokeWidth="8"
+            fill="none"
+            strokeLinecap="round"
+          />
+        );
+        
+        // 第二段：从宝箱到下一个节点
+        const midY2 = (treasurePos.yPosition + 50 + nextY) / 2;
+        paths.push(
+          <path
+            key={`path-${i}-b`}
+            d={`M ${treasurePos.xPixel} ${treasurePos.yPosition + 50} 
+                C ${treasurePos.xPixel} ${midY2}, ${nextX} ${midY2}, ${nextX} ${nextY}`}
+            stroke={segment.isComplete && nextCompleted ? '#ffd700' : '#d0d0d0'}
+            strokeWidth="8"
+            fill="none"
+            strokeLinecap="round"
+          />
+        );
+      } else {
+        // 普通连接线
+        const midY = (currentY + nextY) / 2;
+        const pathD = `M ${currentX} ${currentY} C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`;
+        
+        paths.push(
+          <path
+            key={`path-${i}`}
+            d={pathD}
+            stroke={bothCompleted ? '#ffd700' : '#d0d0d0'}
+            strokeWidth="8"
+            fill="none"
+            strokeLinecap="round"
+          />
+        );
+      }
     }
     
     return paths;
   };
 
-  // 生成分段分隔区域（在每个阶段之间）
-  const generateSegmentDividers = () => {
-    const dividers: JSX.Element[] = [];
+  // 生成宝箱节点
+  const generateTreasureNodes = () => {
+    const treasures: JSX.Element[] = [];
     
     segmentInfo.segments.forEach((segment, segmentIndex) => {
       // 跳过最后一个分段（因为最后有终点标记）
       if (segmentIndex === segmentInfo.segmentCount - 1) return;
       
-      const lastNodeIndex = segment.endIndex;
-      const lastNodePosition = getNodePosition(lastNodeIndex);
-      const segmentSize = segment.endIndex - segment.startIndex + 1;
-      const isSegmentCompleted = segment.completedCount === segmentSize;
+      const treasurePos = getTreasurePosition(segmentIndex);
+      const treasureId = `detail-${pathId}-stage-${segmentIndex + 1}`;
       
-      // 下一个阶段的信息
-      const nextSegment = segmentInfo.segments[segmentIndex + 1];
-      const nextSegmentSize = nextSegment ? nextSegment.endIndex - nextSegment.startIndex + 1 : 0;
-      
-      // 分隔区域位置在分段最后一个节点下方
-      const dividerY = lastNodePosition.yPosition + 100;
-      
-      dividers.push(
+      treasures.push(
         <div
-          key={`divider-${segmentIndex}`}
-          className={`path-segment-divider ${isSegmentCompleted ? 'completed' : ''}`}
+          key={treasureId}
+          className="path-treasure-wrapper"
           style={{
-            top: dividerY
+            left: `${treasurePos.xPercent}%`,
+            top: treasurePos.yPosition - 40
           }}
         >
-          {/* 左侧装饰线 */}
-          <div className="segment-divider-line left"></div>
-          
-          {/* 中间的阶段完成标记 */}
-          <div className="segment-divider-content">
-            <div className="segment-divider-badge">
-              <div className="segment-badge-icon">
-                {isSegmentCompleted ? '⭐' : '🎯'}
-              </div>
-              <div className="segment-badge-info">
-                <div className="segment-badge-title">
-                  {currentLang === 'zh' 
-                    ? `第 ${segmentIndex + 1} 阶段`
-                    : `Stage ${segmentIndex + 1}`
-                  }
-                </div>
-                <div className="segment-badge-status">
-                  {isSegmentCompleted 
-                    ? (currentLang === 'zh' ? '已完成 ✓' : 'Complete ✓')
-                    : `${segment.completedCount}/${segmentSize}`
-                  }
-                </div>
-              </div>
-            </div>
-            
-            {/* 下一阶段预告 */}
-            <div className="segment-next-preview">
-              <div className="segment-next-arrow">↓</div>
-              <div className="segment-next-text">
-                {currentLang === 'zh' 
-                  ? `第 ${segmentIndex + 2} 阶段 · ${nextSegmentSize} 题`
-                  : `Stage ${segmentIndex + 2} · ${nextSegmentSize} problems`
-                }
-              </div>
-            </div>
-          </div>
-          
-          {/* 右侧装饰线 */}
-          <div className="segment-divider-line right"></div>
+          <TreasureNode
+            treasureId={treasureId}
+            stageNumber={segmentIndex + 1}
+            canOpen={segment.isComplete}
+            currentLang={currentLang}
+            onOpen={handleTreasureOpen}
+          />
         </div>
       );
     });
     
-    return dividers;
+    return treasures;
   };
 
   // 计算容器高度（考虑分段间距）
@@ -502,8 +528,8 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
           );
         })}
         
-        {/* 分段分隔区域 */}
-        {generateSegmentDividers()}
+        {/* 宝箱节点 */}
+        {generateTreasureNodes()}
       </div>
       
       {/* 终点标记 */}

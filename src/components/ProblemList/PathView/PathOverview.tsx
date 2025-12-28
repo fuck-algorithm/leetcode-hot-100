@@ -1,6 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { LearningPath } from '../data/learningPaths';
 import Tooltip from '../../Tooltip';
+import TreasureNode from './TreasureNode';
 import './PathOverview.css';
 
 interface PathStats {
@@ -27,19 +28,21 @@ interface PathOverviewProps {
   pathsWithProblems: PathWithStats[];
   currentLang: string;
   onPathClick: (pathId: string) => void;
-  isCompleted: (problemId: string) => boolean;
   getStatsForProblems: (problemIds: string[]) => CompletionStats;
 }
+
+// 宝箱节点配置：每隔多少个路径节点放置一个宝箱
+const TREASURE_INTERVAL = 3;
 
 const PathOverview: React.FC<PathOverviewProps> = ({
   pathsWithProblems,
   currentLang,
   onPathClick,
-  isCompleted,
   getStatsForProblems
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(600);
+  const [, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -53,29 +56,91 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  // 多邻国风格的蜿蜒路径位置计算 - 列表页面使用更大的蜿蜒幅度
-  const getNodePosition = (index: number) => {
-    // 留出边距给节点和标签
+  // 获取每个路径的完成统计
+  const getPathCompletionStats = useCallback((problems: any[]): CompletionStats => {
+    const problemIds = problems.map(p => p.questionFrontendId);
+    return getStatsForProblems(problemIds);
+  }, [getStatsForProblems]);
+
+  // 计算宝箱位置信息
+  const getTreasurePositions = useCallback(() => {
+    const treasures: { 
+      afterIndex: number; 
+      stageNumber: number; 
+      canOpen: boolean;
+      treasureId: string;
+    }[] = [];
+    
+    let stageCount = 0;
+    
+    for (let i = 0; i < pathsWithProblems.length; i++) {
+      // 每隔 TREASURE_INTERVAL 个节点放置一个宝箱
+      if ((i + 1) % TREASURE_INTERVAL === 0 && i < pathsWithProblems.length - 1) {
+        stageCount++;
+        
+        // 检查宝箱前面的所有题目是否都完成了
+        let canOpen = true;
+        for (let j = (stageCount - 1) * TREASURE_INTERVAL; j <= i; j++) {
+          const stats = getPathCompletionStats(pathsWithProblems[j].problems);
+          if (stats.percentage < 100) {
+            canOpen = false;
+            break;
+          }
+        }
+        
+        treasures.push({
+          afterIndex: i,
+          stageNumber: stageCount,
+          canOpen,
+          treasureId: `overview-stage-${stageCount}`
+        });
+      }
+    }
+    
+    return treasures;
+  }, [pathsWithProblems, getPathCompletionStats]);
+
+  // 多邻国风格的蜿蜒路径位置计算 - 考虑宝箱节点的额外空间
+  const getNodePosition = useCallback((index: number) => {
     const margin = 160;
     const leftBound = margin;
     const rightBound = containerWidth - margin;
     const centerX = containerWidth / 2;
     
+    // 计算在此索引之前有多少个宝箱
+    const treasures = getTreasurePositions();
+    const treasuresBefore = treasures.filter(t => t.afterIndex < index).length;
+    
+    // 调整后的索引（考虑宝箱占位）
+    const adjustedIndex = index + treasuresBefore;
+    
     // 使用模式：中 -> 左 -> 中 -> 右 -> 中 -> 左 ... 实现大幅度蜿蜒
     let xPixel: number;
-    const pattern = index % 4;
+    const pattern = adjustedIndex % 4;
     if (pattern === 0) {
-      xPixel = centerX; // 中间
+      xPixel = centerX;
     } else if (pattern === 1) {
-      xPixel = leftBound; // 左边
+      xPixel = leftBound;
     } else if (pattern === 2) {
-      xPixel = centerX; // 中间
+      xPixel = centerX;
     } else {
-      xPixel = rightBound; // 右边
+      xPixel = rightBound;
+    }
+    
+    // 计算Y位置，考虑宝箱节点的额外空间
+    const baseSpacing = 280;
+    const treasureSpacing = 200; // 宝箱节点占用的空间
+    
+    let yPosition = 160;
+    for (let i = 0; i < index; i++) {
+      yPosition += baseSpacing;
+      // 检查是否在此节点后有宝箱
+      if (treasures.some(t => t.afterIndex === i)) {
+        yPosition += treasureSpacing;
+      }
     }
     
     const xPercent = (xPixel / containerWidth) * 100;
-    const yPosition = index * 280 + 160; // 节点间距
     
     return {
       xPercent,
@@ -83,17 +148,31 @@ const PathOverview: React.FC<PathOverviewProps> = ({
       yPosition,
       index
     };
-  };
+  }, [containerWidth, getTreasurePositions]);
 
-  // 获取每个路径的完成统计
-  const getPathCompletionStats = (problems: any[]): CompletionStats => {
-    const problemIds = problems.map(p => p.questionFrontendId);
-    return getStatsForProblems(problemIds);
-  };
+  // 获取宝箱节点的位置
+  const getTreasureNodePosition = useCallback((afterIndex: number) => {
+    const nodePos = getNodePosition(afterIndex);
+    const nextNodePos = afterIndex < pathsWithProblems.length - 1 
+      ? getNodePosition(afterIndex + 1) 
+      : null;
+    
+    // 宝箱放在两个节点之间
+    const yPosition = nextNodePos 
+      ? (nodePos.yPosition + nextNodePos.yPosition) / 2 - 50
+      : nodePos.yPosition + 150;
+    
+    return {
+      xPercent: 50, // 宝箱始终居中
+      xPixel: containerWidth / 2,
+      yPosition
+    };
+  }, [getNodePosition, pathsWithProblems.length, containerWidth]);
 
-  // 生成SVG路径连接线 - 多邻国风格：简洁的灰色虚线
-  const generatePathConnections = () => {
+  // 生成SVG路径连接线
+  const generatePathConnections = useCallback(() => {
     const paths: JSX.Element[] = [];
+    const treasures = getTreasurePositions();
     
     for (let i = 0; i < pathsWithProblems.length - 1; i++) {
       const current = getNodePosition(i);
@@ -104,33 +183,89 @@ const PathOverview: React.FC<PathOverviewProps> = ({
       const nextX = next.xPixel;
       const nextY = next.yPosition;
       
-      const midY = (currentY + nextY) / 2;
+      // 检查当前节点是否完成
+      const currentStats = getPathCompletionStats(pathsWithProblems[i].problems);
+      const isCurrentCompleted = currentStats.percentage === 100;
       
-      // 获取下一个路径（目标节点）的完成状态
-      // 当目标节点完成度100%时，指向它的扇入路径变绿
+      // 检查下一个节点是否完成
       const nextStats = getPathCompletionStats(pathsWithProblems[i + 1].problems);
-      const isTargetCompleted = nextStats.percentage === 100;
+      const isNextCompleted = nextStats.percentage === 100;
       
-      // 简洁的连接线 - 多邻国风格
-      // 当目标节点完成时，扇入路径变绿色实线；否则为灰色虚线
-      paths.push(
-        <path
-          key={`path-${i}`}
-          d={`M ${currentX} ${currentY} 
-              C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`}
-          stroke={isTargetCompleted ? '#58cc02' : '#e5e5e5'}
-          strokeWidth="8"
-          fill="none"
-          strokeLinecap="round"
-          strokeDasharray={isTargetCompleted ? 'none' : '12 8'}
-        />
-      );
+      // 检查是否有宝箱在这两个节点之间
+      const treasure = treasures.find(t => t.afterIndex === i);
+      
+      if (treasure) {
+        // 有宝箱：路径分成两段
+        const treasurePos = getTreasureNodePosition(i);
+        const treasureX = treasurePos.xPixel;
+        const treasureY = treasurePos.yPosition + 40; // 宝箱中心偏移
+        
+        // 第一段：从当前节点到宝箱
+        const midY1 = (currentY + treasureY) / 2;
+        const isFirstSegmentCompleted = isCurrentCompleted;
+        paths.push(
+          <path
+            key={`path-${i}-a`}
+            d={`M ${currentX} ${currentY} 
+                C ${currentX} ${midY1}, ${treasureX} ${midY1}, ${treasureX} ${treasureY - 50}`}
+            stroke={isFirstSegmentCompleted ? '#58cc02' : '#e5e5e5'}
+            strokeWidth="8"
+            fill="none"
+            strokeLinecap="round"
+            strokeDasharray={isFirstSegmentCompleted ? 'none' : '12 8'}
+          />
+        );
+        
+        // 第二段：从宝箱到下一个节点
+        const midY2 = (treasureY + 50 + nextY) / 2;
+        const isSecondSegmentCompleted = treasure.canOpen && isNextCompleted;
+        paths.push(
+          <path
+            key={`path-${i}-b`}
+            d={`M ${treasureX} ${treasureY + 50} 
+                C ${treasureX} ${midY2}, ${nextX} ${midY2}, ${nextX} ${nextY}`}
+            stroke={isSecondSegmentCompleted ? '#58cc02' : '#e5e5e5'}
+            strokeWidth="8"
+            fill="none"
+            strokeLinecap="round"
+            strokeDasharray={isSecondSegmentCompleted ? 'none' : '12 8'}
+          />
+        );
+      } else {
+        // 普通连接线
+        const midY = (currentY + nextY) / 2;
+        const isCompleted = isCurrentCompleted && isNextCompleted;
+        
+        paths.push(
+          <path
+            key={`path-${i}`}
+            d={`M ${currentX} ${currentY} 
+                C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`}
+            stroke={isCompleted ? '#58cc02' : '#e5e5e5'}
+            strokeWidth="8"
+            fill="none"
+            strokeLinecap="round"
+            strokeDasharray={isCompleted ? 'none' : '12 8'}
+          />
+        );
+      }
     }
     
     return paths;
-  };
+  }, [pathsWithProblems, getNodePosition, getPathCompletionStats, getTreasurePositions, getTreasureNodePosition]);
 
-  const containerHeight = pathsWithProblems.length * 280 + 260;
+  // 处理宝箱开启
+  const handleTreasureOpen = useCallback(() => {
+    // 触发刷新以更新UI
+    setRefreshKey(prev => prev + 1);
+  }, []);
+
+  // 计算容器高度
+  const containerHeight = (() => {
+    if (pathsWithProblems.length === 0) return 400;
+    const lastNodePos = getNodePosition(pathsWithProblems.length - 1);
+    return lastNodePos.yPosition + 200;
+  })();
 
   return (
     <div className="path-overview-container" ref={containerRef}>
@@ -159,6 +294,30 @@ const PathOverview: React.FC<PathOverviewProps> = ({
         >
           {generatePathConnections()}
         </svg>
+
+        {/* 宝箱节点 */}
+        {getTreasurePositions().map((treasure) => {
+          const position = getTreasureNodePosition(treasure.afterIndex);
+          
+          return (
+            <div
+              key={treasure.treasureId}
+              className="treasure-node-wrapper"
+              style={{
+                left: `${position.xPercent}%`,
+                top: position.yPosition
+              }}
+            >
+              <TreasureNode
+                treasureId={treasure.treasureId}
+                stageNumber={treasure.stageNumber}
+                canOpen={treasure.canOpen}
+                currentLang={currentLang}
+                onOpen={handleTreasureOpen}
+              />
+            </div>
+          );
+        })}
 
         {/* 路径节点 */}
         <div className="path-overview-nodes">
@@ -306,8 +465,8 @@ const PathOverview: React.FC<PathOverviewProps> = ({
         <span className="tip-icon">💡</span>
         <span className="tip-text">
           {currentLang === 'zh' 
-            ? '点击任意节点开始学习该专题' 
-            : 'Click any node to start learning that topic'}
+            ? '点击任意节点开始学习该专题，完成阶段任务可开启宝箱获取经验值' 
+            : 'Click any node to start learning, complete stages to unlock treasures and earn EXP'}
         </span>
       </div>
     </div>

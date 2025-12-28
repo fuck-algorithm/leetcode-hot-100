@@ -1,0 +1,227 @@
+/* 经验值条容器 */
+.experience-bar-container {
+  position: relative;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 
+    0 4px 0 #0d0d1a,
+    0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.experience-bar-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* 等级徽章 */
+.level-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(180deg, #ffd700 0%, #ffb800 100%);
+  padding: 8px 14px;
+  border-radius: 20px;
+  box-shadow: 
+    0 3px 0 #b89700,
+    0 4px 12px rgba(255, 215, 0, 0.3);
+  min-width: 70px;
+}
+
+.level-icon {
+  font-size: 18px;
+}
+
+.level-number {
+  font-size: 18px;
+  font-weight: 800;
+  color: #5c4200;
+}
+
+/* 经验条包装器 */
+.exp-bar-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 经验条轨道 */
+.exp-bar-track {
+  height: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 经验条填充 */
+.exp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #58cc02 0%, #7ed321 50%, #a8e063 100%);
+  border-radius: 10px;
+  transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+.exp-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+  border-radius: 10px 10px 0 0;
+}
+
+/* 经验条文字 */
+.exp-bar-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.exp-current {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffd700;
+}
+
+.exp-next {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 经验值获取弹出动画 */
+.exp-gain-popup {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  background: linear-gradient(180deg, #58cc02 0%, #46a302 100%);
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 
+    0 3px 0 #3d8a00,
+    0 4px 12px rgba(88, 204, 2, 0.4);
+  animation: expGainPop 2s ease-out forwards;
+  z-index: 100;
+}
+
+@keyframes expGainPop {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1.1);
+  }
+  40% {
+    transform: translateY(-30px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .experience-bar-container {
+    padding: 10px 16px;
+    margin-bottom: 16px;
+  }
+  
+  .experience-bar-content {
+    gap: 12px;
+  }
+  
+  .level-badge {
+    padding: 6px 12px;
+    min-width: 60px;
+  }
+  
+  .level-icon {
+    font-size: 16px;
+  }
+  
+  .level-number {
+    font-size: 16px;
+  }
+  
+  .exp-bar-track {
+    height: 14px;
+  }
+  
+  .exp-current {
+    font-size: 13px;
+  }
+  
+  .exp-next {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .experience-bar-container {
+    padding: 8px 12px;
+  }
+  
+  .level-badge {
+    padding: 5px 10px;
+    min-width: 55px;
+  }
+  
+  .level-icon {
+    font-size: 14px;
+  }
+  
+  .level-number {
+    font-size: 14px;
+  }
+  
+  .exp-bar-track {
+    height: 12px;
+  }
+  
+  .exp-current {
+    font-size: 12px;
+  }
+  
+  .exp-next {
+    font-size: 10px;
+  }
+  
+  .exp-gain-popup {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+}
+
+/* 亮色模式 */
+[data-theme="light"] .experience-bar-container {
+  background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+  box-shadow: 
+    0 4px 0 #cbd5e0,
+    0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .exp-bar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .exp-current {
+  color: #b89700;
+}
+
+[data-theme="light"] .exp-next {
+  color: rgba(0, 0, 0, 0.5);
+}

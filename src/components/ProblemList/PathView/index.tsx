@@ -113,7 +113,6 @@ const PathView: React.FC<PathViewProps> = ({
       pathsWithProblems={pathsWithProblems}
       currentLang={currentLang}
       onPathClick={onPathClick}
-      isCompleted={isCompleted}
       getStatsForProblems={getStatsForProblems}
     />
   );

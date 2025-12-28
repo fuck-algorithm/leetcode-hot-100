@@ -146,63 +146,92 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
     }
   }, [showPreview, mediaInfo]);
 
+  // 计算预览位置的函数
+  const calculatePreviewPosition = () => {
+    if (!badgeRef.current) return;
+    
+    const rect = badgeRef.current.getBoundingClientRect();
+    const previewWidth = Math.min(1000, window.innerWidth * 0.7);
+    const previewHeight = 600;
+    const gap = 15;
+    
+    const style: PreviewStyle = {};
+    
+    // 计算各方向可用空间
+    const spaceRight = window.innerWidth - rect.right;
+    const spaceLeft = rect.left;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    
+    // 优先级：右侧 > 左侧 > 下方 > 上方
+    if (spaceRight >= previewWidth + gap) {
+      // 右侧空间足够
+      style.left = rect.right + gap;
+      // 垂直居中对齐badge
+      let top = rect.top + rect.height / 2 - previewHeight / 2;
+      // 确保不超出上下边界
+      top = Math.max(gap, Math.min(top, window.innerHeight - previewHeight - gap));
+      style.top = top;
+    } else if (spaceLeft >= previewWidth + gap) {
+      // 左侧空间足够
+      style.left = rect.left - previewWidth - gap;
+      let top = rect.top + rect.height / 2 - previewHeight / 2;
+      top = Math.max(gap, Math.min(top, window.innerHeight - previewHeight - gap));
+      style.top = top;
+    } else if (spaceBelow >= previewHeight + gap) {
+      // 下方空间足够
+      style.top = rect.bottom + gap;
+      // 水平居中
+      let left = rect.left + rect.width / 2 - previewWidth / 2;
+      left = Math.max(gap, Math.min(left, window.innerWidth - previewWidth - gap));
+      style.left = left;
+    } else if (spaceAbove >= previewHeight + gap) {
+      // 上方空间足够
+      style.top = rect.top - previewHeight - gap;
+      let left = rect.left + rect.width / 2 - previewWidth / 2;
+      left = Math.max(gap, Math.min(left, window.innerWidth - previewWidth - gap));
+      style.left = left;
+    } else {
+      // 都不够，在右侧显示并允许滚动
+      style.left = rect.right + gap;
+      style.top = gap;
+      // 如果右侧也放不下，就放在视口中央
+      if (style.left + previewWidth > window.innerWidth - gap) {
+        style.left = Math.max(gap, (window.innerWidth - previewWidth) / 2);
+        style.top = Math.max(gap, (window.innerHeight - previewHeight) / 2);
+      }
+    }
+    
+    setPreviewStyle(style);
+  };
+
   // 智能计算预览位置 - 优先右侧，其次下方，最后上方
   useEffect(() => {
     if (showPreview && badgeRef.current) {
-      const rect = badgeRef.current.getBoundingClientRect();
-      const previewWidth = Math.min(1000, window.innerWidth * 0.7);
-      const previewHeight = 600;
-      const gap = 15;
-      
-      const style: PreviewStyle = {};
-      
-      // 计算各方向可用空间
-      const spaceRight = window.innerWidth - rect.right;
-      const spaceLeft = rect.left;
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const spaceAbove = rect.top;
-      
-      // 优先级：右侧 > 左侧 > 下方 > 上方
-      if (spaceRight >= previewWidth + gap) {
-        // 右侧空间足够
-        style.left = rect.right + gap;
-        // 垂直居中对齐badge
-        let top = rect.top + rect.height / 2 - previewHeight / 2;
-        // 确保不超出上下边界
-        top = Math.max(gap, Math.min(top, window.innerHeight - previewHeight - gap));
-        style.top = top;
-      } else if (spaceLeft >= previewWidth + gap) {
-        // 左侧空间足够
-        style.left = rect.left - previewWidth - gap;
-        let top = rect.top + rect.height / 2 - previewHeight / 2;
-        top = Math.max(gap, Math.min(top, window.innerHeight - previewHeight - gap));
-        style.top = top;
-      } else if (spaceBelow >= previewHeight + gap) {
-        // 下方空间足够
-        style.top = rect.bottom + gap;
-        // 水平居中
-        let left = rect.left + rect.width / 2 - previewWidth / 2;
-        left = Math.max(gap, Math.min(left, window.innerWidth - previewWidth - gap));
-        style.left = left;
-      } else if (spaceAbove >= previewHeight + gap) {
-        // 上方空间足够
-        style.top = rect.top - previewHeight - gap;
-        let left = rect.left + rect.width / 2 - previewWidth / 2;
-        left = Math.max(gap, Math.min(left, window.innerWidth - previewWidth - gap));
-        style.left = left;
-      } else {
-        // 都不够，在右侧显示并允许滚动
-        style.left = rect.right + gap;
-        style.top = gap;
-        // 如果右侧也放不下，就放在视口中央
-        if (style.left + previewWidth > window.innerWidth - gap) {
-          style.left = Math.max(gap, (window.innerWidth - previewWidth) / 2);
-          style.top = Math.max(gap, (window.innerHeight - previewHeight) / 2);
-        }
-      }
-      
-      setPreviewStyle(style);
+      // 使用 requestAnimationFrame 确保在下一帧渲染时计算位置
+      // 这样可以确保 DOM 已经更新完成
+      requestAnimationFrame(() => {
+        calculatePreviewPosition();
+      });
     }
+  }, [showPreview]);
+
+  // 监听滚动事件，实时更新预览位置
+  useEffect(() => {
+    if (!showPreview) return;
+    
+    const handleScroll = () => {
+      requestAnimationFrame(() => {
+        calculatePreviewPosition();
+      });
+    };
+    
+    // 监听窗口滚动和可能的父容器滚动
+    window.addEventListener('scroll', handleScroll, true);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+    };
   }, [showPreview]);
 
   useEffect(() => {

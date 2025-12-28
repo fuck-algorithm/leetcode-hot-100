@@ -100,7 +100,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   const hideMenuWithDelay = useCallback(() => {
     hideTimeoutRef.current = setTimeout(() => {
       setExpandedNodeId(null);
-    }, 150); // 150ms 延迟，给用户足够时间移动到菜单
+    }, 300); // 300ms 延迟，给用户足够时间移动到菜单
   }, []);
 
   // 隐藏菜单（立即）

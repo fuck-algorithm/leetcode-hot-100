@@ -155,11 +155,11 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
     return 'locked';
   };
 
-  // 获取宝箱图标 - 始终显示宝箱
-  const getTreasureIcon = () => {
-    if (isOpened) return '📭'; // 已开启的空宝箱
-    if (isOpening) return '✨'; // 开启中的特效
-    return '🎁'; // 未开启的宝箱（无论是否可开启）
+  // 获取宝箱状态类名
+  const getTreasureIconClass = () => {
+    if (isOpened) return 'treasure-icon opened';
+    if (isOpening) return 'treasure-icon opening';
+    return 'treasure-icon';
   };
 
   return (
@@ -185,9 +185,10 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
           </div>
         )}
         
-        {/* 宝箱图标 */}
-        <div className="treasure-icon">
-          {getTreasureIcon()}
+        {/* 宝箱图标 - CSS绘制的宝箱 */}
+        <div className={getTreasureIconClass()}>
+          <div className="treasure-icon-lock"></div>
+          {isOpening && <span className="opening-sparkle">✨</span>}
         </div>
         
         {/* 宝箱光效 */}

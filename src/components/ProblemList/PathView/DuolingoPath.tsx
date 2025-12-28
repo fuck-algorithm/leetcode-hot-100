@@ -32,6 +32,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(600);
   const [expandedNodeId, setExpandedNodeId] = useState<string | null>(null);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -58,6 +59,15 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return () => document.removeEventListener('click', handleClickOutside);
   }, [expandedNodeId]);
 
+  // 清理定时器
+  useEffect(() => {
+    return () => {
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // 简化的蜿蜒路径布局
   const getNodePosition = (index: number) => {
     const centerX = containerWidth / 2;
@@ -78,10 +88,26 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return { xPercent, xPixel, yPosition, index };
   };
 
-  // 隐藏菜单
-  const hideMenu = useCallback(() => {
-    setExpandedNodeId(null);
+  // 清除隐藏定时器
+  const clearHideTimeout = useCallback(() => {
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+      hideTimeoutRef.current = null;
+    }
   }, []);
+
+  // 隐藏菜单（带延迟）
+  const hideMenuWithDelay = useCallback(() => {
+    hideTimeoutRef.current = setTimeout(() => {
+      setExpandedNodeId(null);
+    }, 150); // 150ms 延迟，给用户足够时间移动到菜单
+  }, []);
+
+  // 隐藏菜单（立即）
+  const hideMenu = useCallback(() => {
+    clearHideTimeout();
+    setExpandedNodeId(null);
+  }, [clearHideTimeout]);
 
   // 处理完成状态切换
   const handleToggleCompletion = useCallback((problemId: string, e: React.MouseEvent) => {
@@ -128,18 +154,24 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
 
   // 鼠标悬停 - 显示菜单
   const handleNodeMouseEnter = useCallback((problemId: string) => {
+    clearHideTimeout(); // 清除任何待执行的隐藏操作
     setExpandedNodeId(problemId);
-  }, []);
+  }, [clearHideTimeout]);
 
   // 鼠标离开节点区域
-  const handleNodeMouseLeave = useCallback((e: React.MouseEvent) => {
-    // 检查是否移动到菜单或其他节点上
-    const relatedTarget = e.relatedTarget as Element;
-    if (relatedTarget && (relatedTarget.closest('.node-context-menu') || relatedTarget.closest('.duolingo-node-wrapper'))) {
-      return;
-    }
-    setExpandedNodeId(null);
-  }, []);
+  const handleNodeMouseLeave = useCallback(() => {
+    hideMenuWithDelay(); // 使用延迟隐藏
+  }, [hideMenuWithDelay]);
+
+  // 鼠标进入菜单区域
+  const handleMenuMouseEnter = useCallback(() => {
+    clearHideTimeout(); // 取消隐藏
+  }, [clearHideTimeout]);
+
+  // 鼠标离开菜单区域
+  const handleMenuMouseLeave = useCallback(() => {
+    hideMenuWithDelay(); // 使用延迟隐藏
+  }, [hideMenuWithDelay]);
 
   // 获取难度类名
   const getDifficultyClass = (difficulty: string) => {
@@ -288,7 +320,8 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
               {isExpanded && (
                 <div 
                   className="node-context-menu"
-                  onMouseEnter={() => setExpandedNodeId(problem.questionFrontendId)}
+                  onMouseEnter={handleMenuMouseEnter}
+                  onMouseLeave={handleMenuMouseLeave}
                 >
                   <div className="context-menu-header">
                     <span className="context-menu-id">#{problem.questionFrontendId}</span>

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import Tooltip from '../Tooltip';
 import './AnimationBadge.css';
 
@@ -274,6 +275,30 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
     );
   };
 
+  // 渲染预览弹窗（使用 Portal 渲染到 body，避免被父元素的 z-index 影响）
+  const renderPreview = () => {
+    if (!showPreview || !hasAnimation) return null;
+    
+    return ReactDOM.createPortal(
+      <div 
+        ref={previewRef}
+        className="animation-preview-container"
+        style={previewStyle}
+      >
+        <div className="animation-preview-title">
+          {problemId && problemTitle 
+            ? `${problemId}. ${problemTitle}`
+            : '算法动画演示'}
+        </div>
+        {renderMedia()}
+        <div className="animation-preview-tip">
+          点击图标查看完整动画解析
+        </div>
+      </div>,
+      document.body
+    );
+  };
+
   return (
     <div 
       className="animation-badge-container" 
@@ -290,23 +315,7 @@ const AnimationBadge: React.FC<AnimationBadgeProps> = ({
         </div>
       </Tooltip>
       
-      {showPreview && hasAnimation && (
-        <div 
-          ref={previewRef}
-          className="animation-preview-container"
-          style={previewStyle}
-        >
-          <div className="animation-preview-title">
-            {problemId && problemTitle 
-              ? `${problemId}. ${problemTitle}`
-              : '算法动画演示'}
-          </div>
-          {renderMedia()}
-          <div className="animation-preview-tip">
-            点击图标查看完整动画解析
-          </div>
-        </div>
-      )}
+      {renderPreview()}
     </div>
   );
 };

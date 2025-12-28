@@ -83,7 +83,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     xPixel = Math.max(margin, Math.min(containerWidth - margin, xPixel));
     
     const xPercent = (xPixel / containerWidth) * 100;
-    const yPosition = index * 140 + 100; // 增加间距从120到140，给题目名称留空间
+    const yPosition = index * 180 + 100; // 增加间距到180，给题目名称完整显示留足空间
     
     return { xPercent, xPixel, yPosition, index };
   };
@@ -220,7 +220,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return paths;
   };
 
-  const containerHeight = problems.length * 140 + 180; // 同步更新高度计算
+  const containerHeight = problems.length * 180 + 180; // 同步更新高度计算
 
   if (problems.length === 0) {
     return (

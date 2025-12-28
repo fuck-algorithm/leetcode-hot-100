@@ -18,18 +18,18 @@ interface RealmInfo {
   bgGradient: string;
 }
 
-// 浅色系配色 - 与页面整体风格一致
+// 纯白色背景 - 与页面整体风格一致
 const REALMS: RealmInfo[] = [
-  { name: '练气期', nameEn: 'Qi Refining', minLevel: 1, maxLevel: 5, color: '#78716c', icon: '🌱', bgGradient: 'linear-gradient(135deg, #f5f5f4 0%, #e7e5e4 100%)' },
-  { name: '筑基期', nameEn: 'Foundation', minLevel: 6, maxLevel: 10, color: '#22c55e', icon: '🌿', bgGradient: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)' },
-  { name: '金丹期', nameEn: 'Golden Core', minLevel: 11, maxLevel: 20, color: '#eab308', icon: '💫', bgGradient: 'linear-gradient(135deg, #fefce8 0%, #fef9c3 100%)' },
-  { name: '元婴期', nameEn: 'Nascent Soul', minLevel: 21, maxLevel: 35, color: '#f97316', icon: '🔥', bgGradient: 'linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)' },
-  { name: '化神期', nameEn: 'Spirit Severing', minLevel: 36, maxLevel: 50, color: '#ef4444', icon: '⚡', bgGradient: 'linear-gradient(135deg, #fef2f2 0%, #fecaca 100%)' },
-  { name: '炼虚期', nameEn: 'Void Refining', minLevel: 51, maxLevel: 70, color: '#a855f7', icon: '🌀', bgGradient: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%)' },
-  { name: '合体期', nameEn: 'Body Integration', minLevel: 71, maxLevel: 90, color: '#6366f1', icon: '💎', bgGradient: 'linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%)' },
-  { name: '大乘期', nameEn: 'Mahayana', minLevel: 91, maxLevel: 100, color: '#ec4899', icon: '🌸', bgGradient: 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)' },
-  { name: '渡劫期', nameEn: 'Tribulation', minLevel: 101, maxLevel: 150, color: '#14b8a6', icon: '⛈️', bgGradient: 'linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%)' },
-  { name: '大罗金仙', nameEn: 'Golden Immortal', minLevel: 151, maxLevel: 999, color: '#fbbf24', icon: '👑', bgGradient: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)' },
+  { name: '练气期', nameEn: 'Qi Refining', minLevel: 1, maxLevel: 5, color: '#78716c', icon: '🌱', bgGradient: '#ffffff' },
+  { name: '筑基期', nameEn: 'Foundation', minLevel: 6, maxLevel: 10, color: '#22c55e', icon: '🌿', bgGradient: '#ffffff' },
+  { name: '金丹期', nameEn: 'Golden Core', minLevel: 11, maxLevel: 20, color: '#eab308', icon: '💫', bgGradient: '#ffffff' },
+  { name: '元婴期', nameEn: 'Nascent Soul', minLevel: 21, maxLevel: 35, color: '#f97316', icon: '🔥', bgGradient: '#ffffff' },
+  { name: '化神期', nameEn: 'Spirit Severing', minLevel: 36, maxLevel: 50, color: '#ef4444', icon: '⚡', bgGradient: '#ffffff' },
+  { name: '炼虚期', nameEn: 'Void Refining', minLevel: 51, maxLevel: 70, color: '#a855f7', icon: '🌀', bgGradient: '#ffffff' },
+  { name: '合体期', nameEn: 'Body Integration', minLevel: 71, maxLevel: 90, color: '#6366f1', icon: '💎', bgGradient: '#ffffff' },
+  { name: '大乘期', nameEn: 'Mahayana', minLevel: 91, maxLevel: 100, color: '#ec4899', icon: '🌸', bgGradient: '#ffffff' },
+  { name: '渡劫期', nameEn: 'Tribulation', minLevel: 101, maxLevel: 150, color: '#14b8a6', icon: '⛈️', bgGradient: '#ffffff' },
+  { name: '大罗金仙', nameEn: 'Golden Immortal', minLevel: 151, maxLevel: 999, color: '#fbbf24', icon: '👑', bgGradient: '#ffffff' },
 ];
 
 // 根据等级获取境界信息

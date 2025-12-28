@@ -185,9 +185,18 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
           </div>
         )}
         
-        {/* 宝箱图标 - CSS绘制的宝箱 */}
+        {/* 宝箱图标 - CSS绘制的精美宝箱 */}
         <div className={getTreasureIconClass()}>
+          {/* 宝箱盖子 */}
+          <div className="treasure-chest-lid"></div>
+          {/* 宝箱主体 */}
+          <div className="treasure-chest-body"></div>
+          {/* 金属锁扣 */}
           <div className="treasure-icon-lock"></div>
+          {/* 角落装饰 */}
+          <div className="treasure-corner top-left"></div>
+          <div className="treasure-corner top-right"></div>
+          {/* 开启中的闪光 */}
           {isOpening && <span className="opening-sparkle">✨</span>}
         </div>
         

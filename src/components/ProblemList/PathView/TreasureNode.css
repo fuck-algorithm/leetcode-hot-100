@@ -93,97 +93,231 @@
   cursor: default;
 }
 
-/* 宝箱图标 - 使用CSS绘制真正的宝箱 */
+/* 宝箱图标容器 */
 .treasure-icon {
-  width: 50px;
-  height: 40px;
+  width: 52px;
+  height: 48px;
   position: relative;
   z-index: 5;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
   transition: transform 0.3s ease;
 }
 
-/* 宝箱主体 - CSS绘制 */
-.treasure-icon::before {
-  content: '';
+/* ========== 宝箱主体（底部箱体） ========== */
+.treasure-chest-body {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 28px;
-  background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
-  border-radius: 4px 4px 6px 6px;
+  background: linear-gradient(180deg, #C9873A 0%, #8B5A2B 50%, #6B4423 100%);
+  border-radius: 4px 4px 8px 8px;
   border: 2px solid #5D3A1A;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
-/* 宝箱盖子 */
-.treasure-icon::after {
+/* 箱体木纹装饰 */
+.treasure-chest-body::before {
   content: '';
+  position: absolute;
+  top: 8px;
+  left: 4px;
+  right: 4px;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(139, 90, 43, 0.6) 20%, 
+    rgba(101, 67, 33, 0.8) 50%, 
+    rgba(139, 90, 43, 0.6) 80%, 
+    transparent 100%);
+  border-radius: 2px;
+}
+
+/* 箱体金属边框装饰 */
+.treasure-chest-body::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 3px;
+  right: 3px;
+  height: 4px;
+  background: linear-gradient(180deg, #DAA520 0%, #B8860B 100%);
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ========== 宝箱盖子 ========== */
+.treasure-chest-lid {
   position: absolute;
   top: 0;
   left: -2px;
   width: calc(100% + 4px);
-  height: 18px;
-  background: linear-gradient(180deg, #A0522D 0%, #8B4513 100%);
-  border-radius: 8px 8px 0 0;
+  height: 24px;
+  background: linear-gradient(180deg, #DDA15E 0%, #BC6C25 40%, #8B5A2B 100%);
+  border-radius: 12px 12px 2px 2px;
   border: 2px solid #5D3A1A;
   box-sizing: border-box;
+  transform-origin: left bottom;
+  transition: transform 0.4s ease;
+  overflow: hidden;
 }
 
-/* 宝箱锁扣装饰 */
+/* 盖子高光 */
+.treasure-chest-lid::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  right: 6px;
+  height: 6px;
+  background: linear-gradient(180deg, 
+    rgba(255, 255, 255, 0.4) 0%, 
+    rgba(255, 255, 255, 0.1) 100%);
+  border-radius: 4px;
+}
+
+/* 盖子金属边条 */
+.treasure-chest-lid::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 4px;
+  right: 4px;
+  height: 3px;
+  background: linear-gradient(180deg, #DAA520 0%, #B8860B 100%);
+  border-radius: 1px;
+}
+
+/* ========== 宝箱锁扣 ========== */
 .treasure-icon-lock {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 12px;
-  height: 14px;
-  background: linear-gradient(180deg, #FFD700 0%, #DAA520 100%);
-  border-radius: 2px;
-  border: 1px solid #B8860B;
+  width: 14px;
+  height: 16px;
+  background: linear-gradient(180deg, #FFD700 0%, #FFC107 30%, #DAA520 70%, #B8860B 100%);
+  border-radius: 3px;
+  border: 1.5px solid #8B6914;
   z-index: 10;
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* 锁扣上的锁环 */
 .treasure-icon-lock::before {
   content: '';
   position: absolute;
-  top: -6px;
+  top: -8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 8px;
-  height: 8px;
-  border: 2px solid #DAA520;
+  width: 10px;
+  height: 10px;
+  border: 3px solid #DAA520;
   border-radius: 50% 50% 0 0;
   border-bottom: none;
   background: transparent;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
-/* 已开启状态的宝箱 - 盖子打开 */
-.treasure-icon.opened::after {
-  transform: rotate(-30deg);
-  transform-origin: left bottom;
-  top: -8px;
+/* 锁扣钥匙孔 */
+.treasure-icon-lock::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 6px;
+  background: #5D3A1A;
+  border-radius: 50% 50% 2px 2px;
+}
+
+/* ========== 宝箱角落金属装饰 ========== */
+.treasure-corner {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.treasure-corner.top-left {
+  top: 2px;
+  left: 2px;
+  border-radius: 6px 2px 2px 2px;
+}
+
+.treasure-corner.top-right {
+  top: 2px;
+  right: 2px;
+  border-radius: 2px 6px 2px 2px;
+}
+
+.treasure-corner.bottom-left {
+  bottom: 2px;
+  left: 2px;
+  border-radius: 2px 2px 2px 4px;
+}
+
+.treasure-corner.bottom-right {
+  bottom: 2px;
+  right: 2px;
+  border-radius: 2px 2px 4px 2px;
+}
+
+/* ========== 已开启状态 ========== */
+.treasure-icon.opened .treasure-chest-lid {
+  transform: rotate(-45deg) translateY(-5px);
 }
 
 .treasure-icon.opened .treasure-icon-lock {
   opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
+}
+
+/* 开启后的光芒效果 */
+.treasure-icon.opened::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 20px;
+  background: radial-gradient(ellipse, rgba(255, 215, 0, 0.8) 0%, transparent 70%);
+  animation: glowPulse 1.5s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* ========== 开启中状态 ========== */
+.treasure-icon.opening .treasure-chest-lid {
+  animation: lidShake 0.3s ease-in-out;
+}
+
+@keyframes lidShake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
 }
 
 /* 开启中的闪光效果 */
 .opening-sparkle {
   position: absolute;
-  top: -10px;
+  top: -15px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 24px;
-  animation: sparkleGlow 0.5s ease-in-out infinite;
+  font-size: 28px;
+  animation: sparkleGlow 0.4s ease-in-out infinite;
   z-index: 20;
 }
 
 @keyframes sparkleGlow {
   0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
-  50% { opacity: 0.5; transform: translateX(-50%) scale(1.3); }
+  50% { opacity: 0.6; transform: translateX(-50%) scale(1.4); }
 }
 
 .treasure-node.ready:hover .treasure-icon {

@@ -10,41 +10,41 @@ interface TreasureNodeProps {
   onOpen?: (treasureId: string, expAwarded: number) => void;
 }
 
-// 有趣的宝箱名称 - 江湖/休闲风格
+// 宝箱名称 - 天材地宝/神兵利器风格
 const TREASURE_NAMES_ZH = [
-  '新手礼包',
-  '江湖秘宝',
-  '武林宝箱',
-  '藏经阁宝',
-  '掌门赏赐',
-  '神秘宝藏',
-  '绝世秘籍',
-  '天外飞仙',
-  '至尊宝箱',
-  '传说宝藏',
-  '仙界馈赠',
-  '鸿蒙秘宝',
-  '混沌宝箱',
-  '创世神藏',
-  '终极宝藏'
+  '灵芝草',      // 入门级天材地宝
+  '千年人参',    // 常见珍贵药材
+  '冰魄寒铁',    // 神兵材料
+  '紫金玄铁',    // 铸剑材料
+  '九转还魂丹',  // 珍贵丹药
+  '天蚕丝甲',    // 防具
+  '青龙偃月刀',  // 神兵利器
+  '玄冰神剑',    // 神兵利器
+  '凤凰涅槃羽',  // 稀有材料
+  '龙鳞宝甲',    // 顶级防具
+  '昆仑镜',      // 神器
+  '轩辕剑',      // 上古神兵
+  '东皇钟',      // 上古神器
+  '盘古斧',      // 开天神器
+  '混沌珠'       // 终极宝物
 ];
 
 const TREASURE_NAMES_EN = [
-  'Starter Pack',
-  'Martial Treasure',
-  'Warrior\'s Chest',
-  'Secret Archive',
-  'Master\'s Gift',
-  'Mystery Treasure',
-  'Legendary Scroll',
-  'Celestial Box',
-  'Supreme Chest',
-  'Epic Treasure',
-  'Divine Gift',
-  'Primordial Box',
-  'Chaos Treasure',
-  'Genesis Vault',
-  'Ultimate Treasure'
+  'Spirit Herb',
+  'Millennium Ginseng',
+  'Frost Iron',
+  'Purple Gold',
+  'Revival Pill',
+  'Silkworm Armor',
+  'Dragon Blade',
+  'Ice Sword',
+  'Phoenix Feather',
+  'Dragon Scale',
+  'Kunlun Mirror',
+  'Xuanyuan Sword',
+  'Donghuang Bell',
+  'Pangu Axe',
+  'Chaos Pearl'
 ];
 
 // 宝箱开启后的祝福语

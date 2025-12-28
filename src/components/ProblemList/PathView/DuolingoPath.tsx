@@ -555,9 +555,15 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                 </div>
               )}
               
-              {/* 题目ID和名称 - 始终显示在节点下方 */}
+              {/* 
+                题目ID和名称标签 - 始终显示在节点下方
+                【重要警告】此处必须保持一行显示格式！
+                严禁将ID和标题分成两行显示，这是产品明确要求。
+                如需修改显示格式，请先与产品确认。
+              */}
               {!isExpanded && (
                 <div className="node-title-label always-visible">
+                  {/* ID和标题在同一行显示，用空格分隔 */}
                   <span className="node-id-text">#{problem.questionFrontendId}</span>
                   <span className="node-title-text">{title}</span>
                 </div>

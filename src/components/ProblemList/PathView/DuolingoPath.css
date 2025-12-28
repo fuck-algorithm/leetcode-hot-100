@@ -248,52 +248,55 @@
   box-shadow: 0 1px 0 #6d28d9;
 }
 
-/* 节点标题标签 - 悬停显示 */
+/* 节点标题标签 - 始终显示在节点下方 */
 .node-title-label {
   position: absolute;
   top: 80px;
   left: 50%;
-  transform: translateX(-50%) translateY(8px);
-  opacity: 0;
-  visibility: hidden;
+  transform: translateX(-50%);
   text-align: center;
-  max-width: 150px;
-  padding: 8px 12px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 0 #d0d0d0, 0 6px 12px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s ease;
-  z-index: 100;
+  max-width: 120px;
+  padding: 4px 0;
+  z-index: 10;
   pointer-events: none;
 }
 
-.duolingo-node-wrapper:hover .node-title-label {
+/* 始终可见的标签样式 */
+.node-title-label.always-visible {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(0);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.node-id-text {
+  font-size: 11px;
+  color: #666;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 .node-title-text {
-  font-size: 13px;
-  color: #333;
-  font-weight: 700;
+  font-size: 11px;
+  color: #888;
+  font-weight: 600;
   line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 130px;
+  max-width: 80px;
   display: block;
 }
 
 /* 已完成节点的标题样式 */
-.duolingo-node-wrapper.completed .node-title-label {
-  background: #fffef0;
-  border: 1px solid #ffd700;
-  box-shadow: 0 4px 0 #b89700, 0 6px 12px rgba(255, 215, 0, 0.2);
+.duolingo-node-wrapper.completed .node-id-text {
+  color: #7a5c00;
 }
 
 .duolingo-node-wrapper.completed .node-title-text { 
-  color: #7a5c00; 
+  color: #9a7c00; 
 }
 
 /* 展开状态的节点包装器 */
@@ -515,11 +518,14 @@
   }
   .node-title-label { 
     max-width: 130px; 
-    padding: 6px 10px; 
     top: 70px; 
   }
+  .node-id-text {
+    font-size: 10px;
+  }
   .node-title-text { 
-    font-size: 12px; 
+    font-size: 10px;
+    max-width: 70px;
   }
   .node-animation-icon { 
     width: 24px; 
@@ -585,13 +591,15 @@
     font-size: 10px;
   }
   .node-title-label { 
-    max-width: 110px; 
-    padding: 5px 8px; 
-    border-radius: 10px; 
+    max-width: 120px; 
     top: 62px; 
   }
+  .node-id-text {
+    font-size: 9px;
+  }
   .node-title-text { 
-    font-size: 11px; 
+    font-size: 9px;
+    max-width: 60px;
   }
   .path-milestone-badge { 
     font-size: 11px; 
@@ -636,23 +644,20 @@
   background: #1a1a2e; 
 }
 
-[data-theme="dark"] .node-title-label { 
-  background: #2a2f3e; 
-  box-shadow: 0 4px 0 #1a1f2e, 0 6px 12px rgba(0, 0, 0, 0.3); 
+[data-theme="dark"] .node-id-text {
+  color: #aaa;
 }
 
 [data-theme="dark"] .node-title-text { 
-  color: #e0e0e0; 
+  color: #888; 
 }
 
-[data-theme="dark"] .duolingo-node-wrapper.completed .node-title-label { 
-  background: #3a3520; 
-  border-color: #5c4d00; 
-  box-shadow: 0 4px 0 #2a2510, 0 6px 12px rgba(255, 215, 0, 0.1);
+[data-theme="dark"] .duolingo-node-wrapper.completed .node-id-text { 
+  color: #ffd54f; 
 }
 
 [data-theme="dark"] .duolingo-node-wrapper.completed .node-title-text { 
-  color: #ffd54f; 
+  color: #c9a400; 
 }
 
 /* 暗色模式 - 右键菜单 */

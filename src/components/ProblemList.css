@@ -10,17 +10,18 @@
 }
 
 /* 视图模式切换和搜索区域 */
-.view-mode-and-search {
+.view-mode-row {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+  margin-bottom: 12px;
 }
 
-.view-mode-and-search .search-container {
-  flex: 1;
-  min-width: 300px;
+.search-filter-row {
+  margin-bottom: 16px;
+}
+
+.search-filter-row .search-container {
   margin-bottom: 0;
 }
 
@@ -30,11 +31,13 @@
   align-items: center;
   margin-bottom: 20px;
   position: relative;
+  gap: 12px;
 }
 
 .search-box {
   position: relative;
-  width: 80%;
+  flex: 1;
+  min-width: 120px;
 }
 
 .search-box input {
@@ -44,6 +47,7 @@
   border-radius: 20px;
   font-size: 14px;
   outline: none;
+  box-sizing: border-box;
 }
 
 .filter-buttons {

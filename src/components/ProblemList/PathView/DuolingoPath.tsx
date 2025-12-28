@@ -73,7 +73,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     xPixel = Math.max(margin, Math.min(containerWidth - margin, xPixel));
     
     const xPercent = (xPixel / containerWidth) * 100;
-    const yPosition = index * 120 + 100;
+    const yPosition = index * 140 + 100; // 增加间距从120到140，给题目名称留空间
     
     return { xPercent, xPixel, yPosition, index };
   };
@@ -188,7 +188,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return paths;
   };
 
-  const containerHeight = problems.length * 120 + 180;
+  const containerHeight = problems.length * 140 + 180; // 同步更新高度计算
 
   if (problems.length === 0) {
     return (
@@ -330,9 +330,10 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                 </div>
               )}
               
-              {/* 题目标题 - 悬停显示（当菜单未展开时） */}
+              {/* 题目ID和名称 - 始终显示在节点下方 */}
               {!isExpanded && (
-                <div className="node-title-label">
+                <div className="node-title-label always-visible">
+                  <span className="node-id-text">#{problem.questionFrontendId}</span>
                   <span className="node-title-text">{title}</span>
                 </div>
               )}

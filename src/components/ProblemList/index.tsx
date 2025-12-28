@@ -162,8 +162,8 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
   
   return (
     <div className="problem-list-container">
-      {/* 视图模式切换和搜索筛选区域 */}
-      <div className="view-mode-and-search">
+      {/* 视图模式切换区域 */}
+      <div className="view-mode-row">
         <ViewModeSwitch 
           currentMode={viewMode}
           onModeChange={handleViewModeChange}
@@ -175,9 +175,11 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
           onClick={() => setShowResetDialog(true)}
           t={t}
         />
-        
-        {/* 搜索筛选区域 - 仅在列表模式下显示 */}
-        {viewMode === 'list' && (
+      </div>
+      
+      {/* 搜索筛选区域 - 仅在列表模式下显示 */}
+      {viewMode === 'list' && (
+        <div className="search-filter-row">
           <SearchFilter 
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
@@ -217,8 +219,8 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
               ref={filterMenuRef}
             />
           </SearchFilter>
-        )}
-      </div>
+        </div>
+      )}
       
       {/* 整体进度条 */}
       <OverallProgressBar 

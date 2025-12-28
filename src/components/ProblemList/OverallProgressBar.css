@@ -6,6 +6,8 @@
   border-radius: 12px;
   border: 1px solid #e8e8e8;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 16px;
+  box-sizing: border-box;
 }
 
 .progress-info {

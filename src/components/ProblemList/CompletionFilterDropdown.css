@@ -1,0 +1,107 @@
+/* 自定义下拉框容器 */
+.completion-filter-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* 下拉框触发按钮 */
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  font-size: 13px;
+  background-color: #f5f5f5;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  min-width: 90px;
+  justify-content: space-between;
+}
+
+.dropdown-trigger:hover {
+  background-color: #e6f7ff;
+  border-color: #1890ff;
+}
+
+.dropdown-trigger.open {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.dropdown-text {
+  white-space: nowrap;
+}
+
+.dropdown-arrow {
+  font-size: 10px;
+  color: #666;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+/* 下拉菜单 */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 120px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.15s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 下拉选项 */
+.dropdown-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  font-size: 13px;
+  color: #333;
+}
+
+.dropdown-option:hover {
+  background-color: #f5f5f5;
+}
+
+.dropdown-option.selected {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.check-icon {
+  color: #1890ff;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.option-text {
+  flex: 1;
+}
+
+/* 没有选中时保持对齐 */
+.dropdown-option:not(.selected) .option-text {
+  margin-left: 20px;
+}

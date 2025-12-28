@@ -8,6 +8,7 @@ interface TreasureNodeProps {
   canOpen: boolean; // 是否可以开启（前面的题目都完成了）
   currentLang: string;
   onOpen?: (treasureId: string, expAwarded: number) => void;
+  isEndpoint?: boolean; // 是否为终点宝箱
 }
 
 // 宝箱名称 - 天材地宝/神兵利器风格
@@ -64,12 +65,17 @@ const BLESSING_EN = [
   'Hard work pays off!'
 ];
 
+// 终点宝箱特殊名称
+const ENDPOINT_NAME_ZH = '通关宝箱';
+const ENDPOINT_NAME_EN = 'Completion Chest';
+
 const TreasureNode: React.FC<TreasureNodeProps> = ({
   treasureId,
   stageNumber,
   canOpen,
   currentLang,
-  onOpen
+  onOpen,
+  isEndpoint = false
 }) => {
   const [isOpened, setIsOpened] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
@@ -78,6 +84,10 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
 
   // 获取宝箱名称
   const getTreasureName = () => {
+    // 终点宝箱使用特殊名称
+    if (isEndpoint) {
+      return currentLang === 'zh' ? ENDPOINT_NAME_ZH : ENDPOINT_NAME_EN;
+    }
     const names = currentLang === 'zh' ? TREASURE_NAMES_ZH : TREASURE_NAMES_EN;
     const index = Math.min(stageNumber - 1, names.length - 1);
     return names[index];

@@ -114,6 +114,11 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return { segmentCount, segments };
   }, [problems, isCompleted]);
 
+  // 计算是否所有题目都已完成
+  const allProblemsCompleted = useMemo(() => {
+    return problems.every(problem => isCompleted(problem.questionFrontendId));
+  }, [problems, isCompleted]);
+
   // 判断某个索引是否是分段的最后一个节点（不包括整个路径的最后一个）
   const isSegmentEnd = useCallback((index: number) => {
     return (index + 1) % SEGMENT_SIZE === 0 && index < problems.length - 1;
@@ -149,16 +154,30 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return { xPercent, xPixel, yPosition, index };
   }, [containerWidth, getSegmentIndex]);
 
-  // 获取宝箱节点位置
+  // 获取宝箱节点位置 - 在分段间隙中居中
   const getTreasurePosition = useCallback((segmentIndex: number) => {
     const lastNodeIndex = (segmentIndex + 1) * SEGMENT_SIZE - 1;
-    const lastNodePos = getNodePosition(Math.min(lastNodeIndex, problems.length - 1));
+    const firstNodeOfNextSegment = (segmentIndex + 1) * SEGMENT_SIZE;
     
-    // 宝箱放在分段最后一个节点下方
+    const lastNodePos = getNodePosition(Math.min(lastNodeIndex, problems.length - 1));
+    const nextNodePos = getNodePosition(Math.min(firstNodeOfNextSegment, problems.length - 1));
+    
+    // 宝箱放在两个节点的垂直中点
     return {
       xPercent: 50,
       xPixel: containerWidth / 2,
-      yPosition: lastNodePos.yPosition + NODE_SPACING / 2 + 30
+      yPosition: (lastNodePos.yPosition + nextNodePos.yPosition) / 2
+    };
+  }, [getNodePosition, problems.length, containerWidth]);
+
+  // 获取终点宝箱位置
+  const getEndpointTreasurePosition = useCallback(() => {
+    const lastNodePos = getNodePosition(problems.length - 1);
+    
+    return {
+      xPercent: 50,
+      xPixel: containerWidth / 2,
+      yPosition: lastNodePos.yPosition + NODE_SPACING
     };
   }, [getNodePosition, problems.length, containerWidth]);
 
@@ -329,6 +348,24 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
       }
     }
     
+    // 添加：最后一个节点到终点宝箱的连接线
+    const lastNodePos = getNodePosition(problems.length - 1);
+    const endpointPos = getEndpointTreasurePosition();
+    const lastCompleted = isCompleted(problems[problems.length - 1].questionFrontendId);
+    
+    const midY = (lastNodePos.yPosition + endpointPos.yPosition - 50) / 2;
+    paths.push(
+      <path
+        key="path-to-endpoint"
+        d={`M ${lastNodePos.xPixel} ${lastNodePos.yPosition} 
+            C ${lastNodePos.xPixel} ${midY}, ${endpointPos.xPixel} ${midY}, ${endpointPos.xPixel} ${endpointPos.yPosition - 50}`}
+        stroke={lastCompleted ? '#ffd700' : '#d0d0d0'}
+        strokeWidth="8"
+        fill="none"
+        strokeLinecap="round"
+      />
+    );
+    
     return paths;
   };
 
@@ -366,11 +403,12 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return treasures;
   };
 
-  // 计算容器高度（考虑分段间距）
+  // 计算容器高度（考虑分段间距和终点宝箱）
   const containerHeight = useMemo(() => {
-    const baseHeight = problems.length * NODE_SPACING + 180;
+    const baseHeight = problems.length * NODE_SPACING + 100;
     const segmentGapTotal = (segmentInfo.segmentCount - 1) * SEGMENT_GAP;
-    return baseHeight + segmentGapTotal;
+    const endpointTreasureSpace = NODE_SPACING + 150; // 终点宝箱额外空间
+    return baseHeight + segmentGapTotal + endpointTreasureSpace;
   }, [problems.length, segmentInfo.segmentCount]);
 
   if (problems.length === 0) {
@@ -532,16 +570,28 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         {generateTreasureNodes()}
       </div>
       
-      {/* 终点标记 */}
-      <div 
-        className="path-milestone-badge end"
-        style={{
-          left: `${getNodePosition(problems.length - 1).xPercent}%`,
-          top: containerHeight - 50
-        }}
-      >
-        🏆 {currentLang === 'zh' ? '完成' : 'Complete'}
-      </div>
+      {/* 终点宝箱节点 - 替换原来的静态徽章 */}
+      {(() => {
+        const endpointPos = getEndpointTreasurePosition();
+        return (
+          <div
+            className="path-treasure-wrapper endpoint-treasure"
+            style={{
+              left: `${endpointPos.xPercent}%`,
+              top: endpointPos.yPosition - 40
+            }}
+          >
+            <TreasureNode
+              treasureId={`endpoint-${pathId}`}
+              stageNumber={segmentInfo.segmentCount + 1}
+              canOpen={allProblemsCompleted}
+              currentLang={currentLang}
+              onOpen={handleTreasureOpen}
+              isEndpoint={true}
+            />
+          </div>
+        );
+      })()}
     </div>
   );
 };

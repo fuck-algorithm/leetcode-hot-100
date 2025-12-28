@@ -54,12 +54,7 @@
   font-weight: 800;
   color: #1f2937;
   letter-spacing: 0.5px;
-}
-
-.realm-level {
-  font-size: 12px;
-  font-weight: 700;
-  color: #6b7280;
+  white-space: nowrap;
 }
 
 /* 经验条包装器 */
@@ -179,10 +174,6 @@
     font-size: 13px;
   }
   
-  .realm-level {
-    font-size: 11px;
-  }
-  
   .exp-bar-track {
     height: 16px;
   }
@@ -217,10 +208,6 @@
   
   .realm-name {
     font-size: 11px;
-  }
-  
-  .realm-level {
-    font-size: 10px;
   }
   
   .exp-bar-track {

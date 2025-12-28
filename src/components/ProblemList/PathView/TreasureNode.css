@@ -20,14 +20,34 @@
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* 锁定状态 */
+/* 锁定状态 - 仍然显示宝箱但有遮罩 */
 .treasure-node.locked .treasure-box {
-  background: linear-gradient(180deg, #6b7280 0%, #4b5563 100%);
+  background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
   box-shadow: 
-    0 6px 0 #374151,
-    0 8px 20px rgba(0, 0, 0, 0.2);
+    0 6px 0 #d97706,
+    0 8px 20px rgba(245, 158, 11, 0.2);
   cursor: not-allowed;
-  opacity: 0.7;
+  filter: grayscale(40%) brightness(0.8);
+}
+
+/* 锁定遮罩 */
+.treasure-lock-overlay {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(180deg, #6b7280 0%, #4b5563 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.lock-icon {
+  font-size: 14px;
 }
 
 /* 可开启状态 */
@@ -41,11 +61,11 @@
 }
 
 .treasure-node.ready .treasure-box:hover {
-  transform: translateY(-4px) scale(1.05);
+  transform: translateY(-4px) scale(1.08);
   box-shadow: 
     0 10px 0 #d97706,
     0 12px 30px rgba(245, 158, 11, 0.5),
-    0 0 40px rgba(251, 191, 36, 0.4);
+    0 0 50px rgba(251, 191, 36, 0.5);
 }
 
 .treasure-node.ready .treasure-box:active {
@@ -60,7 +80,7 @@
   background: linear-gradient(180deg, #fef3c7 0%, #fcd34d 100%);
   box-shadow: 
     0 0 40px rgba(251, 191, 36, 0.8),
-    0 0 60px rgba(251, 191, 36, 0.5);
+    0 0 80px rgba(251, 191, 36, 0.5);
   animation: treasureShake 0.5s ease-in-out;
 }
 
@@ -75,14 +95,15 @@
 
 /* 宝箱图标 */
 .treasure-icon {
-  font-size: 40px;
+  font-size: 42px;
   line-height: 1;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   transition: transform 0.3s ease;
+  z-index: 5;
 }
 
 .treasure-node.ready:hover .treasure-icon {
-  transform: scale(1.1) rotate(-5deg);
+  transform: scale(1.15) rotate(-8deg);
 }
 
 .treasure-node.opening .treasure-icon {
@@ -94,11 +115,11 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(251, 191, 36, 0.4) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.5) 0%, transparent 70%);
   animation: glowPulse 2s ease-in-out infinite;
   pointer-events: none;
 }
@@ -115,92 +136,121 @@
 
 .treasure-opening-effect .sparkle {
   position: absolute;
-  font-size: 20px;
+  font-size: 24px;
   animation: sparkleFloat 0.8s ease-out forwards;
 }
 
 .treasure-opening-effect .sparkle:nth-child(1) {
-  top: 0;
+  top: -10px;
   left: 50%;
+  transform: translateX(-50%);
   animation-delay: 0s;
 }
 
 .treasure-opening-effect .sparkle:nth-child(2) {
   top: 20%;
-  left: 10%;
+  left: 0;
   animation-delay: 0.1s;
 }
 
 .treasure-opening-effect .sparkle:nth-child(3) {
   top: 20%;
-  right: 10%;
+  right: 0;
   animation-delay: 0.2s;
 }
 
-/* 阶段标签 */
+.treasure-opening-effect .sparkle:nth-child(4) {
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation-delay: 0.15s;
+}
+
+/* 宝箱名称标签 */
 .treasure-label {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  background: white;
-  padding: 8px 16px;
-  border-radius: 12px;
+  background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+  padding: 10px 18px;
+  border-radius: 14px;
   box-shadow: 
-    0 3px 0 #e5e5e5,
-    0 4px 12px rgba(0, 0, 0, 0.08);
+    0 3px 0 #fcd34d,
+    0 4px 12px rgba(251, 191, 36, 0.15);
+  border: 2px solid #fbbf24;
 }
 
-.treasure-stage {
+.treasure-name {
   font-size: 14px;
   font-weight: 800;
-  color: #374151;
+  color: #92400e;
+  letter-spacing: 0.5px;
 }
 
 .treasure-reward {
   font-size: 12px;
   font-weight: 700;
-  color: #f59e0b;
+  color: #d97706;
+}
+
+.treasure-node.opened .treasure-label {
+  background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%);
+  border-color: #34d399;
+  box-shadow: 
+    0 3px 0 #6ee7b7,
+    0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+.treasure-node.opened .treasure-name {
+  color: #065f46;
 }
 
 .treasure-node.opened .treasure-reward {
   color: #10b981;
 }
 
+.treasure-node.locked .treasure-label {
+  filter: grayscale(30%) brightness(0.9);
+}
+
 /* 奖励弹出 */
 .treasure-reward-popup {
   position: absolute;
-  top: -60px;
+  top: -70px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
   color: white;
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: 20px;
   box-shadow: 
     0 4px 0 #d97706,
-    0 6px 20px rgba(245, 158, 11, 0.4);
+    0 6px 20px rgba(245, 158, 11, 0.5);
   animation: rewardPopup 2.5s ease-out forwards;
   z-index: 100;
   white-space: nowrap;
 }
 
-.reward-icon {
-  font-size: 20px;
+.reward-blessing {
+  font-size: 14px;
+  font-weight: 700;
+  opacity: 0.9;
 }
 
 .reward-text {
-  font-size: 16px;
-  font-weight: 800;
+  font-size: 18px;
+  font-weight: 900;
 }
 
 /* 锁定提示 */
 .treasure-lock-hint {
   position: absolute;
-  bottom: -30px;
+  bottom: -32px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 11px;
@@ -209,6 +259,9 @@
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.2s ease;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 10px;
+  border-radius: 8px;
 }
 
 .treasure-node.locked:hover .treasure-lock-hint {
@@ -221,7 +274,7 @@
     transform: scale(1);
   }
   50% {
-    transform: scale(1.03);
+    transform: scale(1.05);
   }
 }
 
@@ -230,16 +283,16 @@
     transform: rotate(0deg);
   }
   20% {
-    transform: rotate(-10deg);
+    transform: rotate(-12deg);
   }
   40% {
-    transform: rotate(10deg);
+    transform: rotate(12deg);
   }
   60% {
-    transform: rotate(-10deg);
+    transform: rotate(-12deg);
   }
   80% {
-    transform: rotate(10deg);
+    transform: rotate(12deg);
   }
 }
 
@@ -248,7 +301,7 @@
     transform: scale(1);
   }
   50% {
-    transform: scale(1.3);
+    transform: scale(1.4);
   }
 }
 
@@ -259,7 +312,7 @@
   }
   50% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1.2);
+    transform: translate(-50%, -50%) scale(1.3);
   }
 }
 
@@ -270,7 +323,7 @@
   }
   100% {
     opacity: 0;
-    transform: translateY(-40px) scale(0.5);
+    transform: translateY(-50px) scale(0.5);
   }
 }
 
@@ -281,7 +334,7 @@
   }
   15% {
     opacity: 1;
-    transform: translateX(-50%) translateY(-10px) scale(1.1);
+    transform: translateX(-50%) translateY(-15px) scale(1.1);
   }
   30% {
     transform: translateX(-50%) translateY(0) scale(1);
@@ -292,7 +345,7 @@
   }
   100% {
     opacity: 0;
-    transform: translateX(-50%) translateY(-20px) scale(0.9);
+    transform: translateX(-50%) translateY(-30px) scale(0.9);
   }
 }
 
@@ -305,14 +358,25 @@
   }
   
   .treasure-icon {
-    font-size: 34px;
+    font-size: 36px;
+  }
+  
+  .treasure-lock-overlay {
+    width: 24px;
+    height: 24px;
+    top: -6px;
+    right: -6px;
+  }
+  
+  .lock-icon {
+    font-size: 12px;
   }
   
   .treasure-label {
-    padding: 6px 12px;
+    padding: 8px 14px;
   }
   
-  .treasure-stage {
+  .treasure-name {
     font-size: 12px;
   }
   
@@ -321,15 +385,15 @@
   }
   
   .treasure-reward-popup {
-    padding: 8px 16px;
+    padding: 10px 18px;
   }
   
-  .reward-icon {
-    font-size: 18px;
+  .reward-blessing {
+    font-size: 12px;
   }
   
   .reward-text {
-    font-size: 14px;
+    font-size: 16px;
   }
 }
 
@@ -341,14 +405,25 @@
   }
   
   .treasure-icon {
-    font-size: 28px;
+    font-size: 30px;
+  }
+  
+  .treasure-lock-overlay {
+    width: 22px;
+    height: 22px;
+    top: -5px;
+    right: -5px;
+  }
+  
+  .lock-icon {
+    font-size: 11px;
   }
   
   .treasure-label {
-    padding: 5px 10px;
+    padding: 6px 12px;
   }
   
-  .treasure-stage {
+  .treasure-name {
     font-size: 11px;
   }
   
@@ -359,16 +434,35 @@
 
 /* 暗色模式 */
 [data-theme="dark"] .treasure-label {
-  background: #2a2f3e;
+  background: linear-gradient(180deg, #422006 0%, #451a03 100%);
+  border-color: #92400e;
   box-shadow: 
-    0 3px 0 #1a1f2e,
-    0 4px 12px rgba(0, 0, 0, 0.2);
+    0 3px 0 #78350f,
+    0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-[data-theme="dark"] .treasure-stage {
-  color: #e5e7eb;
+[data-theme="dark"] .treasure-name {
+  color: #fcd34d;
+}
+
+[data-theme="dark"] .treasure-reward {
+  color: #fbbf24;
+}
+
+[data-theme="dark"] .treasure-node.opened .treasure-label {
+  background: linear-gradient(180deg, #064e3b 0%, #065f46 100%);
+  border-color: #10b981;
+}
+
+[data-theme="dark"] .treasure-node.opened .treasure-name {
+  color: #6ee7b7;
+}
+
+[data-theme="dark"] .treasure-node.opened .treasure-reward {
+  color: #34d399;
 }
 
 [data-theme="dark"] .treasure-lock-hint {
-  color: #6b7280;
+  background: rgba(30, 30, 40, 0.9);
+  color: #9ca3af;
 }

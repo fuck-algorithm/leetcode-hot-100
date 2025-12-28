@@ -7,6 +7,50 @@ interface ExperienceBarProps {
   refreshTrigger?: number; // 用于触发刷新
 }
 
+// 修仙境界称号系统
+interface RealmInfo {
+  name: string;
+  nameEn: string;
+  minLevel: number;
+  maxLevel: number;
+  color: string;
+  icon: string;
+  bgGradient: string;
+}
+
+const REALMS: RealmInfo[] = [
+  { name: '练气期', nameEn: 'Qi Refining', minLevel: 1, maxLevel: 5, color: '#78716c', icon: '🌱', bgGradient: 'linear-gradient(135deg, #78716c 0%, #a8a29e 100%)' },
+  { name: '筑基期', nameEn: 'Foundation', minLevel: 6, maxLevel: 10, color: '#22c55e', icon: '🌿', bgGradient: 'linear-gradient(135deg, #22c55e 0%, #4ade80 100%)' },
+  { name: '金丹期', nameEn: 'Golden Core', minLevel: 11, maxLevel: 20, color: '#eab308', icon: '💫', bgGradient: 'linear-gradient(135deg, #eab308 0%, #facc15 100%)' },
+  { name: '元婴期', nameEn: 'Nascent Soul', minLevel: 21, maxLevel: 35, color: '#f97316', icon: '🔥', bgGradient: 'linear-gradient(135deg, #f97316 0%, #fb923c 100%)' },
+  { name: '化神期', nameEn: 'Spirit Severing', minLevel: 36, maxLevel: 50, color: '#ef4444', icon: '⚡', bgGradient: 'linear-gradient(135deg, #ef4444 0%, #f87171 100%)' },
+  { name: '炼虚期', nameEn: 'Void Refining', minLevel: 51, maxLevel: 70, color: '#a855f7', icon: '🌀', bgGradient: 'linear-gradient(135deg, #a855f7 0%, #c084fc 100%)' },
+  { name: '合体期', nameEn: 'Body Integration', minLevel: 71, maxLevel: 90, color: '#6366f1', icon: '💎', bgGradient: 'linear-gradient(135deg, #6366f1 0%, #818cf8 100%)' },
+  { name: '大乘期', nameEn: 'Mahayana', minLevel: 91, maxLevel: 100, color: '#ec4899', icon: '🌸', bgGradient: 'linear-gradient(135deg, #ec4899 0%, #f472b6 100%)' },
+  { name: '渡劫期', nameEn: 'Tribulation', minLevel: 101, maxLevel: 150, color: '#14b8a6', icon: '⛈️', bgGradient: 'linear-gradient(135deg, #14b8a6 0%, #2dd4bf 100%)' },
+  { name: '大罗金仙', nameEn: 'Golden Immortal', minLevel: 151, maxLevel: 999, color: '#fbbf24', icon: '👑', bgGradient: 'linear-gradient(135deg, #fbbf24 0%, #fcd34d 100%)' },
+];
+
+// 根据等级获取境界信息
+const getRealmByLevel = (level: number): RealmInfo => {
+  for (const realm of REALMS) {
+    if (level >= realm.minLevel && level <= realm.maxLevel) {
+      return realm;
+    }
+  }
+  return REALMS[REALMS.length - 1]; // 默认返回最高境界
+};
+
+// 获取下一个境界信息
+const getNextRealm = (level: number): RealmInfo | null => {
+  const currentRealm = getRealmByLevel(level);
+  const currentIndex = REALMS.findIndex(r => r.name === currentRealm.name);
+  if (currentIndex < REALMS.length - 1) {
+    return REALMS[currentIndex + 1];
+  }
+  return null;
+};
+
 const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigger }) => {
   const [experience, setExperience] = useState<ExperienceRecord>({
     id: 'total',
@@ -52,14 +96,20 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigg
 
   const levelProgress = calculateLevelProgress(experience.totalExp);
   const expToNextLevel = 100 - levelProgress;
+  const currentRealm = getRealmByLevel(experience.level);
+  const nextRealm = getNextRealm(experience.level);
+  const realmName = currentLang === 'zh' ? currentRealm.name : currentRealm.nameEn;
 
   return (
-    <div className="experience-bar-container">
+    <div className="experience-bar-container" style={{ background: currentRealm.bgGradient }}>
       <div className="experience-bar-content">
-        {/* 等级徽章 */}
-        <div className="level-badge">
-          <span className="level-icon">⭐</span>
-          <span className="level-number">{experience.level}</span>
+        {/* 境界徽章 */}
+        <div className="realm-badge" style={{ borderColor: currentRealm.color }}>
+          <span className="realm-icon">{currentRealm.icon}</span>
+          <div className="realm-info">
+            <span className="realm-name">{realmName}</span>
+            <span className="realm-level">Lv.{experience.level}</span>
+          </div>
         </div>
         
         {/* 经验条 */}
@@ -67,15 +117,23 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigg
           <div className="exp-bar-track">
             <div 
               className="exp-bar-fill"
-              style={{ width: `${levelProgress}%` }}
+              style={{ 
+                width: `${levelProgress}%`,
+                background: `linear-gradient(90deg, ${currentRealm.color} 0%, ${currentRealm.color}cc 100%)`
+              }}
             />
+            <div className="exp-bar-shine"></div>
           </div>
           <div className="exp-bar-text">
             <span className="exp-current">{experience.totalExp} EXP</span>
             <span className="exp-next">
-              {currentLang === 'zh' 
-                ? `距下一级还需 ${expToNextLevel} EXP`
-                : `${expToNextLevel} EXP to next level`
+              {nextRealm 
+                ? (currentLang === 'zh' 
+                    ? `距 ${nextRealm.name} 还需 ${(nextRealm.minLevel - experience.level) * 100 - levelProgress} EXP`
+                    : `${(nextRealm.minLevel - experience.level) * 100 - levelProgress} EXP to ${nextRealm.nameEn}`)
+                : (currentLang === 'zh' 
+                    ? `距下一级还需 ${expToNextLevel} EXP`
+                    : `${expToNextLevel} EXP to next level`)
               }
             </span>
           </div>
@@ -84,7 +142,7 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigg
       
       {/* 经验值获取动画 */}
       {showExpGain && (
-        <div className="exp-gain-popup">
+        <div className="exp-gain-popup" style={{ background: currentRealm.bgGradient }}>
           +{expGainAmount} EXP
         </div>
       )}

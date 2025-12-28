@@ -10,6 +10,60 @@ interface TreasureNodeProps {
   onOpen?: (treasureId: string, expAwarded: number) => void;
 }
 
+// 有趣的宝箱名称 - 江湖/休闲风格
+const TREASURE_NAMES_ZH = [
+  '新手礼包',
+  '江湖秘宝',
+  '武林宝箱',
+  '藏经阁宝',
+  '掌门赏赐',
+  '神秘宝藏',
+  '绝世秘籍',
+  '天外飞仙',
+  '至尊宝箱',
+  '传说宝藏',
+  '仙界馈赠',
+  '鸿蒙秘宝',
+  '混沌宝箱',
+  '创世神藏',
+  '终极宝藏'
+];
+
+const TREASURE_NAMES_EN = [
+  'Starter Pack',
+  'Martial Treasure',
+  'Warrior\'s Chest',
+  'Secret Archive',
+  'Master\'s Gift',
+  'Mystery Treasure',
+  'Legendary Scroll',
+  'Celestial Box',
+  'Supreme Chest',
+  'Epic Treasure',
+  'Divine Gift',
+  'Primordial Box',
+  'Chaos Treasure',
+  'Genesis Vault',
+  'Ultimate Treasure'
+];
+
+// 宝箱开启后的祝福语
+const BLESSING_ZH = [
+  '恭喜少侠！',
+  '功德圆满！',
+  '修为大进！',
+  '福缘深厚！',
+  '天道酬勤！'
+];
+
+const BLESSING_EN = [
+  'Congratulations!',
+  'Well done!',
+  'Great progress!',
+  'Fortune favors you!',
+  'Hard work pays off!'
+];
+
 const TreasureNode: React.FC<TreasureNodeProps> = ({
   treasureId,
   stageNumber,
@@ -20,6 +74,20 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
   const [isOpened, setIsOpened] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
   const [showReward, setShowReward] = useState(false);
+  const [blessing, setBlessing] = useState('');
+
+  // 获取宝箱名称
+  const getTreasureName = () => {
+    const names = currentLang === 'zh' ? TREASURE_NAMES_ZH : TREASURE_NAMES_EN;
+    const index = Math.min(stageNumber - 1, names.length - 1);
+    return names[index];
+  };
+
+  // 获取随机祝福语
+  const getRandomBlessing = () => {
+    const blessings = currentLang === 'zh' ? BLESSING_ZH : BLESSING_EN;
+    return blessings[Math.floor(Math.random() * blessings.length)];
+  };
 
   // 加载宝箱状态
   useEffect(() => {
@@ -39,6 +107,7 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
     if (!canOpen || isOpened || isOpening) return;
     
     setIsOpening(true);
+    setBlessing(getRandomBlessing());
     
     try {
       const { treasure, newExp } = await experienceStorage.openTreasure(treasureId);
@@ -66,7 +135,7 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
       console.error('开启宝箱失败:', error);
       setIsOpening(false);
     }
-  }, [canOpen, isOpened, isOpening, treasureId, onOpen]);
+  }, [canOpen, isOpened, isOpening, treasureId, onOpen, currentLang]);
 
   // 确定宝箱状态类名
   const getStatusClass = () => {
@@ -74,6 +143,13 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
     if (isOpening) return 'opening';
     if (canOpen) return 'ready';
     return 'locked';
+  };
+
+  // 获取宝箱图标 - 始终显示宝箱
+  const getTreasureIcon = () => {
+    if (isOpened) return '📭'; // 已开启的空宝箱
+    if (isOpening) return '✨'; // 开启中的特效
+    return '🎁'; // 未开启的宝箱（无论是否可开启）
   };
 
   return (
@@ -92,9 +168,16 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
               : (currentLang === 'zh' ? '完成前面的题目解锁' : 'Complete previous problems to unlock')
         }
       >
+        {/* 锁定遮罩 - 仅在锁定状态显示 */}
+        {!canOpen && !isOpened && (
+          <div className="treasure-lock-overlay">
+            <span className="lock-icon">🔒</span>
+          </div>
+        )}
+        
         {/* 宝箱图标 */}
         <div className="treasure-icon">
-          {isOpened ? '📦' : isOpening ? '✨' : canOpen ? '🎁' : '🔐'}
+          {getTreasureIcon()}
         </div>
         
         {/* 宝箱光效 */}
@@ -107,22 +190,20 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
           <div className="treasure-opening-effect">
             <span className="sparkle">✨</span>
             <span className="sparkle">⭐</span>
-            <span className="sparkle">✨</span>
+            <span className="sparkle">💫</span>
+            <span className="sparkle">🌟</span>
           </div>
         )}
       </div>
       
-      {/* 阶段标签 */}
+      {/* 宝箱名称标签 */}
       <div className="treasure-label">
-        <span className="treasure-stage">
-          {currentLang === 'zh' 
-            ? `第 ${stageNumber} 阶段`
-            : `Stage ${stageNumber}`
-          }
+        <span className="treasure-name">
+          {getTreasureName()}
         </span>
         <span className="treasure-reward">
           {isOpened 
-            ? (currentLang === 'zh' ? '已领取' : 'Claimed')
+            ? (currentLang === 'zh' ? '✓ 已领取' : '✓ Claimed')
             : `+${TREASURE_EXP} EXP`
           }
         </span>
@@ -131,7 +212,7 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
       {/* 奖励弹出 */}
       {showReward && (
         <div className="treasure-reward-popup">
-          <span className="reward-icon">🎉</span>
+          <span className="reward-blessing">{blessing}</span>
           <span className="reward-text">+{TREASURE_EXP} EXP</span>
         </div>
       )}
@@ -140,8 +221,8 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
       {!canOpen && !isOpened && (
         <div className="treasure-lock-hint">
           {currentLang === 'zh' 
-            ? '完成前面的题目解锁'
-            : 'Complete previous problems'
+            ? '🗡️ 继续修炼解锁'
+            : '🗡️ Keep practicing to unlock'
           }
         </div>
       )}

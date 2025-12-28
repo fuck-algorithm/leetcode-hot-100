@@ -1,44 +1,72 @@
 /* 经验值条容器 */
 .experience-bar-container {
   position: relative;
-  padding: 12px 20px;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  border-radius: 16px;
+  padding: 14px 20px;
+  border-radius: 18px;
   margin-bottom: 20px;
   box-shadow: 
-    0 4px 0 #0d0d1a,
-    0 6px 20px rgba(0, 0, 0, 0.3);
+    0 4px 0 rgba(0, 0, 0, 0.15),
+    0 6px 24px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* 背景装饰 */
+.experience-bar-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 100%);
+  pointer-events: none;
 }
 
 .experience-bar-content {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
+  position: relative;
+  z-index: 1;
 }
 
-/* 等级徽章 */
-.level-badge {
+/* 境界徽章 */
+.realm-badge {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  background: linear-gradient(180deg, #ffd700 0%, #ffb800 100%);
-  padding: 8px 14px;
-  border-radius: 20px;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 10px 16px;
+  border-radius: 16px;
   box-shadow: 
-    0 3px 0 #b89700,
-    0 4px 12px rgba(255, 215, 0, 0.3);
-  min-width: 70px;
+    0 3px 0 rgba(0, 0, 0, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 3px solid;
+  min-width: 140px;
 }
 
-.level-icon {
-  font-size: 18px;
+.realm-icon {
+  font-size: 28px;
+  line-height: 1;
 }
 
-.level-number {
-  font-size: 18px;
+.realm-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.realm-name {
+  font-size: 14px;
   font-weight: 800;
-  color: #5c4200;
+  color: #1f2937;
+  letter-spacing: 0.5px;
+}
+
+.realm-level {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7280;
 }
 
 /* 经验条包装器 */
@@ -46,36 +74,37 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 /* 经验条轨道 */
 .exp-bar-track {
-  height: 16px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
   overflow: hidden;
   position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* 经验条填充 */
 .exp-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #58cc02 0%, #7ed321 50%, #a8e063 100%);
-  border-radius: 10px;
+  border-radius: 12px;
   transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
 }
 
-.exp-bar-fill::after {
-  content: '';
+/* 经验条光泽效果 */
+.exp-bar-shine {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 50%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
-  border-radius: 10px 10px 0 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, transparent 100%);
+  border-radius: 12px 12px 0 0;
+  pointer-events: none;
 }
 
 /* 经验条文字 */
@@ -86,33 +115,35 @@
 }
 
 .exp-current {
-  font-size: 14px;
-  font-weight: 700;
-  color: #ffd700;
+  font-size: 15px;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .exp-next {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* 经验值获取弹出动画 */
 .exp-gain-popup {
   position: absolute;
-  top: -10px;
+  top: -12px;
   right: 20px;
-  background: linear-gradient(180deg, #58cc02 0%, #46a302 100%);
   color: white;
   font-size: 16px;
   font-weight: 800;
-  padding: 8px 16px;
+  padding: 10px 18px;
   border-radius: 20px;
   box-shadow: 
-    0 3px 0 #3d8a00,
-    0 4px 12px rgba(88, 204, 2, 0.4);
+    0 3px 0 rgba(0, 0, 0, 0.2),
+    0 4px 16px rgba(0, 0, 0, 0.3);
   animation: expGainPop 2s ease-out forwards;
   z-index: 100;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes expGainPop {
@@ -136,33 +167,39 @@
 /* 响应式设计 */
 @media (max-width: 768px) {
   .experience-bar-container {
-    padding: 10px 16px;
+    padding: 12px 16px;
     margin-bottom: 16px;
+    border-radius: 14px;
   }
   
   .experience-bar-content {
-    gap: 12px;
+    gap: 14px;
   }
   
-  .level-badge {
-    padding: 6px 12px;
-    min-width: 60px;
+  .realm-badge {
+    padding: 8px 12px;
+    min-width: 120px;
+    border-radius: 12px;
   }
   
-  .level-icon {
-    font-size: 16px;
+  .realm-icon {
+    font-size: 24px;
   }
   
-  .level-number {
-    font-size: 16px;
+  .realm-name {
+    font-size: 13px;
+  }
+  
+  .realm-level {
+    font-size: 11px;
   }
   
   .exp-bar-track {
-    height: 14px;
+    height: 16px;
   }
   
   .exp-current {
-    font-size: 13px;
+    font-size: 14px;
   }
   
   .exp-next {
@@ -172,24 +209,33 @@
 
 @media (max-width: 480px) {
   .experience-bar-container {
-    padding: 8px 12px;
+    padding: 10px 12px;
   }
   
-  .level-badge {
-    padding: 5px 10px;
-    min-width: 55px;
+  .experience-bar-content {
+    gap: 10px;
   }
   
-  .level-icon {
-    font-size: 14px;
+  .realm-badge {
+    padding: 6px 10px;
+    min-width: 100px;
+    gap: 8px;
   }
   
-  .level-number {
-    font-size: 14px;
+  .realm-icon {
+    font-size: 20px;
+  }
+  
+  .realm-name {
+    font-size: 11px;
+  }
+  
+  .realm-level {
+    font-size: 10px;
   }
   
   .exp-bar-track {
-    height: 12px;
+    height: 14px;
   }
   
   .exp-current {
@@ -202,26 +248,23 @@
   
   .exp-gain-popup {
     font-size: 14px;
-    padding: 6px 12px;
+    padding: 8px 14px;
   }
 }
 
-/* 亮色模式 */
-[data-theme="light"] .experience-bar-container {
-  background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
-  box-shadow: 
-    0 4px 0 #cbd5e0,
-    0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .exp-bar-track {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .exp-current {
-  color: #b89700;
-}
-
-[data-theme="light"] .exp-next {
-  color: rgba(0, 0, 0, 0.5);
+/* 超小屏幕 - 垂直布局 */
+@media (max-width: 380px) {
+  .experience-bar-content {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .realm-badge {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .exp-bar-wrapper {
+    width: 100%;
+  }
 }

@@ -296,7 +296,7 @@
 
 /* 展开状态的节点包装器 */
 .duolingo-node-wrapper.expanded {
-  z-index: 100;
+  z-index: 1000;
 }
 
 /* 右键/悬停菜单 */
@@ -311,7 +311,7 @@
   box-shadow: 0 4px 0 #d0d0d0, 0 8px 20px rgba(0, 0, 0, 0.15);
   padding: 12px;
   padding-top: 20px; /* 增加顶部内边距，为桥接区域留空间 */
-  z-index: 1000;
+  z-index: 1001;
   animation: menuFadeIn 0.15s ease;
 }
 

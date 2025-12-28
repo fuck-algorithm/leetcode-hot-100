@@ -26,7 +26,6 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   problems,
   currentLang,
   t,
-  handleAnimationClick,
   isCompleted,
   onToggleCompletion
 }) => {
@@ -46,10 +45,11 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  // 点击外部关闭展开的节点
+  // 点击外部关闭展开的节点和菜单
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (expandedNodeId && !(e.target as Element).closest('.duolingo-node-wrapper')) {
+      const target = e.target as Element;
+      if (expandedNodeId && !target.closest('.duolingo-node-wrapper') && !target.closest('.node-context-menu')) {
         setExpandedNodeId(null);
       }
     };
@@ -78,55 +78,68 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return { xPercent, xPixel, yPosition, index };
   };
 
-  // 单击/双击处理
-  const clickTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-  const clickCountRef = React.useRef(0);
-
-  // 切换节点展开状态
-  const toggleNodeExpand = useCallback((problemId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setExpandedNodeId(prev => prev === problemId ? null : problemId);
+  // 隐藏菜单
+  const hideMenu = useCallback(() => {
+    setExpandedNodeId(null);
   }, []);
 
   // 处理完成状态切换
   const handleToggleCompletion = useCallback((problemId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     onToggleCompletion(problemId);
-  }, [onToggleCompletion]);
+    hideMenu();
+  }, [onToggleCompletion, hideMenu]);
 
   // 打开LeetCode题目页面
   const openLeetCodePage = useCallback((problem: Problem, e: React.MouseEvent) => {
     e.stopPropagation();
     window.open(`https://leetcode.cn/problems/${problem.titleSlug}/`, '_blank');
-  }, []);
+    hideMenu();
+  }, [hideMenu]);
 
+  // 打开GitHub Pages演示页面
+  const openGitHubPages = useCallback((problem: Problem, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (problem.hasAnimation && problem.repo?.pagesUrl) {
+      window.open(problem.repo.pagesUrl, '_blank');
+    }
+    hideMenu();
+  }, [hideMenu]);
+
+  // 左键单击 - 直接跳转到GitHub Pages（如果有动画）或LeetCode
   const handleNodeClick = (e: React.MouseEvent, problem: Problem) => {
     e.preventDefault();
     e.stopPropagation();
     
-    clickCountRef.current += 1;
-    
-    if (clickCountRef.current === 1) {
-      clickTimeoutRef.current = setTimeout(() => {
-        if (clickCountRef.current === 1) {
-          // 单击展开/收起节点详情
-          toggleNodeExpand(problem.questionFrontendId, e);
-        }
-        clickCountRef.current = 0;
-      }, 250);
-    } else if (clickCountRef.current === 2) {
-      if (clickTimeoutRef.current) {
-        clearTimeout(clickTimeoutRef.current);
-      }
-      clickCountRef.current = 0;
-      // 双击打开LeetCode页面
-      if (problem.hasAnimation && problem.repo?.pagesUrl) {
-        window.open(problem.repo.pagesUrl, '_blank');
-      } else {
-        window.open(`https://leetcode.cn/problems/${problem.titleSlug}/`, '_blank');
-      }
+    // 左键单击直接跳转
+    if (problem.hasAnimation && problem.repo?.pagesUrl) {
+      window.open(problem.repo.pagesUrl, '_blank');
+    } else {
+      window.open(`https://leetcode.cn/problems/${problem.titleSlug}/`, '_blank');
     }
   };
+
+  // 右键单击 - 显示菜单
+  const handleNodeContextMenu = (e: React.MouseEvent, problem: Problem) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setExpandedNodeId(problem.questionFrontendId);
+  };
+
+  // 鼠标悬停 - 显示菜单
+  const handleNodeMouseEnter = useCallback((problemId: string) => {
+    setExpandedNodeId(problemId);
+  }, []);
+
+  // 鼠标离开节点区域
+  const handleNodeMouseLeave = useCallback((e: React.MouseEvent) => {
+    // 检查是否移动到菜单或其他节点上
+    const relatedTarget = e.relatedTarget as Element;
+    if (relatedTarget && (relatedTarget.closest('.node-context-menu') || relatedTarget.closest('.duolingo-node-wrapper'))) {
+      return;
+    }
+    setExpandedNodeId(null);
+  }, []);
 
   // 获取难度类名
   const getDifficultyClass = (difficulty: string) => {
@@ -235,6 +248,8 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                 left: `${position.xPercent}%`,
                 top: position.yPosition - 35
               }}
+              onMouseEnter={() => handleNodeMouseEnter(problem.questionFrontendId)}
+              onMouseLeave={handleNodeMouseLeave}
             >
               <Tooltip 
                 content={`#${problem.questionFrontendId} ${title} | ${t(`difficulties.${problem.difficulty.toLowerCase()}`)} | ${(problem.acRate * 100).toFixed(1)}%${problem.hasAnimation ? ' | 🎬' : ''}${completed ? ' | ✓' : ''}`}
@@ -242,6 +257,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                 <div 
                   className={`duolingo-node ${difficultyClass} ${completed ? 'is-completed' : ''} ${isCurrentNode ? 'is-current' : ''}`}
                   onClick={(e) => handleNodeClick(e, problem)}
+                  onContextMenu={(e) => handleNodeContextMenu(e, problem)}
                 >
                   <div className="node-inner">
                     {completed ? (
@@ -268,26 +284,23 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                 </div>
               </Tooltip>
               
-              {/* 展开的详情面板 */}
+              {/* 悬停/右键菜单 */}
               {isExpanded && (
-                <div className="node-detail-panel">
-                  <div className="node-detail-header">
-                    <span className="node-detail-id">#{problem.questionFrontendId}</span>
-                    <span className={`node-detail-difficulty ${difficultyClass}`}>
+                <div 
+                  className="node-context-menu"
+                  onMouseEnter={() => setExpandedNodeId(problem.questionFrontendId)}
+                >
+                  <div className="context-menu-header">
+                    <span className="context-menu-id">#{problem.questionFrontendId}</span>
+                    <span className={`context-menu-difficulty ${difficultyClass}`}>
                       {t(`difficulties.${problem.difficulty.toLowerCase()}`)}
                     </span>
                   </div>
-                  <div className="node-detail-title" onClick={(e) => openLeetCodePage(problem, e)}>
-                    {title}
-                  </div>
-                  <div className="node-detail-stats">
-                    <span className="node-detail-rate">
-                      {currentLang === 'zh' ? '通过率' : 'AC Rate'}: {(problem.acRate * 100).toFixed(1)}%
-                    </span>
-                  </div>
-                  <div className="node-detail-actions">
+                  <div className="context-menu-title">{title}</div>
+                  <div className="context-menu-actions">
+                    {/* 菜单项1: 标记完成/未完成 */}
                     <button 
-                      className={`node-action-btn ${completed ? 'completed' : 'incomplete'}`}
+                      className={`context-menu-btn ${completed ? 'completed' : 'incomplete'}`}
                       onClick={(e) => handleToggleCompletion(problem.questionFrontendId, e)}
                     >
                       {completed 
@@ -295,17 +308,29 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                         : (currentLang === 'zh' ? '○ 标记为已完成' : '○ Mark as complete')
                       }
                     </button>
+                    
+                    {/* 菜单项2: 跳转到演示页面 */}
+                    {problem.hasAnimation && pagesUrl && (
+                      <button 
+                        className="context-menu-btn animation-btn"
+                        onClick={(e) => openGitHubPages(problem, e)}
+                      >
+                        🎬 {currentLang === 'zh' ? '查看算法演示' : 'View Animation'}
+                      </button>
+                    )}
+                    
+                    {/* 菜单项3: 跳转到LeetCode */}
                     <button 
-                      className="node-action-btn leetcode-btn"
+                      className="context-menu-btn leetcode-btn"
                       onClick={(e) => openLeetCodePage(problem, e)}
                     >
-                      {currentLang === 'zh' ? '打开 LeetCode' : 'Open LeetCode'}
+                      📝 {currentLang === 'zh' ? '打开 LeetCode' : 'Open LeetCode'}
                     </button>
                   </div>
                 </div>
               )}
               
-              {/* 题目标题 - 悬停显示 */}
+              {/* 题目标题 - 悬停显示（当菜单未展开时） */}
               {!isExpanded && (
                 <div className="node-title-label">
                   <span className="node-title-text">{title}</span>

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { Problem } from '../types';
 import Tooltip from '../../Tooltip';
 import AnimationBadge from '../AnimationBadge';
@@ -21,6 +21,13 @@ interface DuolingoPathProps {
   isCompleted: (problemId: string) => boolean;
   onToggleCompletion: (problemId: string) => Promise<void>;
 }
+
+// 分段配置：每段的题目数量
+const SEGMENT_SIZE = 5;
+// 分段之间的额外间距（包含分隔区域）
+const SEGMENT_GAP = 200;
+// 节点之间的基础间距
+const NODE_SPACING = 180;
 
 const DuolingoPath: React.FC<DuolingoPathProps> = ({
   problems,
@@ -68,8 +75,42 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     };
   }, []);
 
-  // 简化的蜿蜒路径布局
-  const getNodePosition = (index: number) => {
+  // 计算分段信息
+  const segmentInfo = useMemo(() => {
+    const totalProblems = problems.length;
+    const segmentCount = Math.ceil(totalProblems / SEGMENT_SIZE);
+    const segments: { startIndex: number; endIndex: number; completedCount: number }[] = [];
+    
+    for (let i = 0; i < segmentCount; i++) {
+      const startIndex = i * SEGMENT_SIZE;
+      const endIndex = Math.min(startIndex + SEGMENT_SIZE - 1, totalProblems - 1);
+      
+      // 计算该分段的完成数量
+      let completedCount = 0;
+      for (let j = startIndex; j <= endIndex; j++) {
+        if (isCompleted(problems[j].questionFrontendId)) {
+          completedCount++;
+        }
+      }
+      
+      segments.push({ startIndex, endIndex, completedCount });
+    }
+    
+    return { segmentCount, segments };
+  }, [problems, isCompleted]);
+
+  // 判断某个索引是否是分段的最后一个节点（不包括整个路径的最后一个）
+  const isSegmentEnd = useCallback((index: number) => {
+    return (index + 1) % SEGMENT_SIZE === 0 && index < problems.length - 1;
+  }, [problems.length]);
+
+  // 获取某个索引所在的分段编号
+  const getSegmentIndex = useCallback((index: number) => {
+    return Math.floor(index / SEGMENT_SIZE);
+  }, []);
+
+  // 简化的蜿蜒路径布局（考虑分段间距）
+  const getNodePosition = useCallback((index: number) => {
     const centerX = containerWidth / 2;
     const amplitude = Math.min(80, (containerWidth - 140) / 3);
     
@@ -83,10 +124,15 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     xPixel = Math.max(margin, Math.min(containerWidth - margin, xPixel));
     
     const xPercent = (xPixel / containerWidth) * 100;
-    const yPosition = index * 180 + 100; // 增加间距到180，给题目名称完整显示留足空间
+    
+    // 计算Y位置，考虑分段间距
+    const segmentIndex = getSegmentIndex(index);
+    const baseY = index * NODE_SPACING + 100;
+    const segmentGapOffset = segmentIndex * SEGMENT_GAP;
+    const yPosition = baseY + segmentGapOffset;
     
     return { xPercent, xPixel, yPosition, index };
-  };
+  }, [containerWidth, getSegmentIndex]);
 
   // 清除隐藏定时器
   const clearHideTimeout = useCallback(() => {
@@ -220,7 +266,86 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return paths;
   };
 
-  const containerHeight = problems.length * 180 + 180; // 同步更新高度计算
+  // 生成分段分隔区域（在每个阶段之间）
+  const generateSegmentDividers = () => {
+    const dividers: JSX.Element[] = [];
+    
+    segmentInfo.segments.forEach((segment, segmentIndex) => {
+      // 跳过最后一个分段（因为最后有终点标记）
+      if (segmentIndex === segmentInfo.segmentCount - 1) return;
+      
+      const lastNodeIndex = segment.endIndex;
+      const lastNodePosition = getNodePosition(lastNodeIndex);
+      const segmentSize = segment.endIndex - segment.startIndex + 1;
+      const isSegmentCompleted = segment.completedCount === segmentSize;
+      
+      // 下一个阶段的信息
+      const nextSegment = segmentInfo.segments[segmentIndex + 1];
+      const nextSegmentSize = nextSegment ? nextSegment.endIndex - nextSegment.startIndex + 1 : 0;
+      
+      // 分隔区域位置在分段最后一个节点下方
+      const dividerY = lastNodePosition.yPosition + 100;
+      
+      dividers.push(
+        <div
+          key={`divider-${segmentIndex}`}
+          className={`path-segment-divider ${isSegmentCompleted ? 'completed' : ''}`}
+          style={{
+            top: dividerY
+          }}
+        >
+          {/* 左侧装饰线 */}
+          <div className="segment-divider-line left"></div>
+          
+          {/* 中间的阶段完成标记 */}
+          <div className="segment-divider-content">
+            <div className="segment-divider-badge">
+              <div className="segment-badge-icon">
+                {isSegmentCompleted ? '⭐' : '🎯'}
+              </div>
+              <div className="segment-badge-info">
+                <div className="segment-badge-title">
+                  {currentLang === 'zh' 
+                    ? `第 ${segmentIndex + 1} 阶段`
+                    : `Stage ${segmentIndex + 1}`
+                  }
+                </div>
+                <div className="segment-badge-status">
+                  {isSegmentCompleted 
+                    ? (currentLang === 'zh' ? '已完成 ✓' : 'Complete ✓')
+                    : `${segment.completedCount}/${segmentSize}`
+                  }
+                </div>
+              </div>
+            </div>
+            
+            {/* 下一阶段预告 */}
+            <div className="segment-next-preview">
+              <div className="segment-next-arrow">↓</div>
+              <div className="segment-next-text">
+                {currentLang === 'zh' 
+                  ? `第 ${segmentIndex + 2} 阶段 · ${nextSegmentSize} 题`
+                  : `Stage ${segmentIndex + 2} · ${nextSegmentSize} problems`
+                }
+              </div>
+            </div>
+          </div>
+          
+          {/* 右侧装饰线 */}
+          <div className="segment-divider-line right"></div>
+        </div>
+      );
+    });
+    
+    return dividers;
+  };
+
+  // 计算容器高度（考虑分段间距）
+  const containerHeight = useMemo(() => {
+    const baseHeight = problems.length * NODE_SPACING + 180;
+    const segmentGapTotal = (segmentInfo.segmentCount - 1) * SEGMENT_GAP;
+    return baseHeight + segmentGapTotal;
+  }, [problems.length, segmentInfo.segmentCount]);
 
   if (problems.length === 0) {
     return (
@@ -272,10 +397,13 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
           // 当前进度节点（第一个未完成的节点）
           const isCurrentNode = !completed && (index === 0 || isCompleted(problems[index - 1].questionFrontendId));
           
+          // 判断是否是分段的最后一个节点
+          const isLastInSegment = isSegmentEnd(index);
+          
           return (
             <div
               key={problem.id}
-              className={`duolingo-node-wrapper ${completed ? 'completed' : ''} ${isCurrentNode ? 'current' : ''} ${isExpanded ? 'expanded' : ''}`}
+              className={`duolingo-node-wrapper ${completed ? 'completed' : ''} ${isCurrentNode ? 'current' : ''} ${isExpanded ? 'expanded' : ''} ${isLastInSegment ? 'segment-end' : ''}`}
               style={{
                 left: `${position.xPercent}%`,
                 top: position.yPosition - 35
@@ -373,6 +501,9 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
             </div>
           );
         })}
+        
+        {/* 分段分隔区域 */}
+        {generateSegmentDividers()}
       </div>
       
       {/* 终点标记 */}

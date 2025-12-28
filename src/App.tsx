@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import './App.css';
 import ProblemList from './components/ProblemList';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -13,16 +13,22 @@ import { useGitHubStars } from './hooks/useGitHubStars';
 const App: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { stars } = useGitHubStars('fuck-algorithm', 'leetcode-hot-100');
+  const navigate = useNavigate();
   
   // 监听语言变化，更新页面标题
   useEffect(() => {
     document.title = t('appTitle');
   }, [t, i18n.language]);
+
+  // 点击Logo跳转首页
+  const handleLogoClick = () => {
+    navigate('/');
+  };
   
   return (
     <div className="app">
       <header className="app-header">
-        <div className="app-logo-container">
+        <div className="app-logo-container" onClick={handleLogoClick}>
           <div className="app-logo-title">
             <img 
               src={`${process.env.PUBLIC_URL}/favicon.png`} 

@@ -106,22 +106,23 @@ const PathOverview: React.FC<PathOverviewProps> = ({
       
       const midY = (currentY + nextY) / 2;
       
-      // 获取当前路径的完成状态
-      const currentStats = getPathCompletionStats(pathsWithProblems[i].problems);
+      // 获取下一个路径（目标节点）的完成状态
+      // 当目标节点完成度100%时，指向它的扇入路径变绿
       const nextStats = getPathCompletionStats(pathsWithProblems[i + 1].problems);
-      const bothCompleted = currentStats.percentage === 100 && nextStats.percentage === 100;
+      const isTargetCompleted = nextStats.percentage === 100;
       
       // 简洁的连接线 - 多邻国风格
+      // 当目标节点完成时，扇入路径变绿色实线；否则为灰色虚线
       paths.push(
         <path
           key={`path-${i}`}
           d={`M ${currentX} ${currentY} 
               C ${currentX} ${midY}, ${nextX} ${midY}, ${nextX} ${nextY}`}
-          stroke={bothCompleted ? '#58cc02' : '#e5e5e5'}
+          stroke={isTargetCompleted ? '#58cc02' : '#e5e5e5'}
           strokeWidth="8"
           fill="none"
           strokeLinecap="round"
-          strokeDasharray={bothCompleted ? 'none' : '12 8'}
+          strokeDasharray={isTargetCompleted ? 'none' : '12 8'}
         />
       );
     }

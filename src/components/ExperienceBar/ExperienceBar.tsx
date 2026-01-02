@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { experienceStorage, ExperienceRecord, calculateLevelProgress } from '../../services/experienceStorage';
+import RealmHelpTooltip from './RealmHelpTooltip';
 import './ExperienceBar.css';
 
 interface ExperienceBarProps {
@@ -80,6 +81,7 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigg
   });
   const [showExpGain, setShowExpGain] = useState(false);
   const [expGainAmount, setExpGainAmount] = useState(0);
+  const [showHelpTooltip, setShowHelpTooltip] = useState(false);
 
   const loadExperience = useCallback(async () => {
     try {
@@ -129,11 +131,29 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigg
   return (
     <div className="experience-bar-container" style={{ background: currentRealm.bgGradient }}>
       <div className="experience-bar-content">
-        {/* 境界徽章 */}
-        <div className="realm-badge" style={{ borderColor: currentRealm.color }}>
-          <span className="realm-icon">{currentRealm.icon}</span>
-          <div className="realm-info">
-            <span className="realm-name">{realmTitle}</span>
+        {/* 境界徽章和帮助图标 */}
+        <div className="realm-section">
+          <div className="realm-badge" style={{ borderColor: currentRealm.color }}>
+            <span className="realm-icon">{currentRealm.icon}</span>
+            <div className="realm-info">
+              <span className="realm-name">{realmTitle}</span>
+            </div>
+          </div>
+          
+          {/* 帮助图标 */}
+          <div 
+            className="help-icon-wrapper"
+            onMouseEnter={() => setShowHelpTooltip(true)}
+            onMouseLeave={() => setShowHelpTooltip(false)}
+          >
+            <button className="help-icon" aria-label={currentLang === 'zh' ? '查看境界说明' : 'View realm info'}>
+              ?
+            </button>
+            <RealmHelpTooltip
+              currentLang={currentLang}
+              currentLevel={experience.level}
+              isVisible={showHelpTooltip}
+            />
           </div>
         </div>
         

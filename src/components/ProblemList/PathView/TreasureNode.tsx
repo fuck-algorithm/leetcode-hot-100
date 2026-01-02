@@ -11,58 +11,58 @@ interface TreasureNodeProps {
   isEndpoint?: boolean; // 是否为终点宝箱
 }
 
-// 宝箱名称 - 天材地宝/神兵利器风格
+// 宝箱名称 - 神兵利器/仙家法宝风格（按等级递进）
 const TREASURE_NAMES_ZH = [
-  '灵芝草',      // 入门级天材地宝
-  '千年人参',    // 常见珍贵药材
-  '冰魄寒铁',    // 神兵材料
-  '紫金玄铁',    // 铸剑材料
-  '九转还魂丹',  // 珍贵丹药
-  '天蚕丝甲',    // 防具
-  '青龙偃月刀',  // 神兵利器
-  '玄冰神剑',    // 神兵利器
-  '凤凰涅槃羽',  // 稀有材料
-  '龙鳞宝甲',    // 顶级防具
-  '昆仑镜',      // 神器
-  '轩辕剑',      // 上古神兵
-  '东皇钟',      // 上古神器
-  '盘古斧',      // 开天神器
-  '混沌珠'       // 终极宝物
+  '碧水剑',        // 入门级法剑，清灵之气
+  '赤霄刀',        // 初阶神兵，火焰之力
+  '紫电锤',        // 雷属性兵器
+  '玄铁重盾',      // 防御型神兵
+  '破军枪',        // 攻击型长兵
+  '七星龙渊',      // 名剑，星辰之力
+  '天罡剑阵',      // 剑阵法宝
+  '乾坤圈',        // 束缚型法宝
+  '风火轮',        // 移动型法宝
+  '混天绫',        // 防御型法宝
+  '定海神针',      // 如意金箍棒
+  '诛仙剑',        // 上古神剑
+  '太极图',        // 先天至宝
+  '山河社稷图',    // 洪荒至宝
+  '造化玉碟'       // 天道至宝
 ];
 
 const TREASURE_NAMES_EN = [
-  'Spirit Herb',
-  'Millennium Ginseng',
-  'Frost Iron',
-  'Purple Gold',
-  'Revival Pill',
-  'Silkworm Armor',
-  'Dragon Blade',
-  'Ice Sword',
-  'Phoenix Feather',
-  'Dragon Scale',
-  'Kunlun Mirror',
-  'Xuanyuan Sword',
-  'Donghuang Bell',
-  'Pangu Axe',
-  'Chaos Pearl'
+  'Azure Water Sword',
+  'Crimson Sky Blade',
+  'Purple Thunder Hammer',
+  'Dark Iron Shield',
+  'Army Breaker Spear',
+  'Seven Star Dragon Abyss',
+  'Heavenly Sword Formation',
+  'Universe Ring',
+  'Wind Fire Wheels',
+  'Sky Silk',
+  'Sea Calming Needle',
+  'Immortal Slaying Sword',
+  'Taiji Diagram',
+  'Land & River Map',
+  'Creation Jade Disc'
 ];
 
-// 宝箱开启后的祝福语
+// 宝箱开启后的祝福语 - 神兵利器风格
 const BLESSING_ZH = [
-  '恭喜少侠！',
-  '功德圆满！',
-  '修为大进！',
-  '福缘深厚！',
-  '天道酬勤！'
+  '神兵入手！',
+  '法宝认主！',
+  '剑意通灵！',
+  '天赐神兵！',
+  '得此利器！'
 ];
 
 const BLESSING_EN = [
-  'Congratulations!',
-  'Well done!',
-  'Great progress!',
-  'Fortune favors you!',
-  'Hard work pays off!'
+  'Divine weapon acquired!',
+  'Artifact bound!',
+  'Sword spirit awakened!',
+  'Heaven-sent treasure!',
+  'Legendary gear obtained!'
 ];
 
 // 终点宝箱特殊名称

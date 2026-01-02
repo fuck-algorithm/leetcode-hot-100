@@ -11,7 +11,7 @@
 .treasure-box {
   width: 80px;
   height: 80px;
-  border-radius: 20px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -392,7 +392,7 @@
   gap: 4px;
   background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
   padding: 10px 18px;
-  border-radius: 14px;
+  border-radius: 6px;
   box-shadow: 
     0 3px 0 #fcd34d,
     0 4px 12px rgba(251, 191, 36, 0.15);
@@ -445,7 +445,7 @@
   background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
   color: white;
   padding: 12px 24px;
-  border-radius: 20px;
+  border-radius: 8px;
   box-shadow: 
     0 4px 0 #d97706,
     0 6px 20px rgba(245, 158, 11, 0.5);
@@ -572,7 +572,7 @@
   .treasure-box {
     width: 70px;
     height: 70px;
-    border-radius: 16px;
+    border-radius: 6px;
   }
   
   .treasure-icon {
@@ -619,7 +619,7 @@
   .treasure-box {
     width: 60px;
     height: 60px;
-    border-radius: 14px;
+    border-radius: 6px;
   }
   
   .treasure-icon {

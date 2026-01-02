@@ -31,7 +31,7 @@
 /* 路径卡片 */
 .path-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -211,7 +211,7 @@
   gap: 20px;
   padding: 24px;
   background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
-  border-radius: 12px;
+  border-radius: 8px;
   border-left: 4px solid var(--path-color);
   margin-bottom: 24px;
 }
@@ -271,7 +271,7 @@
   margin-bottom: 20px;
   padding: 16px;
   background: #f8f9fa;
-  border-radius: 12px;
+  border-radius: 8px;
   flex-wrap: wrap;
 }
 
@@ -290,7 +290,7 @@
 .filter-btn {
   padding: 6px 16px;
   border: 2px solid #e0e0e0;
-  border-radius: 20px;
+  border-radius: 6px;
   background: white;
   font-size: 13px;
   cursor: pointer;

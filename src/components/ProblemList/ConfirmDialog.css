@@ -25,7 +25,7 @@
 /* 对话框主体 */
 .confirm-dialog {
   background: white;
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 24px;
   max-width: 400px;
   width: 90%;

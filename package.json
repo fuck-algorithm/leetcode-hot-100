@@ -36,6 +36,11 @@
       "react-app/jest"
     ]
   },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(fast-check)/)"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -49,7 +54,11 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
+    "@types/jest": "^30.0.0",
     "@types/react-router-dom": "^5.3.3",
+    "fast-check": "^4.5.3",
     "gh-pages": "^6.1.1"
   }
 }

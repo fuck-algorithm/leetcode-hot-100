@@ -8,7 +8,7 @@
   padding: 60px 20px 100px 20px;
   overflow: visible;
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 8px;
 }
 
 .duolingo-path-empty {
@@ -324,7 +324,7 @@
   transform: none;
   min-width: 220px;
   background: white;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 0 4px 0 #d0d0d0, 0 8px 20px rgba(0, 0, 0, 0.15);
   padding: 12px;
   z-index: 1001;
@@ -483,7 +483,7 @@
   font-weight: 800;
   white-space: nowrap;
   padding: 10px 20px;
-  border-radius: 20px;
+  border-radius: 6px;
   z-index: 5;
   cursor: default;
   transition: transform 0.15s ease;
@@ -526,7 +526,7 @@
   z-index: 5;
   padding: 12px 20px;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow: 0 4px 0 #d0d0d0, 0 6px 12px rgba(0, 0, 0, 0.1);
   border: 2px solid #e0e0e0;
   transition: all 0.2s ease;
@@ -601,7 +601,7 @@
   .duolingo-path-container { 
     max-width: 100%; 
     padding: 50px 15px 80px 15px; 
-    border-radius: 12px; 
+    border-radius: 8px; 
   }
   .duolingo-node { 
     width: 60px; 
@@ -710,7 +710,7 @@
   .path-milestone-badge { 
     font-size: 11px; 
     padding: 6px 14px; 
-    border-radius: 16px; 
+    border-radius: 6px; 
   }
   .node-pulse-ring { 
     width: 68px; 
@@ -719,7 +719,7 @@
   .node-context-menu {
     min-width: 180px;
     padding: 8px;
-    border-radius: 10px;
+    border-radius: 6px;
   }
   .context-menu-header {
     margin-bottom: 4px;
@@ -741,7 +741,7 @@
   .context-menu-btn {
     padding: 6px 8px;
     font-size: 11px;
-    border-radius: 8px;
+    border-radius: 6px;
   }
 }
 

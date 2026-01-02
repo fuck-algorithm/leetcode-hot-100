@@ -1,0 +1,223 @@
+/* 帮助提示框容器 */
+.realm-help-tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  min-width: 340px;
+  max-width: 400px;
+  z-index: 1000;
+  animation: tooltipFadeIn 0.15s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 标题 */
+.tooltip-header {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tooltip-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+/* 经验值规则 */
+.exp-rules {
+  margin-bottom: 12px;
+  padding: 10px;
+  background: #f9fafb;
+  border-radius: 4px;
+}
+
+.exp-rule-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.exp-rule-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.exp-rule-item {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: white;
+  border: 1px solid #e5e7eb;
+}
+
+.exp-rule-item.easy {
+  color: #22c55e;
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+.exp-rule-item.medium {
+  color: #f59e0b;
+  border-color: #fde68a;
+  background: #fffbeb;
+}
+
+.exp-rule-item.hard {
+  color: #ef4444;
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.exp-rule-item.treasure {
+  color: #8b5cf6;
+  border-color: #ddd6fe;
+  background: #f5f3ff;
+}
+
+/* 境界列表 */
+.realm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.realm-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 4px;
+  border-left: 3px solid transparent;
+  background: #fafafa;
+  transition: background 0.15s ease;
+}
+
+.realm-item:hover {
+  background: #f3f4f6;
+}
+
+.realm-item.current {
+  background: #fef3c7;
+  border-left-color: #f59e0b !important;
+}
+
+.realm-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.realm-item-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.realm-item-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.realm-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.current-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #d97706;
+  background: #fef3c7;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #fcd34d;
+}
+
+.realm-item-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: right;
+}
+
+.realm-item-level {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 50px;
+}
+
+.realm-item-exp {
+  font-size: 11px;
+  font-weight: 700;
+  color: #374151;
+  min-width: 60px;
+}
+
+.realm-item-estimate {
+  font-size: 10px;
+  color: #9ca3af;
+  min-width: 50px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .realm-help-tooltip {
+    min-width: 300px;
+    max-width: calc(100vw - 40px);
+    left: auto;
+    right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .realm-help-tooltip {
+    position: fixed;
+    top: auto;
+    bottom: 20px;
+    left: 10px;
+    right: 10px;
+    max-width: none;
+    min-width: auto;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  
+  .realm-list {
+    max-height: none;
+  }
+  
+  .realm-item-right {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  
+  .realm-item-level,
+  .realm-item-exp,
+  .realm-item-estimate {
+    min-width: auto;
+  }
+}

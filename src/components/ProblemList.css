@@ -44,7 +44,7 @@
   width: 100%;
   padding: 10px 15px;
   border: 1px solid #e8e8e8;
-  border-radius: 20px;
+  border-radius: 6px;
   font-size: 14px;
   outline: none;
   box-sizing: border-box;
@@ -65,7 +65,7 @@
 .completion-filter-select {
   padding: 6px 28px 6px 12px;
   border: 1px solid #e0e0e0;
-  border-radius: 16px;
+  border-radius: 6px;
   font-size: 13px;
   background-color: #f5f5f5;
   cursor: pointer;
@@ -311,7 +311,7 @@
   padding: 4px 10px;
   background-color: #e6f7ff;
   color: #1890ff;
-  border-radius: 16px;
+  border-radius: 4px;
   font-size: 13px;
 }
 
@@ -405,7 +405,7 @@
   color: #666;
   font-size: 12px;
   padding: 2px 8px;
-  border-radius: 10px;
+  border-radius: 4px;
   white-space: nowrap;
   cursor: pointer;
   transition: all 0.2s;

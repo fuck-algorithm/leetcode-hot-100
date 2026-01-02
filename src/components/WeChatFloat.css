@@ -12,7 +12,7 @@
   background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
   color: white;
   padding: 12px 18px;
-  border-radius: 50px;
+  border-radius: 8px;
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(7, 193, 96, 0.4);
   transition: all 0.3s ease;
@@ -44,7 +44,7 @@
   bottom: 60px;
   right: 0;
   background: white;
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   padding: 20px;
   min-width: 280px;
@@ -96,7 +96,7 @@
 .qrcode-section.backup {
   background: #f9f9f9;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: 6px;
   margin-top: 8px;
 }
 

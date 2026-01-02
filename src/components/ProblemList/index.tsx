@@ -69,6 +69,7 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
     isCompleted,
     toggleCompletion,
     resetAllProgress,
+    resetPathProgress,
     getStatsForProblems,
     refreshCompletions,
     experience
@@ -308,6 +309,7 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
           selectedPathId={pathId}
           onPathClick={handlePathClick}
           onBackToOverview={handleBackToOverview}
+          onResetPathProgress={resetPathProgress}
         />
       )}
 

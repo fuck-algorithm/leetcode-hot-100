@@ -1,11 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { completionStorage, CompletionRecord } from '../../../services/completionStorage';
-import { experienceStorage, DIFFICULTY_EXP, ExperienceRecord } from '../../../services/experienceStorage';
+import { experienceStorage, DIFFICULTY_EXP, ExperienceRecord, TREASURE_EXP } from '../../../services/experienceStorage';
 
 interface CompletionStats {
   total: number;
   completed: number;
   percentage: number;
+}
+
+// 题目信息，用于重置时计算经验值
+interface ProblemInfo {
+  problemId: string;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
 }
 
 interface UseCompletionStatusReturn {
@@ -14,6 +20,7 @@ interface UseCompletionStatusReturn {
   toggleCompletion: (problemId: string, difficulty?: 'EASY' | 'MEDIUM' | 'HARD') => Promise<void>;
   isCompleted: (problemId: string) => boolean;
   resetAllProgress: () => Promise<void>;
+  resetPathProgress: (pathId: string, problems: ProblemInfo[]) => Promise<void>;
   getStatsForProblems: (problemIds: string[]) => CompletionStats;
   refreshCompletions: () => Promise<void>;
   experience: ExperienceRecord;
@@ -123,6 +130,80 @@ export function useCompletionStatus(): UseCompletionStatusReturn {
     }
   }, []);
 
+  // 重置单个学习路径的进度
+  const resetPathProgress = useCallback(async (pathId: string, problems: ProblemInfo[]) => {
+    try {
+      // 计算需要扣除的经验值
+      let expToRemove = 0;
+      const problemsToReset: string[] = [];
+      
+      problems.forEach(problem => {
+        if (completions.get(problem.problemId)?.completed) {
+          problemsToReset.push(problem.problemId);
+          expToRemove += DIFFICULTY_EXP[problem.difficulty];
+        }
+      });
+      
+      // 如果没有已完成的题目，直接返回
+      if (problemsToReset.length === 0) {
+        return;
+      }
+      
+      // 批量重置完成状态
+      await completionStorage.setCompletions(
+        problemsToReset.map(id => ({ problemId: id, completed: false }))
+      );
+      
+      // 扣除经验值
+      const newExp = await experienceStorage.removeExperience(expToRemove);
+      
+      // 重置该路径相关的宝箱（如果有的话）
+      // 宝箱ID格式: 'path-{pathId}-stage-{stageIndex}' 或 'detail-{pathId}-stage-{stageIndex}'
+      const treasures = await experienceStorage.getAllOpenedTreasures();
+      const pathTreasures = treasures.filter(t => 
+        t.treasureId.includes(`path-${pathId}-`) || 
+        t.treasureId.includes(`detail-${pathId}-`)
+      );
+      
+      // 扣除宝箱经验值
+      let treasureExpToRemove = 0;
+      for (const treasure of pathTreasures) {
+        treasureExpToRemove += treasure.expAwarded;
+      }
+      
+      let finalExp = newExp;
+      if (treasureExpToRemove > 0) {
+        finalExp = await experienceStorage.removeExperience(treasureExpToRemove);
+        // 重置宝箱状态
+        await experienceStorage.resetPathTreasures(pathId);
+      }
+      
+      // 更新本地状态
+      setCompletions(prev => {
+        const newMap = new Map(prev);
+        problemsToReset.forEach(id => {
+          newMap.set(id, {
+            problemId: id,
+            completed: false,
+            completedAt: null
+          });
+        });
+        return newMap;
+      });
+      
+      setExperience(finalExp);
+      
+      // 触发经验值变化事件
+      window.dispatchEvent(new CustomEvent('expChange', {
+        detail: { amount: -(expToRemove + treasureExpToRemove), newExp: finalExp }
+      }));
+      
+    } catch (error) {
+      console.error('重置路径进度失败:', error);
+      throw error;
+    }
+  }, [completions]);
+
   // 获取指定题目列表的统计信息
   const getStatsForProblems = useCallback((problemIds: string[]): CompletionStats => {
     const total = problemIds.length;
@@ -152,6 +233,7 @@ export function useCompletionStatus(): UseCompletionStatusReturn {
     toggleCompletion,
     isCompleted,
     resetAllProgress,
+    resetPathProgress,
     getStatsForProblems,
     refreshCompletions,
     experience

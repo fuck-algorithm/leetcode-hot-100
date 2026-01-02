@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Problem } from '../types';
 import { LearningPath } from '../data/learningPaths';
 import DuolingoPath from './DuolingoPath';
+import ConfirmDialog from '../ConfirmDialog';
+import Tooltip from '../../Tooltip';
 
 interface PathStats {
   total: number;
@@ -15,6 +17,12 @@ interface CompletionStats {
   total: number;
   completed: number;
   percentage: number;
+}
+
+// 题目信息，用于重置时计算经验值
+interface ProblemInfo {
+  problemId: string;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
 }
 
 interface PathDetailProps {
@@ -37,6 +45,7 @@ interface PathDetailProps {
   isCompleted: (problemId: string) => boolean;
   onToggleCompletion: (problemId: string) => Promise<void>;
   getStatsForProblems: (problemIds: string[]) => CompletionStats;
+  onResetPathProgress?: (pathId: string, problems: ProblemInfo[]) => Promise<void>;
 }
 
 const PathDetail: React.FC<PathDetailProps> = ({
@@ -51,13 +60,18 @@ const PathDetail: React.FC<PathDetailProps> = ({
   onBack,
   isCompleted,
   onToggleCompletion,
-  getStatsForProblems
+  getStatsForProblems,
+  onResetPathProgress
 }) => {
   const name = currentLang === 'zh' ? path.name : path.nameEn;
   const description = currentLang === 'zh' ? path.description : path.descriptionEn;
   
   // 难度筛选状态
   const [difficultyFilter, setDifficultyFilter] = useState<'all' | 'easy' | 'medium' | 'hard'>('all');
+  
+  // 重置确认对话框状态
+  const [showResetDialog, setShowResetDialog] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
   
   // 根据筛选条件过滤题目
   const filteredProblems = problems.filter(p => {
@@ -68,11 +82,50 @@ const PathDetail: React.FC<PathDetailProps> = ({
   // 获取完成统计
   const completionStats = getStatsForProblems(problems.map(p => p.questionFrontendId));
 
+  // 处理重置路径进度
+  const handleResetPathProgress = async () => {
+    if (!onResetPathProgress) return;
+    
+    setIsResetting(true);
+    try {
+      const problemInfos: ProblemInfo[] = problems.map(p => ({
+        problemId: p.questionFrontendId,
+        difficulty: p.difficulty.toUpperCase() as 'EASY' | 'MEDIUM' | 'HARD'
+      }));
+      
+      await onResetPathProgress(path.id, problemInfos);
+      setShowResetDialog(false);
+    } catch (error) {
+      console.error('重置路径进度失败:', error);
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
   return (
     <div className="path-detail-container">
-      <button className="path-back-btn" onClick={onBack}>
-        ← {currentLang === 'zh' ? '返回路径概览' : 'Back to Overview'}
-      </button>
+      <div className="path-detail-top-bar">
+        <button className="path-back-btn" onClick={onBack}>
+          ← {currentLang === 'zh' ? '返回路径概览' : 'Back to Overview'}
+        </button>
+        
+        {/* 重新修炼按钮 */}
+        {onResetPathProgress && completionStats.completed > 0 && (
+          <Tooltip content={t('resetPathProgress.tooltip')}>
+            <button 
+              className="path-reset-btn" 
+              onClick={() => setShowResetDialog(true)}
+              disabled={isResetting}
+            >
+              <svg className="reset-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              <span>{t('resetPathProgress.button')}</span>
+            </button>
+          </Tooltip>
+        )}
+      </div>
       
       <div className="path-detail-header" style={{ '--path-color': path.color } as React.CSSProperties}>
         <div className="path-detail-icon">{path.icon}</div>
@@ -150,6 +203,18 @@ const PathDetail: React.FC<PathDetailProps> = ({
         isCompleted={isCompleted}
         onToggleCompletion={onToggleCompletion}
         pathId={path.id}
+      />
+
+      {/* 重置确认对话框 */}
+      <ConfirmDialog
+        isOpen={showResetDialog}
+        title={t('resetPathProgress.title')}
+        message={t('resetPathProgress.message')}
+        confirmText={t('resetPathProgress.confirm')}
+        cancelText={t('resetPathProgress.cancel')}
+        onConfirm={handleResetPathProgress}
+        onCancel={() => setShowResetDialog(false)}
+        danger
       />
     </div>
   );

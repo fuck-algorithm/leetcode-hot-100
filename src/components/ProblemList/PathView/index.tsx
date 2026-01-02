@@ -13,6 +13,12 @@ interface CompletionStats {
   percentage: number;
 }
 
+// 题目信息，用于重置时计算经验值
+interface ProblemInfo {
+  problemId: string;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+}
+
 interface PathViewProps {
   problems: Problem[];
   currentLang: string;
@@ -34,6 +40,8 @@ interface PathViewProps {
   selectedPathId?: string;
   onPathClick: (pathId: string) => void;
   onBackToOverview: () => void;
+  // 新增：重置路径进度
+  onResetPathProgress?: (pathId: string, problems: ProblemInfo[]) => Promise<void>;
 }
 
 const PathView: React.FC<PathViewProps> = ({
@@ -48,7 +56,8 @@ const PathView: React.FC<PathViewProps> = ({
   getStatsForProblems,
   selectedPathId,
   onPathClick,
-  onBackToOverview
+  onBackToOverview,
+  onResetPathProgress
 }) => {
   // 按学习路径分组题目
   const pathsWithProblems = useMemo(() => {
@@ -102,6 +111,7 @@ const PathView: React.FC<PathViewProps> = ({
           isCompleted={isCompleted}
           onToggleCompletion={onToggleCompletion}
           getStatsForProblems={getStatsForProblems}
+          onResetPathProgress={onResetPathProgress}
         />
       );
     }

@@ -52,13 +52,22 @@
     "openLeetcode": "Click to open LeetCode problem page"
   },
   "resetProgress": {
-    "button": "Reset",
+    "button": "Restart",
     "tooltip": "Clear all learning progress and start over",
-    "title": "Confirm Reset?",
+    "title": "Confirm Restart?",
     "message": "This will clear all your learning progress, including completed problem marks. This action cannot be undone.",
     "confirm": "Confirm Reset",
     "cancel": "Cancel",
     "success": "Reset successful! All learning progress has been cleared. You can start learning again."
+  },
+  "resetPathProgress": {
+    "button": "Restart",
+    "tooltip": "Reset progress for this category",
+    "title": "Confirm Restart This Category?",
+    "message": "This will clear all learning progress for this category, including completed problem marks and earned experience points. This action cannot be undone.",
+    "confirm": "Confirm Reset",
+    "cancel": "Cancel",
+    "success": "Reset successful! Progress for this category has been cleared. You can start learning again."
   },
   "completion": {
     "markComplete": "Mark as complete",

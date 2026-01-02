@@ -205,6 +205,49 @@
   color: #333;
 }
 
+/* 路径详情顶部栏 */
+.path-detail-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* 重新修炼按钮 */
+.path-reset-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.path-reset-btn:hover {
+  background: #fff1f0;
+  border-color: #ffa39e;
+  color: #cf1322;
+}
+
+.path-reset-btn:active {
+  transform: scale(0.98);
+}
+
+.path-reset-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.path-reset-btn .reset-icon {
+  width: 16px;
+  height: 16px;
+}
+
 .path-detail-header {
   display: flex;
   align-items: center;

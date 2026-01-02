@@ -266,12 +266,14 @@ class ExperienceStorage {
     return new Promise((resolve, reject) => {
       const transaction = db.transaction([TREASURE_STORE], 'readonly');
       const store = transaction.objectStore(TREASURE_STORE);
-      const index = store.index('opened');
-      const request = index.getAll(IDBKeyRange.only(true));
+      const request = store.getAll();
       
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
-        resolve(request.result || []);
+        // 过滤出已开启的宝箱
+        const allTreasures = request.result as TreasureRecord[] || [];
+        const openedTreasures = allTreasures.filter(t => t.opened);
+        resolve(openedTreasures);
       };
     });
   }
@@ -287,6 +289,34 @@ class ExperienceStorage {
       
       transaction.objectStore(EXPERIENCE_STORE).clear();
       transaction.objectStore(TREASURE_STORE).clear();
+      
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error);
+    });
+  }
+
+  /**
+   * 重置指定路径的宝箱（用于重新修炼单个类目）
+   */
+  async resetPathTreasures(pathId: string): Promise<void> {
+    const db = await this.ensureDb();
+    const treasures = await this.getAllOpenedTreasures();
+    
+    // 找出该路径相关的宝箱
+    const pathTreasures = treasures.filter(t => 
+      t.treasureId.includes(`path-${pathId}-`) || 
+      t.treasureId.includes(`detail-${pathId}-`)
+    );
+    
+    if (pathTreasures.length === 0) return;
+    
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction([TREASURE_STORE], 'readwrite');
+      const store = transaction.objectStore(TREASURE_STORE);
+      
+      pathTreasures.forEach(treasure => {
+        store.delete(treasure.treasureId);
+      });
       
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);

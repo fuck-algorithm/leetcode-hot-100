@@ -189,11 +189,11 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     }
   }, []);
 
-  // 隐藏菜单（带延迟）
+  // 隐藏菜单（带延迟）- 较短的延迟让菜单快速消失
   const hideMenuWithDelay = useCallback(() => {
     hideTimeoutRef.current = setTimeout(() => {
       setExpandedNodeId(null);
-    }, 300);
+    }, 150);
   }, []);
 
   // 隐藏菜单（立即）
@@ -475,9 +475,41 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
               onMouseEnter={() => handleNodeMouseEnter(problem.questionFrontendId)}
               onMouseLeave={handleNodeMouseLeave}
             >
-              <Tooltip 
-                content={`#${problem.questionFrontendId} ${title} | ${t(`difficulties.${problem.difficulty.toLowerCase()}`)} | ${(problem.acRate * 100).toFixed(1)}%${problem.hasAnimation ? ' | 🎬' : ''}${completed ? ' | ✓' : ''}`}
-              >
+              {/* 只在未展开时显示Tooltip，展开时隐藏以避免遮挡菜单 */}
+              {!isExpanded ? (
+                <Tooltip 
+                  content={`#${problem.questionFrontendId} ${title} | ${t(`difficulties.${problem.difficulty.toLowerCase()}`)} | ${(problem.acRate * 100).toFixed(1)}%${problem.hasAnimation ? ' | 🎬' : ''}${completed ? ' | ✓' : ''}`}
+                >
+                  <div 
+                    className={`duolingo-node ${difficultyClass} ${completed ? 'is-completed' : ''} ${isCurrentNode ? 'is-current' : ''}`}
+                    onClick={(e) => handleNodeClick(e, problem)}
+                    onContextMenu={(e) => handleNodeContextMenu(e, problem)}
+                  >
+                    <div className="node-inner">
+                      {completed ? (
+                        <span className="node-checkmark">✓</span>
+                      ) : (
+                        <span className="node-number">{problem.questionFrontendId}</span>
+                      )}
+                    </div>
+                    
+                    {/* 当前节点脉冲动画 */}
+                    {isCurrentNode && <div className="node-pulse-ring"></div>}
+                    
+                    {problem.hasAnimation && (
+                      <div className="node-animation-badge-wrapper">
+                        <AnimationBadge
+                          hasAnimation={problem.hasAnimation}
+                          problemId={problem.questionFrontendId}
+                          problemTitle={title}
+                          pagesUrl={pagesUrl}
+                          showPreview={true}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </Tooltip>
+              ) : (
                 <div 
                   className={`duolingo-node ${difficultyClass} ${completed ? 'is-completed' : ''} ${isCurrentNode ? 'is-current' : ''}`}
                   onClick={(e) => handleNodeClick(e, problem)}
@@ -506,7 +538,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                     </div>
                   )}
                 </div>
-              </Tooltip>
+              )}
               
               {/* 悬停/右键菜单 */}
               {isExpanded && (

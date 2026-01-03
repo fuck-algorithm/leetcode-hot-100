@@ -591,15 +591,42 @@
   }
 }
 
+/* ========== 飞升节点包装器 ========== */
+.ascension-node-wrapper {
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 30;
+  animation: ascensionFadeIn 0.6s ease-out;
+}
+
+@keyframes ascensionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
 /* 响应式 */
 @media (max-width: 768px) {
   .treasure-node-wrapper {
+    /* 移动端适配 */
+  }
+  
+  .ascension-node-wrapper {
     /* 移动端适配 */
   }
 }
 
 @media (max-width: 480px) {
   .treasure-node-wrapper {
+    /* 小屏幕适配 */
+  }
+  
+  .ascension-node-wrapper {
     /* 小屏幕适配 */
   }
 }

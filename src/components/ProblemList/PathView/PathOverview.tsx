@@ -1,6 +1,7 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { LearningPath } from '../data/learningPaths';
 import Tooltip from '../../Tooltip';
+import AscensionNode from './AscensionNode';
 import './PathOverview.css';
 
 // 注意：宝箱节点只在详情页面（DuolingoPath）显示，主路径页面不显示宝箱
@@ -95,10 +96,46 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     };
   }, [containerWidth]);
 
-  // 生成SVG路径连接线 - 简化版（无宝箱）
+  // 计算整体完成统计
+  const overallStats = useMemo(() => {
+    let totalProblems = 0;
+    let completedProblems = 0;
+    
+    pathsWithProblems.forEach(item => {
+      const stats = getPathCompletionStats(item.problems);
+      totalProblems += stats.total;
+      completedProblems += stats.completed;
+    });
+    
+    const percentage = totalProblems > 0 ? (completedProblems / totalProblems) * 100 : 0;
+    
+    return {
+      total: totalProblems,
+      completed: completedProblems,
+      percentage,
+    };
+  }, [pathsWithProblems, getPathCompletionStats]);
+
+  // 飞升节点位置计算
+  const getAscensionNodePosition = useCallback(() => {
+    if (pathsWithProblems.length === 0) {
+      return { xPercent: 50, xPixel: containerWidth / 2, yPosition: 400 };
+    }
+    const lastNodePos = getNodePosition(pathsWithProblems.length - 1);
+    const baseSpacing = 280;
+    // 飞升节点在最后一个节点下方，居中显示
+    return {
+      xPercent: 50,
+      xPixel: containerWidth / 2,
+      yPosition: lastNodePos.yPosition + baseSpacing,
+    };
+  }, [pathsWithProblems.length, getNodePosition, containerWidth]);
+
+  // 生成SVG路径连接线 - 包含到飞升节点的连接
   const generatePathConnections = useCallback(() => {
     const paths: JSX.Element[] = [];
     
+    // 路径节点之间的连接线
     for (let i = 0; i < pathsWithProblems.length - 1; i++) {
       const current = getNodePosition(i);
       const next = getNodePosition(i + 1);
@@ -134,15 +171,40 @@ const PathOverview: React.FC<PathOverviewProps> = ({
       );
     }
     
+    // 最后一个节点到飞升节点的连接线
+    if (pathsWithProblems.length > 0) {
+      const lastNodePos = getNodePosition(pathsWithProblems.length - 1);
+      const ascensionPos = getAscensionNodePosition();
+      
+      const lastStats = getPathCompletionStats(pathsWithProblems[pathsWithProblems.length - 1].problems);
+      const isLastCompleted = lastStats.percentage === 100;
+      const isAllCompleted = overallStats.percentage === 100;
+      
+      const midY = (lastNodePos.yPosition + ascensionPos.yPosition) / 2;
+      
+      paths.push(
+        <path
+          key="path-to-ascension"
+          d={`M ${lastNodePos.xPixel} ${lastNodePos.yPosition} 
+              C ${lastNodePos.xPixel} ${midY}, ${ascensionPos.xPixel} ${midY}, ${ascensionPos.xPixel} ${ascensionPos.yPosition}`}
+          stroke={isLastCompleted && isAllCompleted ? '#ffd700' : '#e5e5e5'}
+          strokeWidth="8"
+          fill="none"
+          strokeLinecap="round"
+          strokeDasharray={isLastCompleted ? 'none' : '12 8'}
+        />
+      );
+    }
+    
     return paths;
-  }, [pathsWithProblems, getNodePosition, getPathCompletionStats]);
+  }, [pathsWithProblems, getNodePosition, getPathCompletionStats, getAscensionNodePosition, overallStats.percentage]);
 
-  // 计算容器高度
-  const containerHeight = (() => {
+  // 计算容器高度 - 包含飞升节点的空间
+  const containerHeight = useMemo(() => {
     if (pathsWithProblems.length === 0) return 400;
-    const lastNodePos = getNodePosition(pathsWithProblems.length - 1);
-    return lastNodePos.yPosition + 200;
-  })();
+    const ascensionPos = getAscensionNodePosition();
+    return ascensionPos.yPosition + 280; // 飞升节点下方留出足够空间
+  }, [pathsWithProblems.length, getAscensionNodePosition]);
 
   return (
     <div className="path-overview-container" ref={containerRef}>
@@ -300,19 +362,23 @@ const PathOverview: React.FC<PathOverviewProps> = ({
           })}
         </div>
 
-        {/* 终点标记 */}
-        <div 
-          className="path-overview-milestone end"
-          style={{
-            left: `${getNodePosition(pathsWithProblems.length - 1).xPercent}%`,
-            top: containerHeight - 60
-          }}
-        >
-          <span className="milestone-icon">🏆</span>
-          <span className="milestone-text">
-            {currentLang === 'zh' ? '算法大师' : 'Algorithm Master'}
-          </span>
-        </div>
+        {/* 飞升节点 - 替换原来的"算法大师"终点标记 */}
+        {pathsWithProblems.length > 0 && (
+          <div 
+            className="ascension-node-wrapper"
+            style={{
+              left: `${getAscensionNodePosition().xPercent}%`,
+              top: getAscensionNodePosition().yPosition - 60,
+            }}
+          >
+            <AscensionNode
+              currentLang={currentLang}
+              completionPercentage={overallStats.percentage}
+              totalProblems={overallStats.total}
+              completedProblems={overallStats.completed}
+            />
+          </div>
+        )}
       </div>
 
       {/* 底部提示 */}

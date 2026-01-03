@@ -42,6 +42,8 @@ interface PathViewProps {
   onBackToOverview: () => void;
   // 新增：重置路径进度
   onResetPathProgress?: (pathId: string, problems: ProblemInfo[]) => Promise<void>;
+  // 新增：返回时需要滚动到的路径ID
+  scrollToPathId?: string;
 }
 
 const PathView: React.FC<PathViewProps> = ({
@@ -57,7 +59,8 @@ const PathView: React.FC<PathViewProps> = ({
   selectedPathId,
   onPathClick,
   onBackToOverview,
-  onResetPathProgress
+  onResetPathProgress,
+  scrollToPathId
 }) => {
   // 按学习路径分组题目
   const pathsWithProblems = useMemo(() => {
@@ -124,6 +127,7 @@ const PathView: React.FC<PathViewProps> = ({
       currentLang={currentLang}
       onPathClick={onPathClick}
       getStatsForProblems={getStatsForProblems}
+      scrollToPathId={scrollToPathId}
     />
   );
 };

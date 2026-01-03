@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import '../ProblemList.css';
 import { useTranslation } from '../../i18n/useCustomTranslation';
 import SearchFilter from './SearchFilter';
@@ -31,7 +31,11 @@ interface ProblemListProps {
 const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { pathId } = useParams<{ pathId?: string }>();
+  
+  // 从location state获取需要滚动到的路径ID
+  const scrollToPathId = (location.state as { scrollToPathId?: string })?.scrollToPathId;
   
   // Toast 通知
   const { toasts, showSuccess, showError, removeToast } = useToast();
@@ -53,10 +57,11 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
     navigate(`/path/${clickedPathId}`);
   }, [navigate]);
   
-  // 处理返回路径概览
+  // 处理返回路径概览 - 传递当前路径ID用于定位
   const handleBackToOverview = useCallback(() => {
-    navigate('/path');
-  }, [navigate]);
+    // 使用state传递需要滚动到的路径ID
+    navigate('/path', { state: { scrollToPathId: pathId } });
+  }, [navigate, pathId]);
   
   // 重置确认对话框状态
   const [showResetDialog, setShowResetDialog] = useState(false);
@@ -310,6 +315,7 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
           onPathClick={handlePathClick}
           onBackToOverview={handleBackToOverview}
           onResetPathProgress={resetPathProgress}
+          scrollToPathId={scrollToPathId}
         />
       )}
 

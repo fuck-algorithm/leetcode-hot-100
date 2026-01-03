@@ -31,6 +31,8 @@ interface PathOverviewProps {
   currentLang: string;
   onPathClick: (pathId: string) => void;
   getStatsForProblems: (problemIds: string[]) => CompletionStats;
+  // 新增：返回时需要滚动到的路径ID
+  scrollToPathId?: string;
 }
 
 // 注意：主路径页面不显示宝箱节点，宝箱只在详情页面显示
@@ -39,9 +41,11 @@ const PathOverview: React.FC<PathOverviewProps> = ({
   pathsWithProblems,
   currentLang,
   onPathClick,
-  getStatsForProblems
+  getStatsForProblems,
+  scrollToPathId
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const nodesContainerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(600);
 
   useEffect(() => {
@@ -55,6 +59,25 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     window.addEventListener('resize', updateWidth);
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
+
+  // 滚动到指定路径节点 - 无动画直接定位
+  useEffect(() => {
+    if (scrollToPathId && nodesContainerRef.current) {
+      // 查找对应的节点元素
+      const targetNode = nodesContainerRef.current.querySelector(
+        `[data-path-id="${scrollToPathId}"]`
+      ) as HTMLElement;
+      
+      if (targetNode) {
+        // 使用 scrollIntoView 直接定位，不使用平滑滚动
+        // 'auto' 表示立即滚动，不使用动画
+        targetNode.scrollIntoView({ 
+          behavior: 'auto', 
+          block: 'center' 
+        });
+      }
+    }
+  }, [scrollToPathId]);
 
   // 获取每个路径的完成统计
   const getPathCompletionStats = useCallback((problems: any[]): CompletionStats => {
@@ -237,7 +260,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
         {/* 注意：宝箱节点只在详情页面显示，主路径页面不显示 */}
 
         {/* 路径节点 */}
-        <div className="path-overview-nodes">
+        <div className="path-overview-nodes" ref={nodesContainerRef}>
           {pathsWithProblems.map((item, index) => {
             const position = getNodePosition(index);
             const { path, stats, problems } = item;
@@ -258,6 +281,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             return (
               <div
                 key={path.id}
+                data-path-id={path.id}
                 className={`path-overview-node ${isLast ? 'is-last' : ''} ${isAllCompleted ? 'completed' : ''} ${isCurrentNode ? 'is-current' : ''}`}
                 style={{
                   left: `${position.xPercent}%`,

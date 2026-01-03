@@ -4,34 +4,38 @@
   padding: 18px 28px;
   border-radius: 12px;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #0a0f14 0%, #111820 30%, #0d1419 70%, #080c10 100%);
+  background: 
+    linear-gradient(135deg, #050a0d 0%, #0a1218 25%, #0d1a1f 50%, #0a1218 75%, #050a0d 100%);
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03),
-    0 0 60px rgba(34, 197, 94, 0.15),
-    0 0 100px rgba(34, 197, 94, 0.05);
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02),
+    0 0 80px rgba(34, 197, 94, 0.2),
+    0 0 120px rgba(34, 197, 94, 0.08),
+    inset 0 0 60px rgba(34, 197, 94, 0.03);
   overflow: hidden;
-  border: 1px solid rgba(34, 197, 94, 0.35);
+  border: 2px solid rgba(34, 197, 94, 0.5);
 }
 
-/* 古风边框装饰 */
+/* 古风边框装饰 - 八卦阵纹理 */
 .experience-bar-container::before {
   content: '';
   position: absolute;
-  top: 3px;
-  left: 3px;
-  right: 3px;
-  bottom: 3px;
-  border: 1px solid rgba(34, 197, 94, 0.15);
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border: 1px solid rgba(34, 197, 94, 0.2);
   border-radius: 10px;
   pointer-events: none;
   background: 
-    radial-gradient(ellipse at 15% 30%, rgba(34, 197, 94, 0.12) 0%, transparent 40%),
-    radial-gradient(ellipse at 85% 70%, rgba(74, 222, 128, 0.08) 0%, transparent 40%),
-    radial-gradient(ellipse at 50% 50%, rgba(22, 163, 74, 0.05) 0%, transparent 60%);
+    radial-gradient(ellipse at 10% 20%, rgba(34, 197, 94, 0.15) 0%, transparent 35%),
+    radial-gradient(ellipse at 90% 80%, rgba(74, 222, 128, 0.12) 0%, transparent 35%),
+    radial-gradient(ellipse at 50% 50%, rgba(22, 163, 74, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 20% 70%, rgba(34, 197, 94, 0.06) 0%, transparent 25%),
+    radial-gradient(circle at 80% 30%, rgba(74, 222, 128, 0.06) 0%, transparent 25%);
 }
 
-/* 仙气流光动画 */
+/* 仙气流光动画 - 灵气流转 */
 .experience-bar-container::after {
   content: '';
   position: absolute;
@@ -42,18 +46,21 @@
   background: linear-gradient(
     90deg, 
     transparent 0%, 
-    rgba(34, 197, 94, 0.03) 25%,
-    rgba(74, 222, 128, 0.08) 50%,
-    rgba(34, 197, 94, 0.03) 75%,
+    rgba(34, 197, 94, 0.02) 20%,
+    rgba(74, 222, 128, 0.1) 45%,
+    rgba(134, 239, 172, 0.15) 50%,
+    rgba(74, 222, 128, 0.1) 55%,
+    rgba(34, 197, 94, 0.02) 80%,
     transparent 100%
   );
-  animation: immortalShimmer 6s ease-in-out infinite;
+  animation: immortalShimmer 5s ease-in-out infinite;
   pointer-events: none;
 }
 
 @keyframes immortalShimmer {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(50%); }
+  0% { transform: translateX(-50%); opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { transform: translateX(50%); opacity: 0.6; }
 }
 
 .experience-bar-content {
@@ -64,27 +71,28 @@
   z-index: 1;
 }
 
-/* 境界徽章 - 玄幻古风 */
+/* 境界徽章 - 玄幻古风仙门令牌 */
 .realm-badge {
   display: flex;
   align-items: center;
   gap: 12px;
   background: 
-    linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, rgba(22, 163, 74, 0.08) 50%, rgba(16, 185, 129, 0.12) 100%);
+    linear-gradient(145deg, rgba(34, 197, 94, 0.22) 0%, rgba(22, 163, 74, 0.1) 40%, rgba(16, 185, 129, 0.15) 100%);
   padding: 12px 18px;
   border-radius: 10px;
   box-shadow: 
-    0 4px 16px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 0 20px rgba(34, 197, 94, 0.2);
-  border: 1px solid rgba(34, 197, 94, 0.5);
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 30px rgba(34, 197, 94, 0.25),
+    inset 0 0 20px rgba(34, 197, 94, 0.05);
+  border: 1px solid rgba(34, 197, 94, 0.55);
   min-width: 150px;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   position: relative;
   overflow: hidden;
 }
 
-/* 徽章内部光晕 */
+/* 徽章内部光晕 - 灵力波动 */
 .realm-badge::before {
   content: '';
   position: absolute;
@@ -92,22 +100,30 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at center, rgba(74, 222, 128, 0.1) 0%, transparent 50%);
-  animation: badgeGlow 4s ease-in-out infinite;
+  background: 
+    radial-gradient(circle at center, rgba(74, 222, 128, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 30% 70%, rgba(34, 197, 94, 0.1) 0%, transparent 30%);
+  animation: badgeGlow 3s ease-in-out infinite;
   pointer-events: none;
 }
 
 @keyframes badgeGlow {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.1); }
+  0%, 100% { opacity: 0.4; transform: scale(1) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.15) rotate(5deg); }
 }
 
 .realm-icon {
-  font-size: 30px;
+  font-size: 32px;
   line-height: 1;
-  filter: drop-shadow(0 0 8px rgba(74, 222, 128, 0.6));
+  filter: drop-shadow(0 0 12px rgba(74, 222, 128, 0.7));
   position: relative;
   z-index: 1;
+  animation: iconPulse 3s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(74, 222, 128, 0.7)); }
+  50% { filter: drop-shadow(0 0 18px rgba(74, 222, 128, 0.9)) drop-shadow(0 0 25px rgba(34, 197, 94, 0.5)); }
 }
 
 .realm-info {
@@ -120,14 +136,16 @@
   font-size: 15px;
   font-weight: 800;
   color: #4ade80;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   white-space: nowrap;
   text-shadow: 
-    0 0 10px rgba(74, 222, 128, 0.8),
-    0 0 20px rgba(34, 197, 94, 0.5),
-    0 0 30px rgba(34, 197, 94, 0.3);
+    0 0 12px rgba(74, 222, 128, 0.9),
+    0 0 24px rgba(34, 197, 94, 0.6),
+    0 0 36px rgba(34, 197, 94, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.5);
   position: relative;
   z-index: 1;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
 /* 境界区域（徽章 + 帮助图标） */
@@ -177,40 +195,82 @@
   gap: 8px;
 }
 
-/* 经验条轨道 - 玄幻风格 */
+/* 经验条轨道 - 玄幻丹炉风格 */
 .exp-bar-track {
-  height: 22px;
+  height: 24px;
   background: 
-    linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.5) 100%);
-  border-radius: 11px;
+    linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(5, 15, 10, 0.5) 50%, rgba(0, 0, 0, 0.6) 100%);
+  border-radius: 12px;
   overflow: hidden;
   position: relative;
-  border: 1px solid rgba(34, 197, 94, 0.25);
+  border: 1px solid rgba(34, 197, 94, 0.35);
   box-shadow: 
-    inset 0 3px 8px rgba(0, 0, 0, 0.5),
-    inset 0 -1px 2px rgba(255, 255, 255, 0.05);
+    inset 0 4px 12px rgba(0, 0, 0, 0.6),
+    inset 0 -2px 4px rgba(255, 255, 255, 0.03),
+    0 0 15px rgba(34, 197, 94, 0.15);
 }
 
-/* 经验条填充 - 翠绿色渐变（已获得的经验） */
+/* 轨道内部纹理 */
+.exp-bar-track::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 8px,
+      rgba(34, 197, 94, 0.03) 8px,
+      rgba(34, 197, 94, 0.03) 9px
+    );
+  pointer-events: none;
+}
+
+/* 经验条填充 - 翠绿灵力（已获得的经验） */
 .exp-bar-fill {
   height: 100%;
-  border-radius: 11px;
-  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-radius: 12px;
+  transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   background: linear-gradient(
     90deg, 
-    #15803d 0%, 
-    #16a34a 20%, 
-    #22c55e 40%, 
-    #4ade80 60%, 
-    #86efac 80%,
+    #0d5c2e 0%, 
+    #15803d 15%, 
+    #16a34a 30%, 
+    #22c55e 50%, 
+    #4ade80 70%, 
+    #86efac 85%,
     #4ade80 100%
   ) !important;
   box-shadow: 
-    0 0 25px rgba(34, 197, 94, 0.8),
-    0 0 50px rgba(34, 197, 94, 0.4),
-    inset 0 2px 4px rgba(255, 255, 255, 0.4),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+    0 0 20px rgba(34, 197, 94, 0.9),
+    0 0 40px rgba(34, 197, 94, 0.6),
+    0 0 60px rgba(34, 197, 94, 0.3),
+    inset 0 2px 6px rgba(255, 255, 255, 0.5),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.3);
+  animation: fillGlow 2s ease-in-out infinite;
+}
+
+@keyframes fillGlow {
+  0%, 100% { 
+    box-shadow: 
+      0 0 20px rgba(34, 197, 94, 0.9),
+      0 0 40px rgba(34, 197, 94, 0.6),
+      0 0 60px rgba(34, 197, 94, 0.3),
+      inset 0 2px 6px rgba(255, 255, 255, 0.5),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.3);
+  }
+  50% { 
+    box-shadow: 
+      0 0 25px rgba(34, 197, 94, 1),
+      0 0 50px rgba(34, 197, 94, 0.7),
+      0 0 80px rgba(34, 197, 94, 0.4),
+      inset 0 2px 6px rgba(255, 255, 255, 0.6),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.3);
+  }
 }
 
 /* 经验条内部流光效果 - 灵气流动 */
@@ -224,40 +284,43 @@
   background: linear-gradient(
     90deg, 
     transparent 0%, 
-    rgba(255, 255, 255, 0.1) 20%,
-    rgba(255, 255, 255, 0.4) 50%,
-    rgba(255, 255, 255, 0.1) 80%,
+    rgba(255, 255, 255, 0.05) 15%,
+    rgba(255, 255, 255, 0.2) 35%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0.2) 65%,
+    rgba(255, 255, 255, 0.05) 85%,
     transparent 100%
   );
-  animation: spiritFlow 2.5s ease-in-out infinite;
+  animation: spiritFlow 2s ease-in-out infinite;
 }
 
 @keyframes spiritFlow {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% { transform: translateX(-100%); opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0.8; }
 }
 
-/* 经验条顶部高光 */
+/* 经验条顶部高光 - 灵光闪烁 */
 .exp-bar-fill::before {
   content: '';
   position: absolute;
   top: 2px;
-  left: 4px;
-  right: 4px;
-  height: 6px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 100%);
-  border-radius: 6px;
+  left: 6px;
+  right: 6px;
+  height: 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+  border-radius: 8px;
 }
 
-/* 经验条光泽效果 */
+/* 经验条光泽效果 - 仙气缭绕 */
 .exp-bar-shine {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 50%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 100%);
-  border-radius: 11px 11px 0 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 100%);
+  border-radius: 12px 12px 0 0;
   pointer-events: none;
 }
 
@@ -270,66 +333,75 @@
 }
 
 .exp-current {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 800;
   color: #4ade80;
   text-shadow: 
-    0 0 10px rgba(74, 222, 128, 0.8),
-    0 0 20px rgba(34, 197, 94, 0.5);
-  letter-spacing: 1px;
+    0 0 12px rgba(74, 222, 128, 0.9),
+    0 0 24px rgba(34, 197, 94, 0.6),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: 2px;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
 .exp-next {
   font-size: 13px;
   font-weight: 600;
   color: rgba(156, 163, 175, 0.95);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  letter-spacing: 0.5px;
 }
 
-/* 经验值获取弹出动画 - 玄幻风格 */
+/* 经验值获取弹出动画 - 突破特效 */
 .exp-gain-popup {
   position: absolute;
   top: -15px;
   right: 24px;
   color: #4ade80;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
-  padding: 12px 22px;
-  border-radius: 10px;
+  padding: 14px 24px;
+  border-radius: 12px;
   background: 
-    linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(22, 163, 74, 0.15) 50%, rgba(16, 185, 129, 0.2) 100%);
+    linear-gradient(145deg, rgba(34, 197, 94, 0.3) 0%, rgba(22, 163, 74, 0.18) 50%, rgba(16, 185, 129, 0.25) 100%);
   box-shadow: 
-    0 6px 30px rgba(34, 197, 94, 0.5),
-    0 0 50px rgba(34, 197, 94, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  animation: expGainPop 2s ease-out forwards;
+    0 8px 40px rgba(34, 197, 94, 0.6),
+    0 0 60px rgba(34, 197, 94, 0.4),
+    0 0 100px rgba(34, 197, 94, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  animation: expGainPop 2.5s ease-out forwards;
   z-index: 100;
-  border: 1px solid rgba(34, 197, 94, 0.6);
+  border: 2px solid rgba(34, 197, 94, 0.7);
   text-shadow: 
-    0 0 15px rgba(74, 222, 128, 1),
-    0 0 30px rgba(34, 197, 94, 0.8);
-  backdrop-filter: blur(8px);
-  letter-spacing: 1px;
+    0 0 20px rgba(74, 222, 128, 1),
+    0 0 40px rgba(34, 197, 94, 0.9),
+    0 0 60px rgba(34, 197, 94, 0.5);
+  backdrop-filter: blur(12px);
+  letter-spacing: 2px;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
 @keyframes expGainPop {
   0% {
     opacity: 0;
-    transform: translateY(15px) scale(0.7);
-    filter: blur(4px);
+    transform: translateY(20px) scale(0.6);
+    filter: blur(6px);
   }
-  15% {
+  10% {
     opacity: 1;
-    transform: translateY(-15px) scale(1.15);
+    transform: translateY(-10px) scale(1.2);
     filter: blur(0);
   }
-  30% {
-    transform: translateY(-25px) scale(1);
+  25% {
+    transform: translateY(-20px) scale(1.05);
+  }
+  40% {
+    transform: translateY(-30px) scale(1);
   }
   100% {
     opacity: 0;
-    transform: translateY(-60px) scale(0.85);
-    filter: blur(2px);
+    transform: translateY(-70px) scale(0.8);
+    filter: blur(3px);
   }
 }
 
@@ -357,20 +429,20 @@
   
   .realm-name {
     font-size: 13px;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
   }
   
   .exp-bar-track {
-    height: 20px;
-    border-radius: 10px;
+    height: 22px;
+    border-radius: 11px;
   }
   
   .exp-bar-fill {
-    border-radius: 10px;
+    border-radius: 11px;
   }
   
   .exp-current {
-    font-size: 14px;
+    font-size: 15px;
   }
   
   .exp-next {
@@ -399,7 +471,7 @@
   
   .realm-name {
     font-size: 12px;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
   }
   
   .help-icon {
@@ -409,16 +481,16 @@
   }
   
   .exp-bar-track {
-    height: 18px;
-    border-radius: 9px;
+    height: 20px;
+    border-radius: 10px;
   }
   
   .exp-bar-fill {
-    border-radius: 9px;
+    border-radius: 10px;
   }
   
   .exp-current {
-    font-size: 13px;
+    font-size: 14px;
   }
   
   .exp-next {
@@ -426,8 +498,8 @@
   }
   
   .exp-gain-popup {
-    font-size: 15px;
-    padding: 10px 16px;
+    font-size: 16px;
+    padding: 10px 18px;
   }
 }
 

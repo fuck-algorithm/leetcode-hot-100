@@ -1,0 +1,136 @@
+/* 搜索和筛选组件样式 */
+.search-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  gap: 12px;
+}
+
+.search-box {
+  position: relative;
+  flex: 1;
+  min-width: 120px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  position: relative;
+  align-items: center;
+}
+
+/* 完成状态筛选下拉框 */
+.completion-filter {
+  margin-right: 5px;
+}
+
+.completion-filter-select {
+  padding: 6px 28px 6px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 13px;
+  background-color: #f5f5f5;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  min-width: 100px;
+}
+
+.completion-filter-select:hover {
+  background-color: #e6f7ff;
+  border-color: #1890ff;
+}
+
+.completion-filter-select:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* 动画筛选复选框样式 */
+.animation-filter {
+  margin-right: 5px;
+}
+
+.animation-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+/* 隐藏原始复选框 */
+.animation-checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* 自定义复选框样式 */
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+/* 复选框悬停状态 */
+.animation-checkbox-label:hover .custom-checkbox {
+  background-color: #e6f7ff;
+  border-color: #1890ff;
+}
+
+/* 复选框选中状态 */
+.animation-checkbox:checked + .custom-checkbox {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+/* 图标样式 */
+.animation-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* 选中状态下的图标颜色 */
+.animation-checkbox:checked + .custom-checkbox .animation-icon {
+  color: white;
+}
+
+.sort-button, .filter-button {
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+}

@@ -1,0 +1,170 @@
+/* 路径卡片样式 */
+.path-card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #f0f0f0;
+  position: relative;
+  overflow: hidden;
+}
+
+.path-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: var(--path-color);
+}
+
+.path-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: var(--path-color);
+}
+
+.path-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.path-card-icon {
+  font-size: 28px;
+}
+
+.path-card-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.path-card-description {
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.path-card-stats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.path-stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.path-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+
+.path-stat-value.path-stat-animation {
+  color: #52c41a;
+}
+
+.path-stat-label {
+  font-size: 12px;
+  color: #999;
+}
+
+/* 难度进度条 */
+.path-difficulty-bar {
+  display: flex;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  margin-bottom: 8px;
+}
+
+.difficulty-segment {
+  transition: width 0.3s ease;
+}
+
+.difficulty-segment.easy {
+  background-color: #00af9b;
+}
+
+.difficulty-segment.medium {
+  background-color: #ffb800;
+}
+
+.difficulty-segment.hard {
+  background-color: #ff2d55;
+}
+
+/* 难度图例 */
+.path-difficulty-legend {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #666;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-dot.easy {
+  background-color: #00af9b;
+}
+
+.legend-dot.medium {
+  background-color: #ffb800;
+}
+
+.legend-dot.hard {
+  background-color: #ff2d55;
+}
+
+.path-card-arrow {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #ccc;
+  transition: all 0.3s ease;
+}
+
+.path-card:hover .path-card-arrow {
+  color: var(--path-color);
+  transform: translateY(-50%) translateX(4px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .path-card {
+    padding: 16px;
+  }
+  
+  .path-card-icon {
+    font-size: 24px;
+  }
+  
+  .path-card-name {
+    font-size: 16px;
+  }
+  
+  .path-stat-value {
+    font-size: 20px;
+  }
+}

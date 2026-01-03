@@ -1,0 +1,203 @@
+/* 路径题目项样式 */
+.path-problem-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  transition: all 0.2s ease;
+}
+
+.path-problem-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-color: #e0e0e0;
+}
+
+/* 步骤指示器 */
+.path-step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 32px;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  color: #666;
+}
+
+.path-problem-item.easy .step-number {
+  background: #e6fffb;
+  color: #00af9b;
+}
+
+.path-problem-item.medium .step-number {
+  background: #fffbe6;
+  color: #d48806;
+}
+
+.path-problem-item.hard .step-number {
+  background: #fff1f0;
+  color: #ff2d55;
+}
+
+.step-line {
+  width: 2px;
+  height: 20px;
+  background: #f0f0f0;
+  margin-top: 8px;
+}
+
+/* 题目内容 */
+.path-problem-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.path-problem-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.path-problem-id {
+  font-weight: 600;
+  color: #999;
+  font-size: 13px;
+}
+
+.path-problem-title {
+  font-size: 15px;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.path-problem-title:hover {
+  color: #1890ff;
+  text-decoration: underline;
+}
+
+.path-problem-title.has-animation {
+  color: #52c41a;
+}
+
+.path-problem-title.has-animation:hover {
+  color: #389e0d;
+}
+
+/* 动画徽章 */
+.path-animation-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.path-animation-badge:hover {
+  transform: scale(1.1);
+}
+
+.path-animation-badge.has {
+  background: #f6ffed;
+}
+
+.path-animation-badge.no {
+  background: #f5f5f5;
+}
+
+/* 题目元信息 */
+.path-problem-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.path-difficulty-badge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.path-difficulty-badge.easy {
+  background: #e6fffb;
+  color: #00af9b;
+}
+
+.path-difficulty-badge.medium {
+  background: #fffbe6;
+  color: #d48806;
+}
+
+.path-difficulty-badge.hard {
+  background: #fff1f0;
+  color: #ff2d55;
+}
+
+.path-pass-rate {
+  font-size: 12px;
+  color: #999;
+}
+
+/* 题目标签 */
+.path-problem-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.path-tag {
+  font-size: 11px;
+  padding: 2px 6px;
+  background: #f5f5f5;
+  color: #666;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.path-tag:hover {
+  background: #e6f7ff;
+  color: #1890ff;
+}
+
+.path-tag.selected {
+  background: #e6f7ff;
+  color: #1890ff;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .path-problem-item {
+    padding: 12px;
+  }
+  
+  .path-problem-main {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .path-problem-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

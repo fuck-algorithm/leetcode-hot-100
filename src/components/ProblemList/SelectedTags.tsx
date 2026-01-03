@@ -1,6 +1,7 @@
 import React from 'react';
 import Tooltip from '../Tooltip';
 import { Tag } from './types';
+import './SelectedTags.css';
 
 // 已选标签组件接口
 export interface SelectedTagsProps {

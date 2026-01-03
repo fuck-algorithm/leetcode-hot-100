@@ -1,6 +1,7 @@
 import React from 'react';
 import { Problem } from '../types';
 import Tooltip from '../../Tooltip';
+import './PathProblemItem.css';
 
 interface PathProblemItemProps {
   problem: Problem;

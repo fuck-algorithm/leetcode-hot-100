@@ -1,0 +1,19 @@
+/* 难度徽章样式 */
+.difficulty {
+  font-size: 14px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.difficulty.simple {
+  color: #00af9b;
+}
+
+.difficulty.medium {
+  color: #ffb800;
+}
+
+.difficulty.hard {
+  color: #ff2d55;
+}

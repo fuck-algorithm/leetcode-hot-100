@@ -1,0 +1,28 @@
+/* 题目标签样式 */
+.problem-tags {
+  display: flex;
+  gap: 6px;
+  margin-left: 6px;
+  flex-wrap: wrap;
+}
+
+.problem-tag {
+  background-color: #f0f0f0;
+  color: #666;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.problem-tag:hover {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.problem-tag.selected {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { LearningPath } from '../data/learningPaths';
+import './PathCard.css';
 
 interface PathStats {
   total: number;

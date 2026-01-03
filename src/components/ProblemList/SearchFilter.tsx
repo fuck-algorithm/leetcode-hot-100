@@ -3,6 +3,7 @@ import Tooltip from '../Tooltip';
 import { LegacySortOption } from './types';
 import { CompletionFilterType } from '../../services/completionStorage';
 import CompletionFilterDropdown from './CompletionFilterDropdown';
+import './SearchFilter.css';
 
 // 搜索和筛选组件接口
 export interface SearchFilterProps {

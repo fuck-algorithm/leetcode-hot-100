@@ -1,0 +1,231 @@
+/* 路径详情页样式 */
+.path-detail-container {
+  padding: 0;
+}
+
+.path-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  transition: all 0.2s ease;
+  margin-bottom: 20px;
+}
+
+.path-back-btn:hover {
+  background-color: #e8e8e8;
+  color: #333;
+}
+
+/* 路径详情顶部栏 */
+.path-detail-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* 重新修炼按钮 */
+.path-reset-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.path-reset-btn:hover {
+  background: #fff1f0;
+  border-color: #ffa39e;
+  color: #cf1322;
+}
+
+.path-reset-btn:active {
+  transform: scale(0.98);
+}
+
+.path-reset-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.path-reset-btn .reset-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.path-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+  border-radius: 8px;
+  border-left: 4px solid var(--path-color);
+  margin-bottom: 24px;
+}
+
+.path-detail-icon {
+  font-size: 48px;
+}
+
+.path-detail-info {
+  flex: 1;
+}
+
+.path-detail-name {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.path-detail-description {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.path-detail-stats {
+  display: flex;
+  gap: 32px;
+}
+
+.detail-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.detail-stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+}
+
+.detail-stat-value.animation-stat {
+  color: #52c41a;
+}
+
+.detail-stat-label {
+  font-size: 12px;
+  color: #999;
+}
+
+/* 难度筛选器 */
+.path-difficulty-filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.path-difficulty-filter .filter-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 6px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  background: white;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #666;
+}
+
+.filter-btn:hover {
+  border-color: #1890ff;
+  color: #1890ff;
+}
+
+.filter-btn.active {
+  background: #1890ff;
+  border-color: #1890ff;
+  color: white;
+}
+
+.filter-btn.easy.active {
+  background: #00af9b;
+  border-color: #00af9b;
+}
+
+.filter-btn.medium.active {
+  background: #ffb800;
+  border-color: #ffb800;
+  color: #333;
+}
+
+.filter-btn.hard.active {
+  background: #ff2d55;
+  border-color: #ff2d55;
+}
+
+/* 路径说明 */
+.path-instruction {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #e6f7ff 0%, #f0f5ff 100%);
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border-left: 4px solid #1890ff;
+}
+
+.instruction-icon {
+  font-size: 18px;
+}
+
+.instruction-text {
+  font-size: 13px;
+  color: #1890ff;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .path-detail-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .path-detail-stats {
+    justify-content: center;
+  }
+  
+  .path-detail-top-bar {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .path-reset-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

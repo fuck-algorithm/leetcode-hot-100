@@ -1,0 +1,44 @@
+/* 表格标题样式 */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+}
+
+.table-header-left, .table-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.table-header-right {
+  gap: 20px;
+}
+
+.column-title {
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  position: relative;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.column-title:hover {
+  background-color: #eaeaea;
+}
+
+/* 添加排序指示器样式 */
+.column-title .sort-indicator {
+  margin-left: 5px;
+  font-size: 12px;
+}

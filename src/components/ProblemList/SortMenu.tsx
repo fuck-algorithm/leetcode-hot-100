@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react';
 import Tooltip from '../Tooltip';
 import { LegacySortOption } from './types';
+import './SortMenu.css';
 
 // 排序菜单组件接口
 export interface SortMenuProps {

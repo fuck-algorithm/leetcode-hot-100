@@ -4,6 +4,7 @@ import { LearningPath } from '../data/learningPaths';
 import DuolingoPath from './DuolingoPath';
 import ConfirmDialog from '../ConfirmDialog';
 import Tooltip from '../../Tooltip';
+import './PathDetail.css';
 
 interface PathStats {
   total: number;

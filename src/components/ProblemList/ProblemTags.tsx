@@ -1,5 +1,6 @@
 import React from 'react';
 import Tooltip from '../Tooltip';
+import './ProblemTags.css';
 
 // 问题标签组件接口
 export interface ProblemTagsProps {

@@ -1,0 +1,64 @@
+/* 排序菜单样式 */
+.sort-menu {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  width: 200px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  overflow: hidden;
+}
+
+.sort-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.sort-option > .tooltip-container {
+  flex: 1;
+  min-width: 0;
+}
+
+.sort-option > .tooltip-container > span {
+  display: block;
+  white-space: nowrap;
+}
+
+.sort-option:last-child {
+  border-bottom: none;
+}
+
+.sort-option:hover {
+  background-color: #f8f8f8;
+}
+
+.sort-option-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.check-mark {
+  color: #1890ff;
+  font-weight: bold;
+}
+
+.sort-direction {
+  color: #1890ff;
+  font-weight: bold;
+}
+
+.sort-icon {
+  color: #ffb800;
+}
+
+.sort-icon.hidden {
+  color: #999;
+  opacity: 0.7;
+}

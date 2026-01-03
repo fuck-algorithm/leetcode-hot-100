@@ -1,5 +1,6 @@
 import React from 'react';
 import Tooltip from '../Tooltip';
+import './DifficultyBadge.css';
 
 // 难度组件接口
 export interface DifficultyProps {

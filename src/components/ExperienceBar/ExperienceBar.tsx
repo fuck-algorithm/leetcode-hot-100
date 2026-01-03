@@ -33,23 +33,23 @@ const getChineseNumber = (num: number): string => {
   return num.toString();
 };
 
-// 纯白色背景 - 与页面整体风格一致
+// 玄幻修仙风格 - 深色背景配绿色主题
 // 经验值系统说明：
 // - 100道题目总经验值约1920 EXP (EASY:10×20=200, MEDIUM:20×68=1360, HARD:30×12=360)
 // - 14个学习路径的宝箱总经验值约1150 EXP (23个宝箱×50)
 // - 总计约3070 EXP，对应约31级
 // - 境界系统设计为每个境界3层，共10个境界，确保用户能达到最终境界
 const REALMS: RealmInfo[] = [
-  { name: '练气期', nameEn: 'Qi Refining', minLevel: 1, maxLevel: 3, color: '#78716c', icon: '🌱', bgGradient: '#ffffff' },
-  { name: '筑基期', nameEn: 'Foundation', minLevel: 4, maxLevel: 6, color: '#22c55e', icon: '🌿', bgGradient: '#ffffff' },
-  { name: '金丹期', nameEn: 'Golden Core', minLevel: 7, maxLevel: 9, color: '#eab308', icon: '💫', bgGradient: '#ffffff' },
-  { name: '元婴期', nameEn: 'Nascent Soul', minLevel: 10, maxLevel: 12, color: '#f97316', icon: '🔥', bgGradient: '#ffffff' },
-  { name: '化神期', nameEn: 'Spirit Severing', minLevel: 13, maxLevel: 15, color: '#ef4444', icon: '⚡', bgGradient: '#ffffff' },
-  { name: '炼虚期', nameEn: 'Void Refining', minLevel: 16, maxLevel: 18, color: '#a855f7', icon: '🌀', bgGradient: '#ffffff' },
-  { name: '合体期', nameEn: 'Body Integration', minLevel: 19, maxLevel: 21, color: '#6366f1', icon: '💎', bgGradient: '#ffffff' },
-  { name: '大乘期', nameEn: 'Mahayana', minLevel: 22, maxLevel: 24, color: '#ec4899', icon: '🌸', bgGradient: '#ffffff' },
-  { name: '渡劫期', nameEn: 'Tribulation', minLevel: 25, maxLevel: 27, color: '#14b8a6', icon: '⛈️', bgGradient: '#ffffff' },
-  { name: '大罗金仙', nameEn: 'Golden Immortal', minLevel: 28, maxLevel: 999, color: '#fbbf24', icon: '👑', bgGradient: '#ffffff' },
+  { name: '练气期', nameEn: 'Qi Refining', minLevel: 1, maxLevel: 3, color: '#4ade80', icon: '🌱', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '筑基期', nameEn: 'Foundation', minLevel: 4, maxLevel: 6, color: '#22c55e', icon: '🌿', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '金丹期', nameEn: 'Golden Core', minLevel: 7, maxLevel: 9, color: '#4ade80', icon: '💫', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '元婴期', nameEn: 'Nascent Soul', minLevel: 10, maxLevel: 12, color: '#22c55e', icon: '🔥', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '化神期', nameEn: 'Spirit Severing', minLevel: 13, maxLevel: 15, color: '#4ade80', icon: '⚡', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '炼虚期', nameEn: 'Void Refining', minLevel: 16, maxLevel: 18, color: '#22c55e', icon: '🌀', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '合体期', nameEn: 'Body Integration', minLevel: 19, maxLevel: 21, color: '#4ade80', icon: '💎', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '大乘期', nameEn: 'Mahayana', minLevel: 22, maxLevel: 24, color: '#22c55e', icon: '🌸', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '渡劫期', nameEn: 'Tribulation', minLevel: 25, maxLevel: 27, color: '#4ade80', icon: '⛈️', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '大罗金仙', nameEn: 'Golden Immortal', minLevel: 28, maxLevel: 999, color: '#fbbf24', icon: '👑', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
 ];
 
 // 根据等级获取境界信息
@@ -129,14 +129,14 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigg
     : `${currentRealm.nameEn} Layer ${layerInRealm}`;
 
   return (
-    <div className="experience-bar-container" style={{ background: currentRealm.bgGradient }}>
+    <div className="experience-bar-container">
       <div className="experience-bar-content">
         {/* 境界徽章和帮助图标 */}
         <div className="realm-section">
-          <div className="realm-badge" style={{ borderColor: currentRealm.color }}>
+          <div className="realm-badge">
             <span className="realm-icon">{currentRealm.icon}</span>
             <div className="realm-info">
-              <span className="realm-name">{realmTitle}</span>
+              <span className="realm-name" style={{ color: currentRealm.color, textShadow: `0 0 10px ${currentRealm.color}80` }}>{realmTitle}</span>
             </div>
           </div>
           
@@ -162,10 +162,7 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigg
           <div className="exp-bar-track">
             <div 
               className="exp-bar-fill"
-              style={{ 
-                width: `${levelProgress}%`,
-                background: `linear-gradient(90deg, ${currentRealm.color} 0%, ${currentRealm.color}cc 100%)`
-              }}
+              style={{ width: `${levelProgress}%` }}
             />
             <div className="exp-bar-shine"></div>
           </div>
@@ -187,7 +184,7 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigg
       
       {/* 经验值获取动画 */}
       {showExpGain && (
-        <div className="exp-gain-popup" style={{ background: currentRealm.bgGradient }}>
+        <div className="exp-gain-popup">
           +{expGainAmount} EXP
         </div>
       )}

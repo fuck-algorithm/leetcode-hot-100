@@ -1,6 +1,7 @@
 import React from 'react';
 import Tooltip from '../Tooltip';
 import { LegacySortOption } from './types';
+import './TableHeader.css';
 
 // 表格标题组件接口
 export interface TableHeaderProps {

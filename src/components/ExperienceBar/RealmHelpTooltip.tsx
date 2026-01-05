@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import './RealmHelpTooltip.css';
 
 // 修仙境界称号系统
@@ -22,13 +23,15 @@ const REALMS: RealmInfo[] = [
   { name: '合体期', nameEn: 'Body Integration', minLevel: 19, maxLevel: 21, color: '#6366f1', icon: '💎' },
   { name: '大乘期', nameEn: 'Mahayana', minLevel: 22, maxLevel: 24, color: '#ec4899', icon: '🌸' },
   { name: '渡劫期', nameEn: 'Tribulation', minLevel: 25, maxLevel: 27, color: '#14b8a6', icon: '⛈️' },
-  { name: '大罗金仙', nameEn: 'Golden Immortal', minLevel: 28, maxLevel: 999, color: '#fbbf24', icon: '👑' },
+  { name: '大罗金仙', nameEn: 'Golden Immortal', minLevel: 28, maxLevel: 30, color: '#fbbf24', icon: '👑' },
+  { name: '飞升成仙', nameEn: 'Ascension', minLevel: 31, maxLevel: 999, color: '#ff6b9d', icon: '🚀' },
 ];
 
 interface RealmHelpTooltipProps {
   currentLang: string;
   currentLevel: number;
   isVisible: boolean;
+  anchorRect?: DOMRect | null;
 }
 
 // 计算达到某个境界所需的总经验值
@@ -74,7 +77,8 @@ const getRealmByLevel = (level: number): RealmInfo => {
 const RealmHelpTooltip: React.FC<RealmHelpTooltipProps> = ({
   currentLang,
   currentLevel,
-  isVisible
+  isVisible,
+  anchorRect
 }) => {
   if (!isVisible) return null;
 
@@ -96,8 +100,16 @@ const RealmHelpTooltip: React.FC<RealmHelpTooltipProps> = ({
     start: isZh ? '起始' : 'Start',
   };
 
-  return (
-    <div className="realm-help-tooltip">
+  // 计算弹窗位置
+  const tooltipStyle: React.CSSProperties = anchorRect ? {
+    position: 'fixed',
+    top: anchorRect.bottom + 12,
+    left: anchorRect.left + anchorRect.width / 2,
+    transform: 'translateX(-50%)',
+  } : {};
+
+  const tooltipContent = (
+    <div className="realm-help-tooltip" style={tooltipStyle}>
       <div className="tooltip-header">
         <h3 className="tooltip-title">{texts.title}</h3>
       </div>
@@ -161,6 +173,9 @@ const RealmHelpTooltip: React.FC<RealmHelpTooltipProps> = ({
       </div>
     </div>
   );
+
+  // 使用 Portal 渲染到 body
+  return ReactDOM.createPortal(tooltipContent, document.body);
 };
 
 export default RealmHelpTooltip;

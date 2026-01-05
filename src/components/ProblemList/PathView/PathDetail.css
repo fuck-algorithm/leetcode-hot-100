@@ -3,47 +3,56 @@
   padding: 0;
 }
 
-.path-back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 8px 16px;
-  background-color: #f5f5f5;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #666;
-  transition: all 0.2s ease;
+/* ========== Banner 区域 ========== */
+.path-detail-banner {
+  background: linear-gradient(135deg, #fafafa 0%, #fff 100%);
+  border-radius: 12px;
+  padding: 16px 20px;
   margin-bottom: 20px;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.path-back-btn:hover {
-  background-color: #e8e8e8;
-  color: #333;
-}
-
-/* 路径详情顶部栏 */
-.path-detail-top-bar {
+/* 顶部操作栏 */
+.banner-top-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
-/* 重新修炼按钮 */
-.path-reset-btn {
-  display: flex;
+.path-back-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
+  padding: 6px 14px;
   background: transparent;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #ddd;
   border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
   color: #666;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
+}
+
+.path-back-btn:hover {
+  background: #f5f5f5;
+  border-color: #ccc;
+  color: #333;
+}
+
+.path-reset-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #999;
+  transition: all 0.15s ease;
 }
 
 .path-reset-btn:hover {
@@ -52,12 +61,8 @@
   color: #cf1322;
 }
 
-.path-reset-btn:active {
-  transform: scale(0.98);
-}
-
 .path-reset-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -66,166 +71,201 @@
   height: 16px;
 }
 
-.path-detail-header {
+/* 主要信息区 */
+.banner-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 14px;
+}
+
+.banner-left {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 24px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
-  border-radius: 8px;
-  border-left: 4px solid var(--path-color);
-  margin-bottom: 24px;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
 }
 
 .path-detail-icon {
-  font-size: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, rgba(var(--path-color-rgb, 24, 144, 255), 0.1) 0%, rgba(var(--path-color-rgb, 24, 144, 255), 0.05) 100%);
+  border-radius: 10px;
+  flex-shrink: 0;
 }
 
 .path-detail-info {
   flex: 1;
+  min-width: 0;
 }
 
 .path-detail-name {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 600;
   color: #333;
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .path-detail-description {
-  font-size: 14px;
-  color: #666;
+  font-size: 13px;
+  color: #888;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.path-detail-stats {
-  display: flex;
-  gap: 32px;
-}
-
-.detail-stat {
+/* 右侧完成统计 */
+.banner-right {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+  margin-left: 20px;
 }
 
-.detail-stat-value {
-  font-size: 32px;
+.completion-display {
+  font-family: 'DIN Round Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.completion-current {
+  font-size: 28px;
   font-weight: 700;
-  color: #333;
+  color: var(--path-color, #1890ff);
 }
 
-.detail-stat-value.animation-stat {
-  color: #52c41a;
+.completion-separator {
+  font-size: 20px;
+  color: #ccc;
+  margin: 0 2px;
 }
 
-.detail-stat-label {
+.completion-total {
+  font-size: 20px;
+  font-weight: 600;
+  color: #999;
+}
+
+.completion-label {
   font-size: 12px;
   color: #999;
 }
 
-/* 难度筛选器 */
-.path-difficulty-filter {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding: 16px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  flex-wrap: wrap;
+.animation-count {
+  font-size: 12px;
+  color: #52c41a;
+  margin-top: 2px;
 }
 
-.filter-label {
-  font-size: 14px;
-  color: #666;
-  font-weight: 500;
-}
-
-.path-difficulty-filter .filter-buttons {
+/* 难度筛选 */
+.banner-filter {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.filter-btn {
-  padding: 6px 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
+.filter-chip {
+  padding: 5px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
   background: white;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   color: #666;
 }
 
-.filter-btn:hover {
+.filter-chip:hover {
   border-color: #1890ff;
   color: #1890ff;
 }
 
-.filter-btn.active {
+.filter-chip.active {
   background: #1890ff;
   border-color: #1890ff;
   color: white;
 }
 
-.filter-btn.easy.active {
-  background: #00af9b;
+.filter-chip.easy:hover {
   border-color: #00af9b;
+  color: #00af9b;
 }
 
-.filter-btn.medium.active {
+.filter-chip.easy.active {
+  background: #00af9b;
+  border-color: #00af9b;
+  color: white;
+}
+
+.filter-chip.medium:hover {
+  border-color: #ffb800;
+  color: #b38600;
+}
+
+.filter-chip.medium.active {
   background: #ffb800;
   border-color: #ffb800;
   color: #333;
 }
 
-.filter-btn.hard.active {
+.filter-chip.hard:hover {
+  border-color: #ff2d55;
+  color: #ff2d55;
+}
+
+.filter-chip.hard.active {
   background: #ff2d55;
   border-color: #ff2d55;
-}
-
-/* 路径说明 */
-.path-instruction {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, #e6f7ff 0%, #f0f5ff 100%);
-  border-radius: 8px;
-  margin-bottom: 24px;
-  border-left: 4px solid #1890ff;
-}
-
-.instruction-icon {
-  font-size: 18px;
-}
-
-.instruction-text {
-  font-size: 13px;
-  color: #1890ff;
+  color: white;
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
-  .path-detail-header {
-    flex-direction: column;
-    text-align: center;
+@media (max-width: 600px) {
+  .path-detail-banner {
+    padding: 14px 16px;
   }
   
-  .path-detail-stats {
-    justify-content: center;
-  }
-  
-  .path-detail-top-bar {
+  .banner-main {
     flex-direction: column;
-    gap: 12px;
     align-items: flex-start;
+    gap: 14px;
   }
   
-  .path-reset-btn {
+  .banner-left {
     width: 100%;
-    justify-content: center;
+  }
+  
+  .banner-right {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .completion-label {
+    order: -1;
+  }
+  
+  .path-detail-name {
+    font-size: 16px;
+  }
+  
+  .completion-current {
+    font-size: 24px;
+  }
+  
+  .completion-total {
+    font-size: 18px;
   }
 }

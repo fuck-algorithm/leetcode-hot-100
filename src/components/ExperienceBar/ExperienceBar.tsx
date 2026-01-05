@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { experienceStorage, ExperienceRecord, calculateLevelProgress } from '../../services/experienceStorage';
 import RealmHelpTooltip from './RealmHelpTooltip';
 import './ExperienceBar.css';
@@ -6,6 +6,9 @@ import './ExperienceBar.css';
 interface ExperienceBarProps {
   currentLang: string;
   refreshTrigger?: number; // 用于触发刷新
+  // 新增：题目完成进度
+  completedProblems?: number;
+  totalProblems?: number;
 }
 
 // 修仙境界称号系统
@@ -72,7 +75,12 @@ const getNextRealm = (level: number): RealmInfo | null => {
   return null;
 };
 
-const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigger }) => {
+const ExperienceBar: React.FC<ExperienceBarProps> = ({ 
+  currentLang, 
+  refreshTrigger,
+  completedProblems = 0,
+  totalProblems = 100
+}) => {
   const [experience, setExperience] = useState<ExperienceRecord>({
     id: 'total',
     totalExp: 0,
@@ -82,6 +90,8 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigg
   const [showExpGain, setShowExpGain] = useState(false);
   const [expGainAmount, setExpGainAmount] = useState(0);
   const [showHelpTooltip, setShowHelpTooltip] = useState(false);
+  const [helpIconRect, setHelpIconRect] = useState<DOMRect | null>(null);
+  const helpIconRef = useRef<HTMLDivElement>(null);
 
   const loadExperience = useCallback(async () => {
     try {
@@ -128,6 +138,9 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigg
     ? `${currentRealm.name}${getChineseNumber(layerInRealm)}层`
     : `${currentRealm.nameEn} Layer ${layerInRealm}`;
 
+  // 计算题目完成百分比
+  const problemPercentage = totalProblems > 0 ? Math.round((completedProblems / totalProblems) * 100) : 0;
+
   return (
     <div className="experience-bar-container">
       <div className="experience-bar-content">
@@ -143,7 +156,13 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigg
           {/* 帮助图标 */}
           <div 
             className="help-icon-wrapper"
-            onMouseEnter={() => setShowHelpTooltip(true)}
+            ref={helpIconRef}
+            onMouseEnter={() => {
+              if (helpIconRef.current) {
+                setHelpIconRect(helpIconRef.current.getBoundingClientRect());
+              }
+              setShowHelpTooltip(true);
+            }}
             onMouseLeave={() => setShowHelpTooltip(false)}
           >
             <button className="help-icon" aria-label={currentLang === 'zh' ? '查看境界说明' : 'View realm info'}>
@@ -153,31 +172,53 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({ currentLang, refreshTrigg
               currentLang={currentLang}
               currentLevel={experience.level}
               isVisible={showHelpTooltip}
+              anchorRect={helpIconRect}
             />
           </div>
         </div>
         
-        {/* 经验条 */}
-        <div className="exp-bar-wrapper">
-          <div className="exp-bar-track">
-            <div 
-              className="exp-bar-fill"
-              style={{ width: `${levelProgress}%` }}
-            />
-            <div className="exp-bar-shine"></div>
+        {/* 进度区域 */}
+        <div className="progress-section">
+          {/* 题目完成进度 */}
+          <div className="problem-progress">
+            <div className="problem-progress-info">
+              <span className="problem-progress-text">
+                <span className="problem-completed">{completedProblems}</span>
+                <span className="problem-separator">/</span>
+                <span className="problem-total">{totalProblems}</span>
+              </span>
+              <span className="problem-percentage">{problemPercentage}%</span>
+            </div>
+            <div className="problem-progress-track">
+              <div 
+                className="problem-progress-fill"
+                style={{ width: `${problemPercentage}%` }}
+              />
+            </div>
           </div>
-          <div className="exp-bar-text">
-            <span className="exp-current">{experience.totalExp} EXP</span>
-            <span className="exp-next">
-              {nextRealm 
-                ? (currentLang === 'zh' 
-                    ? `距 ${nextRealm.name} 还需 ${(nextRealm.minLevel - experience.level) * 100 - levelProgress} EXP`
-                    : `${(nextRealm.minLevel - experience.level) * 100 - levelProgress} EXP to ${nextRealm.nameEn}`)
-                : (currentLang === 'zh' 
-                    ? `距下一级还需 ${expToNextLevel} EXP`
-                    : `${expToNextLevel} EXP to next level`)
-              }
-            </span>
+          
+          {/* 经验条 */}
+          <div className="exp-bar-wrapper">
+            <div className="exp-bar-track">
+              <div 
+                className="exp-bar-fill"
+                style={{ width: `${levelProgress}%` }}
+              />
+              <div className="exp-bar-shine"></div>
+            </div>
+            <div className="exp-bar-text">
+              <span className="exp-current">{experience.totalExp} EXP</span>
+              <span className="exp-next">
+                {nextRealm 
+                  ? (currentLang === 'zh' 
+                      ? `距 ${nextRealm.name} 还需 ${(nextRealm.minLevel - experience.level) * 100 - levelProgress} EXP`
+                      : `${(nextRealm.minLevel - experience.level) * 100 - levelProgress} EXP to ${nextRealm.nameEn}`)
+                  : (currentLang === 'zh' 
+                      ? `距下一级还需 ${expToNextLevel} EXP`
+                      : `${expToNextLevel} EXP to next level`)
+                }
+              </span>
+            </div>
           </div>
         </div>
       </div>

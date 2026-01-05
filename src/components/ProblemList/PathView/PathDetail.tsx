@@ -4,6 +4,7 @@ import { LearningPath } from '../data/learningPaths';
 import DuolingoPath from './DuolingoPath';
 import ConfirmDialog from '../ConfirmDialog';
 import Tooltip from '../../Tooltip';
+import { PathIcon } from './PathIcons/index';
 import './PathDetail.css';
 
 interface PathStats {
@@ -105,97 +106,94 @@ const PathDetail: React.FC<PathDetailProps> = ({
 
   return (
     <div className="path-detail-container">
-      <div className="path-detail-top-bar">
-        <button className="path-back-btn" onClick={onBack}>
-          ← {currentLang === 'zh' ? '返回路径概览' : 'Back to Overview'}
-        </button>
-        
-        {/* 重新修炼按钮 */}
-        {onResetPathProgress && completionStats.completed > 0 && (
-          <Tooltip content={t('resetPathProgress.tooltip')}>
-            <button 
-              className="path-reset-btn" 
-              onClick={() => setShowResetDialog(true)}
-              disabled={isResetting}
-            >
-              <svg className="reset-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                <path d="M3 3v5h5" />
-              </svg>
-              <span>{t('resetPathProgress.button')}</span>
-            </button>
-          </Tooltip>
-        )}
-      </div>
-      
-      <div className="path-detail-header" style={{ '--path-color': path.color } as React.CSSProperties}>
-        <div className="path-detail-icon">{path.icon}</div>
-        <div className="path-detail-info">
-          <h2 className="path-detail-name">{name}</h2>
-          <p className="path-detail-description">{description}</p>
+      {/* 简洁的 Banner 区域 */}
+      <div className="path-detail-banner" style={{ '--path-color': path.color } as React.CSSProperties}>
+        {/* 顶部操作栏 */}
+        <div className="banner-top-row">
+          <button className="path-back-btn" onClick={onBack}>
+            ← {currentLang === 'zh' ? '返回' : 'Back'}
+          </button>
+          
+          {onResetPathProgress && completionStats.completed > 0 && (
+            <Tooltip content={t('resetPathProgress.tooltip')}>
+              <button 
+                className="path-reset-btn" 
+                onClick={() => setShowResetDialog(true)}
+                disabled={isResetting}
+              >
+                <svg className="reset-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                </svg>
+              </button>
+            </Tooltip>
+          )}
         </div>
-        <div className="path-detail-stats">
-          <div className="detail-stat">
-            <span className="detail-stat-value">{completionStats.completed}/{stats.total}</span>
-            <span className="detail-stat-label">
-              {currentLang === 'zh' ? '已完成' : 'Completed'}
-            </span>
-          </div>
-          <div className="detail-stat">
-            <span className="detail-stat-value animation-stat">{stats.hasAnimation}</span>
-            <span className="detail-stat-label">
-              {currentLang === 'zh' ? '有动画' : 'Animated'}
-            </span>
-          </div>
-        </div>
-      </div>
 
-      {/* 难度筛选器 */}
-      <div className="path-difficulty-filter">
-        <span className="filter-label">
-          {currentLang === 'zh' ? '难度筛选：' : 'Filter by difficulty:'}
-        </span>
-        <div className="filter-buttons">
+        {/* 主要信息区 */}
+        <div className="banner-main">
+          <div className="banner-left">
+            <div className="path-detail-icon">
+              <PathIcon pathId={path.id} size={40} color={path.color} fallback={path.icon} />
+            </div>
+            <div className="path-detail-info">
+              <h2 className="path-detail-name">{name}</h2>
+              <p className="path-detail-description">{description}</p>
+            </div>
+          </div>
+          
+          <div className="banner-right">
+            <div className="completion-display">
+              <span className="completion-current">{completionStats.completed}</span>
+              <span className="completion-separator">/</span>
+              <span className="completion-total">{stats.total}</span>
+            </div>
+            <span className="completion-label">{currentLang === 'zh' ? '已完成' : 'Completed'}</span>
+            {stats.hasAnimation > 0 && (
+              <span className="animation-count">🎬 {stats.hasAnimation}</span>
+            )}
+          </div>
+        </div>
+
+        {/* 难度筛选 */}
+        <div className="banner-filter">
           <button 
-            className={`filter-btn ${difficultyFilter === 'all' ? 'active' : ''}`}
+            className={`filter-chip ${difficultyFilter === 'all' ? 'active' : ''}`}
             onClick={() => setDifficultyFilter('all')}
           >
             {currentLang === 'zh' ? '全部' : 'All'} ({stats.total})
           </button>
-          <button 
-            className={`filter-btn easy ${difficultyFilter === 'easy' ? 'active' : ''}`}
-            onClick={() => setDifficultyFilter('easy')}
-          >
-            {currentLang === 'zh' ? '简单' : 'Easy'} ({stats.easy})
-          </button>
-          <button 
-            className={`filter-btn medium ${difficultyFilter === 'medium' ? 'active' : ''}`}
-            onClick={() => setDifficultyFilter('medium')}
-          >
-            {currentLang === 'zh' ? '中等' : 'Medium'} ({stats.medium})
-          </button>
-          <button 
-            className={`filter-btn hard ${difficultyFilter === 'hard' ? 'active' : ''}`}
-            onClick={() => setDifficultyFilter('hard')}
-          >
-            {currentLang === 'zh' ? '困难' : 'Hard'} ({stats.hard})
-          </button>
+          {stats.easy > 0 && (
+            <button 
+              className={`filter-chip easy ${difficultyFilter === 'easy' ? 'active' : ''}`}
+              onClick={() => setDifficultyFilter('easy')}
+            >
+              {currentLang === 'zh' ? '简单' : 'Easy'} ({stats.easy})
+            </button>
+          )}
+          {stats.medium > 0 && (
+            <button 
+              className={`filter-chip medium ${difficultyFilter === 'medium' ? 'active' : ''}`}
+              onClick={() => setDifficultyFilter('medium')}
+            >
+              {currentLang === 'zh' ? '中等' : 'Medium'} ({stats.medium})
+            </button>
+          )}
+          {stats.hard > 0 && (
+            <button 
+              className={`filter-chip hard ${difficultyFilter === 'hard' ? 'active' : ''}`}
+              onClick={() => setDifficultyFilter('hard')}
+            >
+              {currentLang === 'zh' ? '困难' : 'Hard'} ({stats.hard})
+            </button>
+          )}
         </div>
-      </div>
-
-      {/* 路径说明 */}
-      <div className="path-instruction">
-        <span className="instruction-icon">💡</span>
-        <span className="instruction-text">
-          {currentLang === 'zh' 
-            ? '点击节点查看题目详情，双击标记完成状态，带 🎬 标记的题目有动画演示' 
-            : 'Click nodes to view details, double-click to mark completion. Nodes with 🎬 have animations'}
-        </span>
       </div>
 
       {/* 多邻国风格路径 */}
       <DuolingoPath
         problems={filteredProblems}
+        allProblems={problems}
         currentLang={currentLang}
         t={t}
         selectedTags={selectedTags}

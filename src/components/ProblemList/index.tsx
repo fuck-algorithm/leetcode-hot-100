@@ -244,20 +244,24 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
         </div>
       )}
       
-      {/* 经验值条 - 仅在路径视图显示 */}
+      {/* 经验值条 - 仅在路径视图显示（已整合题目进度） */}
       {viewMode === 'path' && (
         <ExperienceBar 
           currentLang={i18n.language}
           refreshTrigger={experience.totalExp}
+          completedProblems={getStatsForProblems(problems.map(p => p.questionFrontendId)).completed}
+          totalProblems={problems.length}
         />
       )}
       
-      {/* 整体进度条 */}
-      <OverallProgressBar 
-        completed={getStatsForProblems(problems.map(p => p.questionFrontendId)).completed}
-        total={problems.length}
-        t={t}
-      />
+      {/* 整体进度条 - 仅在列表视图显示 */}
+      {viewMode === 'list' && (
+        <OverallProgressBar 
+          completed={getStatsForProblems(problems.map(p => p.questionFrontendId)).completed}
+          total={problems.length}
+          t={t}
+        />
+      )}
       
       {/* 列表视图 */}
       {viewMode === 'list' && (

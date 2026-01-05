@@ -1,24 +1,22 @@
-/* 帮助提示框容器 - 玄幻修仙风格 */
+/* 帮助提示框容器 - 金色浅色主题 */
 .realm-help-tooltip {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%);
-  border: 1px solid rgba(34, 197, 94, 0.4);
+  position: fixed;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fde68a 100%);
+  border: 1px solid rgba(245, 158, 11, 0.4);
   border-radius: 8px;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 40px rgba(34, 197, 94, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  padding: 16px;
-  min-width: 340px;
-  max-width: 400px;
-  z-index: 1000;
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    0 0 40px rgba(245, 158, 11, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  padding: 16px 20px;
+  min-width: 480px;
+  max-width: 520px;
+  z-index: 999999;
   animation: tooltipFadeIn 0.2s ease-out;
-  overflow: hidden;
+  overflow: visible;
 }
 
-/* 背景装饰 - 仙气效果 */
+/* 背景装饰 - 金色光晕效果 */
 .realm-help-tooltip::before {
   content: '';
   position: absolute;
@@ -27,19 +25,19 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(ellipse at 10% 20%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 90% 80%, rgba(74, 222, 128, 0.06) 0%, transparent 50%);
+    radial-gradient(ellipse at 10% 20%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(251, 191, 36, 0.08) 0%, transparent 50%);
   pointer-events: none;
 }
 
 @keyframes tooltipFadeIn {
   from {
     opacity: 0;
-    transform: translateY(-8px) scale(0.95);
+    transform: translateX(-50%) translateY(-8px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateX(-50%) translateY(0) scale(1);
   }
 }
 
@@ -47,7 +45,7 @@
 .tooltip-header {
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(34, 197, 94, 0.3);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.3);
   position: relative;
   z-index: 1;
 }
@@ -55,9 +53,9 @@
 .tooltip-title {
   font-size: 14px;
   font-weight: 700;
-  color: #4ade80;
+  color: #b45309;
   margin: 0;
-  text-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
   letter-spacing: 1px;
 }
 
@@ -65,9 +63,9 @@
 .exp-rules {
   margin-bottom: 12px;
   padding: 10px;
-  background: rgba(34, 197, 94, 0.08);
+  background: rgba(245, 158, 11, 0.1);
   border-radius: 6px;
-  border: 1px solid rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.25);
   position: relative;
   z-index: 1;
 }
@@ -75,13 +73,13 @@
 .exp-rule-title {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(156, 163, 175, 0.9);
+  color: #78716c;
   margin-bottom: 8px;
 }
 
 .exp-rule-items {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
 }
 
@@ -90,32 +88,32 @@
   font-weight: 600;
   padding: 4px 8px;
   border-radius: 4px;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .exp-rule-item.easy {
-  color: #4ade80;
-  border-color: rgba(74, 222, 128, 0.4);
-  background: rgba(34, 197, 94, 0.15);
+  color: #15803d;
+  border-color: rgba(34, 197, 94, 0.5);
+  background: rgba(34, 197, 94, 0.2);
 }
 
 .exp-rule-item.medium {
-  color: #fbbf24;
-  border-color: rgba(251, 191, 36, 0.4);
-  background: rgba(251, 191, 36, 0.15);
+  color: #b45309;
+  border-color: rgba(251, 191, 36, 0.5);
+  background: rgba(251, 191, 36, 0.25);
 }
 
 .exp-rule-item.hard {
-  color: #f87171;
-  border-color: rgba(248, 113, 113, 0.4);
-  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
+  border-color: rgba(248, 113, 113, 0.5);
+  background: rgba(239, 68, 68, 0.2);
 }
 
 .exp-rule-item.treasure {
-  color: #a78bfa;
-  border-color: rgba(167, 139, 250, 0.4);
-  background: rgba(139, 92, 246, 0.15);
+  color: #7c3aed;
+  border-color: rgba(167, 139, 250, 0.5);
+  background: rgba(139, 92, 246, 0.2);
 }
 
 /* 境界列表 */
@@ -123,8 +121,6 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  max-height: 320px;
-  overflow-y: auto;
   position: relative;
   z-index: 1;
 }
@@ -135,17 +131,17 @@
 }
 
 .realm-list::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(245, 158, 11, 0.1);
   border-radius: 3px;
 }
 
 .realm-list::-webkit-scrollbar-thumb {
-  background: rgba(34, 197, 94, 0.4);
+  background: rgba(245, 158, 11, 0.4);
   border-radius: 3px;
 }
 
 .realm-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(34, 197, 94, 0.6);
+  background: rgba(245, 158, 11, 0.6);
 }
 
 .realm-item {
@@ -155,25 +151,26 @@
   padding: 8px 10px;
   border-radius: 6px;
   border-left: 3px solid transparent;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.4);
   transition: all 0.2s ease;
 }
 
 .realm-item:hover {
-  background: rgba(34, 197, 94, 0.1);
-  border-left-color: rgba(34, 197, 94, 0.5);
+  background: rgba(245, 158, 11, 0.15);
+  border-left-color: rgba(245, 158, 11, 0.5);
 }
 
 .realm-item.current {
-  background: rgba(34, 197, 94, 0.15);
-  border-left-color: #4ade80 !important;
-  box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+  background: rgba(245, 158, 11, 0.2);
+  border-left-color: #f59e0b !important;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
 }
 
 .realm-item-left {
   display: flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
 }
 
 .realm-item-icon {
@@ -190,50 +187,51 @@
 .realm-item-name {
   font-size: 13px;
   font-weight: 600;
-  color: #e5e7eb;
+  color: #44403c;
 }
 
 .realm-item.current .realm-item-name {
-  color: #4ade80;
-  text-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+  color: #b45309;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
 }
 
 .current-badge {
   font-size: 10px;
   font-weight: 700;
-  color: #4ade80;
-  background: rgba(34, 197, 94, 0.2);
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.2);
   padding: 2px 6px;
   border-radius: 4px;
-  border: 1px solid rgba(34, 197, 94, 0.4);
-  text-shadow: 0 0 6px rgba(74, 222, 128, 0.5);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  text-shadow: 0 0 6px rgba(245, 158, 11, 0.3);
 }
 
 .realm-item-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   text-align: right;
+  white-space: nowrap;
 }
 
 .realm-item-level {
   font-size: 11px;
   font-weight: 600;
-  color: rgba(156, 163, 175, 0.8);
-  min-width: 50px;
+  color: #78716c;
+  min-width: 60px;
 }
 
 .realm-item-exp {
   font-size: 11px;
   font-weight: 700;
-  color: #4ade80;
-  min-width: 60px;
+  color: #b45309;
+  min-width: 70px;
 }
 
 .realm-item-estimate {
   font-size: 10px;
-  color: rgba(156, 163, 175, 0.6);
-  min-width: 50px;
+  color: #78716c;
+  min-width: 70px;
 }
 
 /* 响应式设计 */
@@ -241,8 +239,8 @@
   .realm-help-tooltip {
     min-width: 300px;
     max-width: calc(100vw - 40px);
-    left: auto;
-    right: 0;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 
@@ -253,10 +251,12 @@
     bottom: 20px;
     left: 10px;
     right: 10px;
+    transform: none;
     max-width: none;
     min-width: auto;
     max-height: 60vh;
     overflow-y: auto;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fde68a 100%);
   }
   
   .realm-list {

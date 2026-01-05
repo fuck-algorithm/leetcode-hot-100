@@ -7,6 +7,7 @@ import './DuolingoPath.css';
 
 interface DuolingoPathProps {
   problems: Problem[];
+  allProblems?: Problem[]; // 原始完整题目列表，用于宝箱判断
   currentLang: string;
   t: (key: string) => string;
   selectedTags: string[];
@@ -33,6 +34,7 @@ const NODE_SPACING = 180;
 
 const DuolingoPath: React.FC<DuolingoPathProps> = ({
   problems,
+  allProblems,
   currentLang,
   t,
   isCompleted,
@@ -114,10 +116,47 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     return { segmentCount, segments };
   }, [problems, isCompleted]);
 
-  // 计算是否所有题目都已完成
+  // 基于原始完整题目列表计算宝箱解锁状态（防止筛选后作弊）
+  const originalSegmentInfo = useMemo(() => {
+    const originalProblems = allProblems || problems;
+    const totalProblems = originalProblems.length;
+    const segmentCount = Math.ceil(totalProblems / SEGMENT_SIZE);
+    const segments: { 
+      startIndex: number; 
+      endIndex: number; 
+      completedCount: number;
+      isComplete: boolean;
+    }[] = [];
+    
+    for (let i = 0; i < segmentCount; i++) {
+      const startIndex = i * SEGMENT_SIZE;
+      const endIndex = Math.min(startIndex + SEGMENT_SIZE - 1, totalProblems - 1);
+      
+      // 计算该分段的完成数量
+      let completedCount = 0;
+      for (let j = startIndex; j <= endIndex; j++) {
+        if (isCompleted(originalProblems[j].questionFrontendId)) {
+          completedCount++;
+        }
+      }
+      
+      const segmentSize = endIndex - startIndex + 1;
+      segments.push({ 
+        startIndex, 
+        endIndex, 
+        completedCount,
+        isComplete: completedCount === segmentSize
+      });
+    }
+    
+    return { segmentCount, segments };
+  }, [allProblems, problems, isCompleted]);
+
+  // 计算是否所有题目都已完成（基于原始题目列表）
   const allProblemsCompleted = useMemo(() => {
-    return problems.every(problem => isCompleted(problem.questionFrontendId));
-  }, [problems, isCompleted]);
+    const originalProblems = allProblems || problems;
+    return originalProblems.every(problem => isCompleted(problem.questionFrontendId));
+  }, [allProblems, problems, isCompleted]);
 
   // 判断某个索引是否是分段的最后一个节点（不包括整个路径的最后一个）
   const isSegmentEnd = useCallback((index: number) => {
@@ -380,6 +419,10 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
       const treasurePos = getTreasurePosition(segmentIndex);
       const treasureId = `detail-${pathId}-stage-${segmentIndex + 1}`;
       
+      // 使用原始分段信息判断宝箱是否可以开启（防止筛选后作弊）
+      const originalSegment = originalSegmentInfo.segments[segmentIndex];
+      const canOpenTreasure = originalSegment ? originalSegment.isComplete : false;
+      
       treasures.push(
         <div
           key={treasureId}
@@ -392,7 +435,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
           <TreasureNode
             treasureId={treasureId}
             stageNumber={segmentIndex + 1}
-            canOpen={segment.isComplete}
+            canOpen={canOpenTreasure}
             currentLang={currentLang}
             onOpen={handleTreasureOpen}
           />
@@ -436,17 +479,6 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
       >
         {generatePathConnections()}
       </svg>
-      
-      {/* 起点标记 */}
-      <div 
-        className="path-milestone-badge start"
-        style={{
-          left: `${getNodePosition(0).xPercent}%`,
-          top: 30
-        }}
-      >
-        🚀 {currentLang === 'zh' ? '开始' : 'Start'}
-      </div>
       
       {/* 节点 */}
       <div className="duolingo-nodes-container">

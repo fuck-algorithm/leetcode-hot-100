@@ -1,5 +1,6 @@
 import React from 'react';
 import { LearningPath } from '../data/learningPaths';
+import { PathIcon } from './PathIcons/index';
 import './PathCard.css';
 
 interface PathStats {
@@ -38,7 +39,9 @@ const PathCard: React.FC<PathCardProps> = ({
       style={{ '--path-color': path.color } as React.CSSProperties}
     >
       <div className="path-card-header">
-        <span className="path-card-icon">{path.icon}</span>
+        <span className="path-card-icon">
+          <PathIcon pathId={path.id} size={28} color={path.color} fallback={path.icon} />
+        </span>
         <h3 className="path-card-name">{name}</h3>
       </div>
       

@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
 import { LearningPath } from '../data/learningPaths';
 import Tooltip from '../../Tooltip';
 import AscensionNode from './AscensionNode';
+import { PathIcon } from './PathIcons/index';
 import './PathOverview.css';
 
 // 注意：宝箱节点只在详情页面（DuolingoPath）显示，主路径页面不显示宝箱
@@ -226,7 +227,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
   const containerHeight = useMemo(() => {
     if (pathsWithProblems.length === 0) return 400;
     const ascensionPos = getAscensionNodePosition();
-    return ascensionPos.yPosition + 280; // 飞升节点下方留出足够空间
+    return ascensionPos.yPosition + 500; // 飞升节点下方留出300px间距
   }, [pathsWithProblems.length, getAscensionNodePosition]);
 
   return (
@@ -332,7 +333,9 @@ const PathOverview: React.FC<PathOverviewProps> = ({
                         backgroundColor: isAllCompleted ? '#52c41a' : path.color
                       }}
                     >
-                      <span className="node-icon">{isAllCompleted ? '✓' : path.icon}</span>
+                      <span className="node-icon">
+                        {isAllCompleted ? '✓' : <PathIcon pathId={path.id} size={32} color="#fff" fallback={path.icon} />}
+                      </span>
                     </div>
                     
                     {/* 动画标记 */}
@@ -405,15 +408,6 @@ const PathOverview: React.FC<PathOverviewProps> = ({
         )}
       </div>
 
-      {/* 底部提示 */}
-      <div className="path-overview-tip">
-        <span className="tip-icon">💡</span>
-        <span className="tip-text">
-          {currentLang === 'zh' 
-            ? '点击任意节点开始学习该专题，完成阶段任务可开启宝箱获取经验值' 
-            : 'Click any node to start learning, complete stages to unlock treasures and earn EXP'}
-        </span>
-      </div>
     </div>
   );
 };

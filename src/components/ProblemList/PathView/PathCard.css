@@ -35,6 +35,11 @@
 
 .path-card-icon {
   font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
 }
 
 .path-card-name {

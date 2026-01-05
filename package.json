@@ -59,6 +59,7 @@
     "@types/jest": "^30.0.0",
     "@types/react-router-dom": "^5.3.3",
     "fast-check": "^4.5.3",
-    "gh-pages": "^6.1.1"
+    "gh-pages": "^6.1.1",
+    "puppeteer": "^24.34.0"
   }
 }

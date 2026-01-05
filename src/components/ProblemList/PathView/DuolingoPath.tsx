@@ -32,6 +32,42 @@ const SEGMENT_GAP = 220;
 // 节点之间的基础间距
 const NODE_SPACING = 180;
 
+// 智能计算分段，避免最后一段太短
+const calculateSegments = (totalProblems: number): number[] => {
+  // 5题及以下：不分段，只有终点宝箱
+  if (totalProblems <= 5) {
+    return [totalProblems];
+  }
+  
+  // 6-7题：分成两段（3+3 或 3+4）
+  if (totalProblems <= 7) {
+    const firstHalf = Math.floor(totalProblems / 2);
+    return [firstHalf, totalProblems - firstHalf];
+  }
+  
+  // 8题及以上：每5题一段，但确保最后一段至少3题
+  const segments: number[] = [];
+  let remaining = totalProblems;
+  
+  while (remaining > 0) {
+    if (remaining <= 7) {
+      // 剩余7题及以下，平均分成最后两段
+      if (remaining <= 5) {
+        segments.push(remaining);
+      } else {
+        const firstHalf = Math.floor(remaining / 2);
+        segments.push(firstHalf);
+        segments.push(remaining - firstHalf);
+      }
+      break;
+    }
+    segments.push(SEGMENT_SIZE);
+    remaining -= SEGMENT_SIZE;
+  }
+  
+  return segments;
+};
+
 const DuolingoPath: React.FC<DuolingoPathProps> = ({
   problems,
   allProblems,
@@ -84,7 +120,8 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   // 计算分段信息和宝箱位置
   const segmentInfo = useMemo(() => {
     const totalProblems = problems.length;
-    const segmentCount = Math.ceil(totalProblems / SEGMENT_SIZE);
+    const segmentSizes = calculateSegments(totalProblems);
+    const segmentCount = segmentSizes.length;
     const segments: { 
       startIndex: number; 
       endIndex: number; 
@@ -92,9 +129,11 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
       isComplete: boolean;
     }[] = [];
     
+    let currentIndex = 0;
     for (let i = 0; i < segmentCount; i++) {
-      const startIndex = i * SEGMENT_SIZE;
-      const endIndex = Math.min(startIndex + SEGMENT_SIZE - 1, totalProblems - 1);
+      const segmentSize = segmentSizes[i];
+      const startIndex = currentIndex;
+      const endIndex = currentIndex + segmentSize - 1;
       
       // 计算该分段的完成数量
       let completedCount = 0;
@@ -104,23 +143,25 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         }
       }
       
-      const segmentSize = endIndex - startIndex + 1;
       segments.push({ 
         startIndex, 
         endIndex, 
         completedCount,
         isComplete: completedCount === segmentSize
       });
+      
+      currentIndex = endIndex + 1;
     }
     
-    return { segmentCount, segments };
+    return { segmentCount, segments, segmentSizes };
   }, [problems, isCompleted]);
 
   // 基于原始完整题目列表计算宝箱解锁状态（防止筛选后作弊）
   const originalSegmentInfo = useMemo(() => {
     const originalProblems = allProblems || problems;
     const totalProblems = originalProblems.length;
-    const segmentCount = Math.ceil(totalProblems / SEGMENT_SIZE);
+    const segmentSizes = calculateSegments(totalProblems);
+    const segmentCount = segmentSizes.length;
     const segments: { 
       startIndex: number; 
       endIndex: number; 
@@ -128,9 +169,11 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
       isComplete: boolean;
     }[] = [];
     
+    let currentIndex = 0;
     for (let i = 0; i < segmentCount; i++) {
-      const startIndex = i * SEGMENT_SIZE;
-      const endIndex = Math.min(startIndex + SEGMENT_SIZE - 1, totalProblems - 1);
+      const segmentSize = segmentSizes[i];
+      const startIndex = currentIndex;
+      const endIndex = currentIndex + segmentSize - 1;
       
       // 计算该分段的完成数量
       let completedCount = 0;
@@ -140,16 +183,17 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         }
       }
       
-      const segmentSize = endIndex - startIndex + 1;
       segments.push({ 
         startIndex, 
         endIndex, 
         completedCount,
         isComplete: completedCount === segmentSize
       });
+      
+      currentIndex = endIndex + 1;
     }
     
-    return { segmentCount, segments };
+    return { segmentCount, segments, segmentSizes };
   }, [allProblems, problems, isCompleted]);
 
   // 计算是否所有题目都已完成（基于原始题目列表）
@@ -160,13 +204,25 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
 
   // 判断某个索引是否是分段的最后一个节点（不包括整个路径的最后一个）
   const isSegmentEnd = useCallback((index: number) => {
-    return (index + 1) % SEGMENT_SIZE === 0 && index < problems.length - 1;
-  }, [problems.length]);
+    // 检查是否是某个分段的最后一个节点
+    for (const segment of segmentInfo.segments) {
+      if (index === segment.endIndex && index < problems.length - 1) {
+        return true;
+      }
+    }
+    return false;
+  }, [segmentInfo.segments, problems.length]);
 
   // 获取某个索引所在的分段编号
   const getSegmentIndex = useCallback((index: number) => {
-    return Math.floor(index / SEGMENT_SIZE);
-  }, []);
+    for (let i = 0; i < segmentInfo.segments.length; i++) {
+      const segment = segmentInfo.segments[i];
+      if (index >= segment.startIndex && index <= segment.endIndex) {
+        return i;
+      }
+    }
+    return 0;
+  }, [segmentInfo.segments]);
 
   // 简化的蜿蜒路径布局（考虑分段间距）
   const getNodePosition = useCallback((index: number) => {
@@ -184,30 +240,47 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     
     const xPercent = (xPixel / containerWidth) * 100;
     
-    // 计算Y位置，考虑分段间距（宝箱节点）
-    const segmentIndex = getSegmentIndex(index);
+    // 计算Y位置
+    // 找出当前节点属于哪个分段，以及之前有多少个完整分段（即多少个宝箱）
+    let treasureCount = 0;
+    for (let i = 0; i < segmentInfo.segments.length; i++) {
+      const seg = segmentInfo.segments[i];
+      if (index > seg.endIndex) {
+        // 这个分段已经完全在当前节点之前，且不是最后一个分段，所以有一个宝箱
+        if (i < segmentInfo.segments.length - 1) {
+          treasureCount++;
+        }
+      }
+    }
+    
     const baseY = index * NODE_SPACING + 100;
-    const segmentGapOffset = segmentIndex * SEGMENT_GAP;
-    const yPosition = baseY + segmentGapOffset;
+    const treasureSpaceOffset = treasureCount * SEGMENT_GAP;
+    const yPosition = baseY + treasureSpaceOffset;
     
     return { xPercent, xPixel, yPosition, index };
-  }, [containerWidth, getSegmentIndex]);
+  }, [containerWidth, segmentInfo.segments]);
 
-  // 获取宝箱节点位置 - 在分段间隙中居中
+  // 获取宝箱节点位置 - 在分段末尾节点和下一分段首节点之间的中点
   const getTreasurePosition = useCallback((segmentIndex: number) => {
-    const lastNodeIndex = (segmentIndex + 1) * SEGMENT_SIZE - 1;
-    const firstNodeOfNextSegment = (segmentIndex + 1) * SEGMENT_SIZE;
+    const segment = segmentInfo.segments[segmentIndex];
+    const nextSegment = segmentInfo.segments[segmentIndex + 1];
     
-    const lastNodePos = getNodePosition(Math.min(lastNodeIndex, problems.length - 1));
-    const nextNodePos = getNodePosition(Math.min(firstNodeOfNextSegment, problems.length - 1));
+    if (!segment || !nextSegment) {
+      return { xPercent: 50, xPixel: containerWidth / 2, yPosition: 0 };
+    }
     
-    // 宝箱放在两个节点的垂直中点
+    // 计算分段末尾节点的位置（不包含宝箱偏移的原始位置）
+    const lastNodeBaseY = segment.endIndex * NODE_SPACING + 100 + segmentIndex * SEGMENT_GAP;
+    // 计算下一分段首节点的位置
+    const nextNodeBaseY = nextSegment.startIndex * NODE_SPACING + 100 + (segmentIndex + 1) * SEGMENT_GAP;
+    
+    // 宝箱在两者中间
     return {
       xPercent: 50,
       xPixel: containerWidth / 2,
-      yPosition: (lastNodePos.yPosition + nextNodePos.yPosition) / 2
+      yPosition: (lastNodeBaseY + nextNodeBaseY) / 2
     };
-  }, [getNodePosition, problems.length, containerWidth]);
+  }, [containerWidth, segmentInfo.segments]);
 
   // 获取终点宝箱位置
   const getEndpointTreasurePosition = useCallback(() => {
@@ -411,6 +484,12 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   // 生成宝箱节点
   const generateTreasureNodes = () => {
     const treasures: JSX.Element[] = [];
+    
+    // 如果是筛选模式（题目数量与原始不同），不显示中间宝箱
+    const originalProblems = allProblems || problems;
+    if (problems.length !== originalProblems.length) {
+      return treasures;
+    }
     
     segmentInfo.segments.forEach((segment, segmentIndex) => {
       // 跳过最后一个分段（因为最后有终点标记）
@@ -640,8 +719,14 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         {generateTreasureNodes()}
       </div>
       
-      {/* 终点宝箱节点 - 替换原来的静态徽章 */}
+      {/* 终点宝箱节点 - 替换原来的静态徽章，筛选模式下隐藏 */}
       {(() => {
+        const originalProblems = allProblems || problems;
+        // 筛选模式下不显示终点宝箱
+        if (problems.length !== originalProblems.length) {
+          return null;
+        }
+        
         const endpointPos = getEndpointTreasurePosition();
         return (
           <div

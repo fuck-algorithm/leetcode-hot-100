@@ -94,10 +94,10 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
   };
 
   // 获取随机祝福语
-  const getRandomBlessing = () => {
+  const getRandomBlessing = useCallback(() => {
     const blessings = currentLang === 'zh' ? BLESSING_ZH : BLESSING_EN;
     return blessings[Math.floor(Math.random() * blessings.length)];
-  };
+  }, [currentLang]);
 
   // 加载宝箱状态
   useEffect(() => {
@@ -145,7 +145,7 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
       console.error('开启宝箱失败:', error);
       setIsOpening(false);
     }
-  }, [canOpen, isOpened, isOpening, treasureId, onOpen, currentLang]);
+  }, [canOpen, isOpened, isOpening, treasureId, onOpen, getRandomBlessing]);
 
   // 确定宝箱状态类名
   const getStatusClass = () => {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { completionStorage, CompletionRecord } from '../../../services/completionStorage';
-import { experienceStorage, DIFFICULTY_EXP, ExperienceRecord, TREASURE_EXP } from '../../../services/experienceStorage';
+import { experienceStorage, DIFFICULTY_EXP, ExperienceRecord } from '../../../services/experienceStorage';
 
 interface CompletionStats {
   total: number;

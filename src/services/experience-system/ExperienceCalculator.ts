@@ -131,7 +131,7 @@ export class ExperienceCalculator {
     const scaleFactor = targetTotal / rawTotal;
     const scaledExperience = new Map<string, number>();
     
-    for (const [nodeId, exp] of rawExperience.entries()) {
+    for (const [nodeId, exp] of Array.from(rawExperience.entries())) {
       const scaled = Math.round(exp * scaleFactor);
       scaledExperience.set(nodeId, scaled);
     }
@@ -149,7 +149,7 @@ export class ExperienceCalculator {
       let largestNodeId = '';
       let largestValue = 0;
       
-      for (const [nodeId, exp] of scaledExperience.entries()) {
+      for (const [nodeId, exp] of Array.from(scaledExperience.entries())) {
         if (exp > largestValue) {
           largestValue = exp;
           largestNodeId = nodeId;

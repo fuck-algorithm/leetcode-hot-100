@@ -68,7 +68,7 @@ export class Validator {
     }
 
     // Check for negative or zero experience values
-    for (const [nodeId, experience] of allocations.entries()) {
+    for (const [nodeId, experience] of Array.from(allocations.entries())) {
       if (experience <= 0) {
         errors.push({
           code: 'INVALID_EXPERIENCE_VALUE',
@@ -430,7 +430,7 @@ export class Validator {
     const maxPercentage = config.constraints.maxSingleNodePercentage;
     const maxAllowed = config.totalExperience * maxPercentage;
 
-    for (const [nodeId, experience] of allocations.entries()) {
+    for (const [nodeId, experience] of Array.from(allocations.entries())) {
       if (experience > maxAllowed) {
         const percentage = (experience / config.totalExperience) * 100;
         allErrors.push({
@@ -451,7 +451,7 @@ export class Validator {
     // 6. Validate minimum experience constraint
     const minExperience = config.constraints.minNodeExperience;
 
-    for (const [nodeId, experience] of allocations.entries()) {
+    for (const [nodeId, experience] of Array.from(allocations.entries())) {
       if (experience < minExperience) {
         allErrors.push({
           code: 'MIN_EXPERIENCE_VIOLATION',

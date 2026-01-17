@@ -39,6 +39,20 @@ export {
   createRealmSystem,
 } from './RealmSystem';
 
+// Export MigrationService
+export {
+  MigrationService,
+  createMigrationService,
+} from './MigrationService';
+export type {
+  MigrationResult,
+  MigrationSummary,
+  MigrationError,
+  RollbackResult,
+  UserData,
+  OldRealmConfig,
+} from './MigrationService';
+
 // Export JSON schema (for runtime validation)
 export { default as configSchema } from './schemas/config-schema.json';
 

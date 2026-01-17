@@ -33,6 +33,12 @@ export {
   createValidator,
 } from './Validator';
 
+// Export RealmSystem
+export {
+  RealmSystem,
+  createRealmSystem,
+} from './RealmSystem';
+
 // Export JSON schema (for runtime validation)
 export { default as configSchema } from './schemas/config-schema.json';
 

@@ -74,7 +74,7 @@ This implementation plan breaks down the experience value rebalance system into 
 
 
 - [ ] 6. Implement Validator
-  - [ ] 6.1 Create Validator class with validation methods
+  - [x] 6.1 Create Validator class with validation methods
     - Implement validateTotalExperience (sum check)
     - Implement validateDifficultyOrdering (average comparison)
     - Implement validateTreasureTiers (tier ordering)
@@ -109,7 +109,7 @@ This implementation plan breaks down the experience value rebalance system into 
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
 
 - [ ] 7. Implement Realm System
-  - [ ] 7.1 Create RealmSystem class with realm calculation methods
+  - [x] 7.1 Create RealmSystem class with realm calculation methods
     - Implement getRealmThresholds (return configured thresholds)
     - Implement getCurrentRealm (binary search for realm)
     - Implement getExperienceToNextRealm

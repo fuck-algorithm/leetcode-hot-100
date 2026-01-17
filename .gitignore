@@ -76,7 +76,21 @@ next-env.d.ts
 .history/
 .ionide/
 
+# 测试覆盖率
+coverage/
+*.lcov
+.nyc_output/
+
+# 数据库
+*.db
+*.sqlite
+*.sqlite3
+
 # 其他
 .vercel
 .netlify
 .github/.temp
+
+# Kiro AI 相关
+.kiro/.temp
+.kiro/cache

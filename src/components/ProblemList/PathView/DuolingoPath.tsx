@@ -82,6 +82,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   const [expandedNodeId, setExpandedNodeId] = useState<string | null>(null);
   const [, setRefreshKey] = useState(0);
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isTogglingCompletion, setIsTogglingCompletion] = useState(false);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -301,12 +302,13 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     }
   }, []);
 
-  // 隐藏菜单（带延迟）- 较短的延迟让菜单快速消失
+  // 隐藏菜单（带延迟）- 增加延迟时间让用户有足够时间移动到菜单
   const hideMenuWithDelay = useCallback(() => {
+    clearHideTimeout();
     hideTimeoutRef.current = setTimeout(() => {
       setExpandedNodeId(null);
-    }, 150);
-  }, []);
+    }, 300); // 从 150ms 增加到 300ms
+  }, [clearHideTimeout]);
 
   // 隐藏菜单（立即）
   const hideMenu = useCallback(() => {
@@ -315,11 +317,26 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   }, [clearHideTimeout]);
 
   // 处理完成状态切换
-  const handleToggleCompletion = useCallback((problemId: string, e: React.MouseEvent) => {
+  const handleToggleCompletion = useCallback(async (problem: Problem, e: React.MouseEvent) => {
     e.stopPropagation();
-    onToggleCompletion(problemId);
-    hideMenu();
-  }, [onToggleCompletion, hideMenu]);
+    e.preventDefault();
+    
+    // 防止重复点击
+    if (isTogglingCompletion) {
+      return;
+    }
+    
+    setIsTogglingCompletion(true);
+    
+    try {
+      await onToggleCompletion(problem.questionFrontendId);
+    } catch (error) {
+      console.error('切换完成状态失败:', error);
+    } finally {
+      setIsTogglingCompletion(false);
+      hideMenu();
+    }
+  }, [onToggleCompletion, hideMenu, isTogglingCompletion]);
 
   // 打开LeetCode题目页面
   const openLeetCodePage = useCallback((problem: Problem, e: React.MouseEvent) => {
@@ -669,7 +686,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                     {/* 菜单项1: 标记完成/未完成 */}
                     <button 
                       className={`context-menu-btn ${completed ? 'completed' : 'incomplete'}`}
-                      onClick={(e) => handleToggleCompletion(problem.questionFrontendId, e)}
+                      onClick={(e) => handleToggleCompletion(problem, e)}
                     >
                       {completed 
                         ? (currentLang === 'zh' ? '✓ 已完成 (点击取消)' : '✓ Completed (click to undo)')

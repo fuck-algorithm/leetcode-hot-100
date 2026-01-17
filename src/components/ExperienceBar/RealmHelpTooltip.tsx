@@ -51,16 +51,35 @@ export const calculateProblemEstimate = (totalExp: number): {
   
   // 基于 LeetCode Hot 100 的题目分布和经验值
   // Easy: 10 EXP, Medium: 20 EXP, Hard: 30 EXP
-  // 按比例分配: Easy 20%, Medium 68%, Hard 12%
-  const avgExpPerProblem = 19.2;
-  const treasureBonus = Math.min(totalExp * 0.375, 1150);
-  const problemExp = Math.max(0, totalExp - treasureBonus);
-  const totalProblems = Math.ceil(problemExp / avgExpPerProblem);
+  // 实际分布: Easy 20题, Medium 68题, Hard 12题
+  // 题目总经验: 1920 EXP
+  // 宝箱总经验: ~1150 EXP (23个宝箱 * 50 EXP)
+  // 总经验: 3070 EXP
+  
+  // 计算题目经验占比
+  const TOTAL_PROBLEM_EXP = 1920; // 100题的总经验
+  const TOTAL_TREASURE_EXP = 1150; // 宝箱总经验
+  const TOTAL_EXP = TOTAL_PROBLEM_EXP + TOTAL_TREASURE_EXP; // 3070
+  
+  // 根据总经验值按比例计算题目数量
+  const problemRatio = totalExp / TOTAL_EXP;
+  let totalProblems = Math.round(100 * problemRatio); // 使用四舍五入而不是向上取整
+  
+  // 确保最高境界显示100题
+  if (totalExp >= 3000 && totalProblems < 100) {
+    totalProblems = 100;
+  }
+  
+  // 按 Hot 100 实际比例分配: Easy 20%, Medium 68%, Hard 12%
+  // 使用四舍五入确保总数正确
+  const easyCount = Math.round(totalProblems * 0.2);
+  const mediumCount = Math.round(totalProblems * 0.68);
+  const hardCount = totalProblems - easyCount - mediumCount; // 用减法确保总数准确
   
   return {
-    easyCount: Math.ceil(totalProblems * 0.2),
-    mediumCount: Math.ceil(totalProblems * 0.68),
-    hardCount: Math.ceil(totalProblems * 0.12)
+    easyCount,
+    mediumCount,
+    hardCount
   };
 };
 

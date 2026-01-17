@@ -1,4 +1,4 @@
-# LeetCode 热题 HOT 100
+# LeetCode 热题 Hot 100
 
 [English](README.en.md)
 
@@ -27,7 +27,7 @@
 
 ## 🚀 快速开始
 
-\`\`\`bash
+```bash
 # 克隆项目
 git clone https://github.com/fuck-algorithm/leetcode-hot-100.git
 
@@ -36,7 +36,7 @@ npm install
 
 # 启动开发服务器
 npm start
-\`\`\`
+```
 
 ## 📝 License
 

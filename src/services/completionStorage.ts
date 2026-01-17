@@ -2,10 +2,7 @@
  * IndexedDB存储服务 - 用于保存题目完成状态和用户偏好
  */
 
-const DB_NAME = 'leetcode-hot-100-progress';
-const DB_VERSION = 4;
-const STORE_NAME = 'completions';
-const PREFERENCES_STORE = 'preferences';
+import { dbService, STORES } from './dbService';
 
 export interface CompletionRecord {
   problemId: string;
@@ -23,96 +20,54 @@ export interface UserPreferences {
 }
 
 class CompletionStorage {
-  private db: IDBDatabase | null = null;
-  private initPromise: Promise<void> | null = null;
-
   /**
-   * 初始化数据库
+   * 获取数据库实例
    */
-  async init(): Promise<void> {
-    if (this.db) return;
-    
-    if (this.initPromise) {
-      return this.initPromise;
-    }
-
-    this.initPromise = new Promise((resolve, reject) => {
-      const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-      request.onerror = () => {
-        console.error('IndexedDB打开失败:', request.error);
-        reject(request.error);
-      };
-
-      request.onsuccess = () => {
-        this.db = request.result;
-        resolve();
-      };
-
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        
-        // 创建完成状态对象存储
-        if (!db.objectStoreNames.contains(STORE_NAME)) {
-          const store = db.createObjectStore(STORE_NAME, { keyPath: 'problemId' });
-          store.createIndex('completed', 'completed', { unique: false });
-          store.createIndex('completedAt', 'completedAt', { unique: false });
-        }
-        
-        // 创建用户偏好对象存储
-        if (!db.objectStoreNames.contains(PREFERENCES_STORE)) {
-          db.createObjectStore(PREFERENCES_STORE, { keyPath: 'key' });
-        }
-      };
-    });
-
-    return this.initPromise;
-  }
-
-
-  /**
-   * 确保数据库已初始化
-   */
-  private async ensureDb(): Promise<IDBDatabase> {
-    await this.init();
-    if (!this.db) {
-      throw new Error('数据库未初始化');
-    }
-    return this.db;
+  private async getDb(): Promise<IDBDatabase> {
+    return dbService.getDatabase();
   }
 
   /**
    * 设置题目完成状态
    */
   async setCompletion(problemId: string, completed: boolean): Promise<void> {
-    const db = await this.ensureDb();
-    
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction([STORE_NAME], 'readwrite');
-      const store = transaction.objectStore(STORE_NAME);
+    try {
+      const db = await this.getDb();
       
-      const record: CompletionRecord = {
-        problemId,
-        completed,
-        completedAt: completed ? Date.now() : null
-      };
-      
-      const request = store.put(record);
-      
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve();
-    });
+      return new Promise((resolve, reject) => {
+        try {
+          const transaction = db.transaction([STORES.COMPLETIONS], 'readwrite');
+          const store = transaction.objectStore(STORES.COMPLETIONS);
+          
+          const record: CompletionRecord = {
+            problemId,
+            completed,
+            completedAt: completed ? Date.now() : null
+          };
+          
+          const request = store.put(record);
+          
+          request.onerror = () => reject(request.error);
+          request.onsuccess = () => resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
+    } catch (error) {
+      console.error('数据库获取失败:', error);
+      throw error;
+    }
   }
 
   /**
    * 获取单个题目的完成状态
    */
   async getCompletion(problemId: string): Promise<CompletionRecord | null> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([STORE_NAME], 'readonly');
-      const store = transaction.objectStore(STORE_NAME);
+      const transaction = db.transaction([STORES.COMPLETIONS], 'readonly');
+      const store = transaction.objectStore(STORES.COMPLETIONS);
       const request = store.get(problemId);
       
       request.onerror = () => reject(request.error);
@@ -124,11 +79,11 @@ class CompletionStorage {
    * 获取所有题目的完成状态
    */
   async getAllCompletions(): Promise<Map<string, CompletionRecord>> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([STORE_NAME], 'readonly');
-      const store = transaction.objectStore(STORE_NAME);
+      const transaction = db.transaction([STORES.COMPLETIONS], 'readonly');
+      const store = transaction.objectStore(STORES.COMPLETIONS);
       const request = store.getAll();
       
       request.onerror = () => reject(request.error);
@@ -166,11 +121,11 @@ class CompletionStorage {
    * 清空所有完成状态（重新开始）
    */
   async clearAll(): Promise<void> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([STORE_NAME], 'readwrite');
-      const store = transaction.objectStore(STORE_NAME);
+      const transaction = db.transaction([STORES.COMPLETIONS], 'readwrite');
+      const store = transaction.objectStore(STORES.COMPLETIONS);
       const request = store.clear();
       
       request.onerror = () => reject(request.error);
@@ -182,11 +137,11 @@ class CompletionStorage {
    * 批量设置完成状态
    */
   async setCompletions(records: { problemId: string; completed: boolean }[]): Promise<void> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([STORE_NAME], 'readwrite');
-      const store = transaction.objectStore(STORE_NAME);
+      const transaction = db.transaction([STORES.COMPLETIONS], 'readwrite');
+      const store = transaction.objectStore(STORES.COMPLETIONS);
       
       records.forEach(({ problemId, completed }) => {
         const record: CompletionRecord = {
@@ -206,11 +161,11 @@ class CompletionStorage {
    * 保存用户偏好设置
    */
   async setPreference<T>(key: string, value: T): Promise<void> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([PREFERENCES_STORE], 'readwrite');
-      const store = transaction.objectStore(PREFERENCES_STORE);
+      const transaction = db.transaction([STORES.PREFERENCES], 'readwrite');
+      const store = transaction.objectStore(STORES.PREFERENCES);
       
       const request = store.put({ key, value });
       
@@ -223,11 +178,11 @@ class CompletionStorage {
    * 获取用户偏好设置
    */
   async getPreference<T>(key: string, defaultValue: T): Promise<T> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([PREFERENCES_STORE], 'readonly');
-      const store = transaction.objectStore(PREFERENCES_STORE);
+      const transaction = db.transaction([STORES.PREFERENCES], 'readonly');
+      const store = transaction.objectStore(STORES.PREFERENCES);
       const request = store.get(key);
       
       request.onerror = () => reject(request.error);

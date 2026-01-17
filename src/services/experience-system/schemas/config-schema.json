@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/experience-config.schema.json",
+  "title": "Experience System Configuration",
+  "description": "Configuration schema for the experience value rebalance system",
+  "type": "object",
+  "required": [
+    "totalExperience",
+    "difficultyBaseValues",
+    "importanceMultipliers",
+    "treasureTierValues",
+    "realmThresholds",
+    "constraints"
+  ],
+  "properties": {
+    "totalExperience": {
+      "type": "number",
+      "description": "Total experience across all nodes (must equal 1,000,000)",
+      "const": 1000000
+    },
+    "difficultyBaseValues": {
+      "type": "object",
+      "description": "Base experience values for each difficulty level",
+      "required": ["easy", "medium", "hard"],
+      "properties": {
+        "easy": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Base experience for easy problems"
+        },
+        "medium": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Base experience for medium problems"
+        },
+        "hard": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Base experience for hard problems"
+        }
+      },
+      "additionalProperties": false
+    },
+    "importanceMultipliers": {
+      "type": "object",
+      "description": "Multipliers for importance tags",
+      "patternProperties": {
+        "^[a-zA-Z][a-zA-Z0-9]*$": {
+          "type": "number",
+          "minimum": 1.0,
+          "maximum": 3.0,
+          "description": "Multiplier value (1.0 = no bonus, 2.0 = double experience)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "treasureTierValues": {
+      "type": "object",
+      "description": "Experience values for each treasure tier",
+      "required": ["early", "mid", "late", "final"],
+      "properties": {
+        "early": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Experience for early-stage treasure chests"
+        },
+        "mid": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Experience for mid-stage treasure chests"
+        },
+        "late": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Experience for late-stage treasure chests"
+        },
+        "final": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Experience for final-stage treasure chests"
+        }
+      },
+      "additionalProperties": false
+    },
+    "realmThresholds": {
+      "type": "array",
+      "description": "Experience thresholds for each of the 11 realms",
+      "minItems": 11,
+      "maxItems": 11,
+      "items": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1000000
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "description": "System constraints for experience allocation",
+      "required": ["maxSingleNodePercentage", "minNodeExperience"],
+      "properties": {
+        "maxSingleNodePercentage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Maximum percentage of total experience a single node can have (e.g., 0.05 = 5%)"
+        },
+        "minNodeExperience": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Minimum experience value for any node"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

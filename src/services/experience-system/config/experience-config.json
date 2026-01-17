@@ -1,0 +1,36 @@
+{
+  "totalExperience": 1000000,
+  "difficultyBaseValues": {
+    "easy": 5000,
+    "medium": 8000,
+    "hard": 12000
+  },
+  "importanceMultipliers": {
+    "highFrequencyInterview": 1.3,
+    "classicAlgorithm": 1.2,
+    "hasAnimation": 1.15
+  },
+  "treasureTierValues": {
+    "early": 15000,
+    "mid": 25000,
+    "late": 35000,
+    "final": 50000
+  },
+  "realmThresholds": [
+    0,
+    50000,
+    120000,
+    220000,
+    350000,
+    500000,
+    650000,
+    780000,
+    880000,
+    950000,
+    1000000
+  ],
+  "constraints": {
+    "maxSingleNodePercentage": 0.05,
+    "minNodeExperience": 1
+  }
+}

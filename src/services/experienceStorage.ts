@@ -2,10 +2,7 @@
  * 经验值存储服务 - 用于保存用户经验值和宝箱开启状态
  */
 
-const DB_NAME = 'leetcode-hot-100-progress';
-const DB_VERSION = 4; // 升级版本以添加新的存储
-const EXPERIENCE_STORE = 'experience';
-const TREASURE_STORE = 'treasures';
+import { dbService, STORES } from './dbService';
 
 // 难度对应的经验值
 export const DIFFICULTY_EXP = {
@@ -44,71 +41,22 @@ export const calculateLevelProgress = (exp: number): number => {
 };
 
 class ExperienceStorage {
-  private db: IDBDatabase | null = null;
-  private initPromise: Promise<void> | null = null;
-
   /**
-   * 初始化数据库
+   * 获取数据库实例
    */
-  async init(): Promise<void> {
-    if (this.db) return;
-    
-    if (this.initPromise) {
-      return this.initPromise;
-    }
-
-    this.initPromise = new Promise((resolve, reject) => {
-      const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-      request.onerror = () => {
-        console.error('IndexedDB打开失败:', request.error);
-        reject(request.error);
-      };
-
-      request.onsuccess = () => {
-        this.db = request.result;
-        resolve();
-      };
-
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        
-        // 创建经验值对象存储
-        if (!db.objectStoreNames.contains(EXPERIENCE_STORE)) {
-          db.createObjectStore(EXPERIENCE_STORE, { keyPath: 'id' });
-        }
-        
-        // 创建宝箱对象存储
-        if (!db.objectStoreNames.contains(TREASURE_STORE)) {
-          const store = db.createObjectStore(TREASURE_STORE, { keyPath: 'treasureId' });
-          store.createIndex('opened', 'opened', { unique: false });
-        }
-      };
-    });
-
-    return this.initPromise;
-  }
-
-  /**
-   * 确保数据库已初始化
-   */
-  private async ensureDb(): Promise<IDBDatabase> {
-    await this.init();
-    if (!this.db) {
-      throw new Error('数据库未初始化');
-    }
-    return this.db;
+  private async getDb(): Promise<IDBDatabase> {
+    return dbService.getDatabase();
   }
 
   /**
    * 获取总经验值
    */
   async getTotalExperience(): Promise<ExperienceRecord> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([EXPERIENCE_STORE], 'readonly');
-      const store = transaction.objectStore(EXPERIENCE_STORE);
+      const transaction = db.transaction([STORES.EXPERIENCE], 'readonly');
+      const store = transaction.objectStore(STORES.EXPERIENCE);
       const request = store.get('total');
       
       request.onerror = () => reject(request.error);
@@ -133,7 +81,7 @@ class ExperienceStorage {
    * 增加经验值
    */
   async addExperience(amount: number): Promise<ExperienceRecord> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     const current = await this.getTotalExperience();
     
     const newExp = current.totalExp + amount;
@@ -147,8 +95,8 @@ class ExperienceStorage {
     };
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([EXPERIENCE_STORE], 'readwrite');
-      const store = transaction.objectStore(EXPERIENCE_STORE);
+      const transaction = db.transaction([STORES.EXPERIENCE], 'readwrite');
+      const store = transaction.objectStore(STORES.EXPERIENCE);
       const request = store.put(record);
       
       request.onerror = () => reject(request.error);
@@ -160,7 +108,7 @@ class ExperienceStorage {
    * 减少经验值（用于取消完成状态时）
    */
   async removeExperience(amount: number): Promise<ExperienceRecord> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     const current = await this.getTotalExperience();
     
     const newExp = Math.max(0, current.totalExp - amount);
@@ -174,8 +122,8 @@ class ExperienceStorage {
     };
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([EXPERIENCE_STORE], 'readwrite');
-      const store = transaction.objectStore(EXPERIENCE_STORE);
+      const transaction = db.transaction([STORES.EXPERIENCE], 'readwrite');
+      const store = transaction.objectStore(STORES.EXPERIENCE);
       const request = store.put(record);
       
       request.onerror = () => reject(request.error);
@@ -187,11 +135,11 @@ class ExperienceStorage {
    * 检查宝箱是否已开启
    */
   async isTreasureOpened(treasureId: string): Promise<boolean> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([TREASURE_STORE], 'readonly');
-      const store = transaction.objectStore(TREASURE_STORE);
+      const transaction = db.transaction([STORES.TREASURES], 'readonly');
+      const store = transaction.objectStore(STORES.TREASURES);
       const request = store.get(treasureId);
       
       request.onerror = () => reject(request.error);
@@ -206,11 +154,11 @@ class ExperienceStorage {
    * 获取宝箱记录
    */
   async getTreasure(treasureId: string): Promise<TreasureRecord | null> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([TREASURE_STORE], 'readonly');
-      const store = transaction.objectStore(TREASURE_STORE);
+      const transaction = db.transaction([STORES.TREASURES], 'readonly');
+      const store = transaction.objectStore(STORES.TREASURES);
       const request = store.get(treasureId);
       
       request.onerror = () => reject(request.error);
@@ -224,7 +172,7 @@ class ExperienceStorage {
    * 开启宝箱并获取经验值
    */
   async openTreasure(treasureId: string): Promise<{ treasure: TreasureRecord; newExp: ExperienceRecord }> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     
     // 检查是否已开启
     const existing = await this.getTreasure(treasureId);
@@ -243,8 +191,8 @@ class ExperienceStorage {
     
     // 保存宝箱记录
     await new Promise<void>((resolve, reject) => {
-      const transaction = db.transaction([TREASURE_STORE], 'readwrite');
-      const store = transaction.objectStore(TREASURE_STORE);
+      const transaction = db.transaction([STORES.TREASURES], 'readwrite');
+      const store = transaction.objectStore(STORES.TREASURES);
       const request = store.put(treasure);
       
       request.onerror = () => reject(request.error);
@@ -261,11 +209,11 @@ class ExperienceStorage {
    * 获取所有已开启的宝箱
    */
   async getAllOpenedTreasures(): Promise<TreasureRecord[]> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([TREASURE_STORE], 'readonly');
-      const store = transaction.objectStore(TREASURE_STORE);
+      const transaction = db.transaction([STORES.TREASURES], 'readonly');
+      const store = transaction.objectStore(STORES.TREASURES);
       const request = store.getAll();
       
       request.onerror = () => reject(request.error);
@@ -282,13 +230,13 @@ class ExperienceStorage {
    * 重置所有经验值和宝箱（用于重新开始）
    */
   async resetAll(): Promise<void> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([EXPERIENCE_STORE, TREASURE_STORE], 'readwrite');
+      const transaction = db.transaction([STORES.EXPERIENCE, STORES.TREASURES], 'readwrite');
       
-      transaction.objectStore(EXPERIENCE_STORE).clear();
-      transaction.objectStore(TREASURE_STORE).clear();
+      transaction.objectStore(STORES.EXPERIENCE).clear();
+      transaction.objectStore(STORES.TREASURES).clear();
       
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(transaction.error);
@@ -299,20 +247,21 @@ class ExperienceStorage {
    * 重置指定路径的宝箱（用于重新修炼单个类目）
    */
   async resetPathTreasures(pathId: string): Promise<void> {
-    const db = await this.ensureDb();
+    const db = await this.getDb();
     const treasures = await this.getAllOpenedTreasures();
     
     // 找出该路径相关的宝箱
     const pathTreasures = treasures.filter(t => 
       t.treasureId.includes(`path-${pathId}-`) || 
-      t.treasureId.includes(`detail-${pathId}-`)
+      t.treasureId.includes(`detail-${pathId}-`) ||
+      t.treasureId.includes(`endpoint-${pathId}`)
     );
     
     if (pathTreasures.length === 0) return;
     
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction([TREASURE_STORE], 'readwrite');
-      const store = transaction.objectStore(TREASURE_STORE);
+      const transaction = db.transaction([STORES.TREASURES], 'readwrite');
+      const store = transaction.objectStore(STORES.TREASURES);
       
       pathTreasures.forEach(treasure => {
         store.delete(treasure.treasureId);

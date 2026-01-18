@@ -8,7 +8,7 @@
  * Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6
  */
 
-import { Config, Node } from './types';
+import { Config } from './types';
 import { RealmSystem } from './RealmSystem';
 
 /**
@@ -330,7 +330,7 @@ export class MigrationService {
     let restoredCount = 0;
 
     // Restore each user from backup
-    for (const [userId, userData] of Array.from(backup.entries())) {
+    for (const [userId] of Array.from(backup.entries())) {
       try {
         // In a real implementation, this would write to database
         // For now, we just count successful restorations

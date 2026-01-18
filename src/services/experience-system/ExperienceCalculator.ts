@@ -10,11 +10,8 @@
 
 import {
   Node,
-  ProblemNode,
-  TreasureNode,
   Difficulty,
   TreasureTier,
-  Config,
   CalculationExplanation,
 } from './types';
 import { ConfigurationManager } from './ConfigurationManager';

@@ -185,7 +185,7 @@ export class UIMigrationService {
    * Backup old data before migration
    */
   private async backupOldData(): Promise<MigrationBackup> {
-    const db = await this.getDb();
+    await this.getDb();
 
     // Read all data
     const experience = await this.readExperience();
@@ -252,7 +252,7 @@ export class UIMigrationService {
     console.log('[Migration] Rolling back migration...');
 
     try {
-      const db = await this.getDb();
+      await this.getDb();
 
       // Restore experience
       await this.writeNewExperience(backup.experience);

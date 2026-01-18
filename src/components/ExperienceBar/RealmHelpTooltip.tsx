@@ -1,30 +1,57 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import './RealmHelpTooltip.css';
 
 // 修仙境界称号系统
 interface RealmInfo {
   name: string;
   nameEn: string;
+  translationKey: string;
   minLevel: number;
   maxLevel: number;
   color: string;
   icon: string;
+  threshold: number; // 该境界的起始经验值阈值
 }
 
-// 境界数据
+// 境界阈值配置（从 experience-config.json 同步）
+const REALM_THRESHOLDS = [
+  0,       // 练气期
+  50000,   // 筑基期
+  120000,  // 金丹期
+  210000,  // 元婴期
+  320000,  // 化神期
+  450000,  // 炼虚期
+  600000,  // 合体期
+  770000,  // 大乘期
+  900000,  // 渡劫期
+  950000,  // 大罗金仙
+  1000000  // 飞升仙界
+];
+
+// 经验值配置（从 experience-config.json 同步）
+const EXP_CONFIG = {
+  easy: 5000,
+  medium: 8000,
+  hard: 12000,
+  treasure: 15000, // 早期宝箱
+  totalExperience: 1000000
+};
+
+// 境界数据 - 使用新的经验值系统
 const REALMS: RealmInfo[] = [
-  { name: '练气期', nameEn: 'Qi Refining', minLevel: 1, maxLevel: 3, color: '#78716c', icon: '🌱' },
-  { name: '筑基期', nameEn: 'Foundation', minLevel: 4, maxLevel: 6, color: '#22c55e', icon: '🌿' },
-  { name: '金丹期', nameEn: 'Golden Core', minLevel: 7, maxLevel: 9, color: '#eab308', icon: '💫' },
-  { name: '元婴期', nameEn: 'Nascent Soul', minLevel: 10, maxLevel: 12, color: '#f97316', icon: '🔥' },
-  { name: '化神期', nameEn: 'Spirit Severing', minLevel: 13, maxLevel: 15, color: '#ef4444', icon: '⚡' },
-  { name: '炼虚期', nameEn: 'Void Refining', minLevel: 16, maxLevel: 18, color: '#a855f7', icon: '🌀' },
-  { name: '合体期', nameEn: 'Body Integration', minLevel: 19, maxLevel: 21, color: '#6366f1', icon: '💎' },
-  { name: '大乘期', nameEn: 'Mahayana', minLevel: 22, maxLevel: 24, color: '#ec4899', icon: '🌸' },
-  { name: '渡劫期', nameEn: 'Tribulation', minLevel: 25, maxLevel: 27, color: '#14b8a6', icon: '⛈️' },
-  { name: '大罗金仙', nameEn: 'Golden Immortal', minLevel: 28, maxLevel: 30, color: '#fbbf24', icon: '👑' },
-  { name: '飞升成仙', nameEn: 'Ascension', minLevel: 31, maxLevel: 999, color: '#ff6b9d', icon: '🚀' },
+  { name: '练气期', nameEn: 'Qi Refining', translationKey: 'qiRefining', minLevel: 1, maxLevel: 1, color: '#78716c', icon: '🌱', threshold: REALM_THRESHOLDS[0] },
+  { name: '筑基期', nameEn: 'Foundation', translationKey: 'foundation', minLevel: 2, maxLevel: 2, color: '#22c55e', icon: '🌿', threshold: REALM_THRESHOLDS[1] },
+  { name: '金丹期', nameEn: 'Golden Core', translationKey: 'goldenCore', minLevel: 3, maxLevel: 3, color: '#eab308', icon: '💫', threshold: REALM_THRESHOLDS[2] },
+  { name: '元婴期', nameEn: 'Nascent Soul', translationKey: 'nascentSoul', minLevel: 4, maxLevel: 4, color: '#f97316', icon: '🔥', threshold: REALM_THRESHOLDS[3] },
+  { name: '化神期', nameEn: 'Spirit Severing', translationKey: 'spiritSevering', minLevel: 5, maxLevel: 5, color: '#ef4444', icon: '⚡', threshold: REALM_THRESHOLDS[4] },
+  { name: '炼虚期', nameEn: 'Void Refining', translationKey: 'voidRefining', minLevel: 6, maxLevel: 6, color: '#a855f7', icon: '🌀', threshold: REALM_THRESHOLDS[5] },
+  { name: '合体期', nameEn: 'Body Integration', translationKey: 'bodyIntegration', minLevel: 7, maxLevel: 7, color: '#6366f1', icon: '💎', threshold: REALM_THRESHOLDS[6] },
+  { name: '大乘期', nameEn: 'Mahayana', translationKey: 'mahayana', minLevel: 8, maxLevel: 8, color: '#ec4899', icon: '🌸', threshold: REALM_THRESHOLDS[7] },
+  { name: '渡劫期', nameEn: 'Tribulation', translationKey: 'tribulation', minLevel: 9, maxLevel: 9, color: '#14b8a6', icon: '⛈️', threshold: REALM_THRESHOLDS[8] },
+  { name: '大罗金仙', nameEn: 'Golden Immortal', translationKey: 'goldenImmortal', minLevel: 10, maxLevel: 10, color: '#fbbf24', icon: '👑', threshold: REALM_THRESHOLDS[9] },
+  { name: '飞升仙界', nameEn: 'Ascension', translationKey: 'ascension', minLevel: 11, maxLevel: 999, color: '#fde68a', icon: '✨', threshold: REALM_THRESHOLDS[10] },
 ];
 
 interface RealmHelpTooltipProps {
@@ -34,12 +61,17 @@ interface RealmHelpTooltipProps {
   anchorRect?: DOMRect | null;
 }
 
-// 计算达到某个境界所需的总经验值
-export const calculateExpForRealm = (realm: RealmInfo): number => {
-  return (realm.minLevel - 1) * 100;
+// 获取配置的经验值
+const getExpConfig = () => {
+  return EXP_CONFIG;
 };
 
-// 计算达到某个境界的推荐刷题数量
+// 计算达到某个境界所需的总经验值
+export const calculateExpForRealm = (realm: RealmInfo): number => {
+  return realm.threshold;
+};
+
+// 计算达到某个境界的推荐刷题数量（基于新的经验值系统）
 export const calculateProblemEstimate = (totalExp: number): {
   easyCount: number;
   mediumCount: number;
@@ -49,32 +81,23 @@ export const calculateProblemEstimate = (totalExp: number): {
     return { easyCount: 0, mediumCount: 0, hardCount: 0 };
   }
   
-  // 基于 LeetCode Hot 100 的题目分布和经验值
-  // Easy: 10 EXP, Medium: 20 EXP, Hard: 30 EXP
+  const expConfig = getExpConfig();
+  
+  // 基于 LeetCode Hot 100 的题目分布
   // 实际分布: Easy 20题, Medium 68题, Hard 12题
-  // 题目总经验: 1920 EXP
-  // 宝箱总经验: ~1150 EXP (23个宝箱 * 50 EXP)
-  // 总经验: 3070 EXP
+  const EASY_RATIO = 0.2;
+  const MEDIUM_RATIO = 0.68;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const HARD_RATIO = 0.12; // 保留用于文档说明，hardCount通过减法计算
   
-  // 计算题目经验占比
-  const TOTAL_PROBLEM_EXP = 1920; // 100题的总经验
-  const TOTAL_TREASURE_EXP = 1150; // 宝箱总经验
-  const TOTAL_EXP = TOTAL_PROBLEM_EXP + TOTAL_TREASURE_EXP; // 3070
+  // 100万经验值对应100题（满级）
+  // 按比例计算当前经验值对应的题目数量
+  const totalProblems = Math.round((totalExp / expConfig.totalExperience) * 100);
   
-  // 根据总经验值按比例计算题目数量
-  const problemRatio = totalExp / TOTAL_EXP;
-  let totalProblems = Math.round(100 * problemRatio); // 使用四舍五入而不是向上取整
-  
-  // 确保最高境界显示100题
-  if (totalExp >= 3000 && totalProblems < 100) {
-    totalProblems = 100;
-  }
-  
-  // 按 Hot 100 实际比例分配: Easy 20%, Medium 68%, Hard 12%
-  // 使用四舍五入确保总数正确
-  const easyCount = Math.round(totalProblems * 0.2);
-  const mediumCount = Math.round(totalProblems * 0.68);
-  const hardCount = totalProblems - easyCount - mediumCount; // 用减法确保总数准确
+  // 按 Hot 100 实际比例分配
+  const easyCount = Math.round(totalProblems * EASY_RATIO);
+  const mediumCount = Math.round(totalProblems * MEDIUM_RATIO);
+  const hardCount = totalProblems - easyCount - mediumCount;
   
   return {
     easyCount,
@@ -99,24 +122,16 @@ const RealmHelpTooltip: React.FC<RealmHelpTooltipProps> = ({
   isVisible,
   anchorRect
 }) => {
+  const { t } = useTranslation();
+  
   if (!isVisible) return null;
 
-  const isZh = currentLang === 'zh';
   const currentRealm = getRealmByLevel(currentLevel);
+  const expConfig = getExpConfig();
 
-  const texts = {
-    title: isZh ? '修仙境界系统' : 'Cultivation Realm System',
-    expRule: isZh ? '经验值规则' : 'EXP Rules',
-    easy: isZh ? '简单' : 'Easy',
-    medium: isZh ? '中等' : 'Medium',
-    hard: isZh ? '困难' : 'Hard',
-    treasure: isZh ? '宝箱' : 'Treasure',
-    expPerProblem: isZh ? '每题经验' : 'EXP per problem',
-    levelRange: isZh ? '等级' : 'Level',
-    requiredExp: isZh ? '所需EXP' : 'Required EXP',
-    estimatedProblems: isZh ? '预估刷题' : 'Est. Problems',
-    current: isZh ? '当前' : 'Current',
-    start: isZh ? '起始' : 'Start',
+  // 格式化经验值显示（使用千位分隔符）
+  const formatExp = (exp: number): string => {
+    return exp.toLocaleString();
   };
 
   // 计算弹窗位置
@@ -130,24 +145,24 @@ const RealmHelpTooltip: React.FC<RealmHelpTooltipProps> = ({
   const tooltipContent = (
     <div className="realm-help-tooltip" style={tooltipStyle}>
       <div className="tooltip-header">
-        <h3 className="tooltip-title">{texts.title}</h3>
+        <h3 className="tooltip-title">{t('realms.systemTitle')}</h3>
       </div>
       
       {/* 经验值规则说明 */}
       <div className="exp-rules">
-        <div className="exp-rule-title">{texts.expRule}</div>
+        <div className="exp-rule-title">{t('realms.expRules')}</div>
         <div className="exp-rule-items">
           <span className="exp-rule-item easy">
-            {texts.easy}: 10 EXP
+            {t('realms.easy')}: {formatExp(expConfig.easy)} {t('experience.exp')}
           </span>
           <span className="exp-rule-item medium">
-            {texts.medium}: 20 EXP
+            {t('realms.medium')}: {formatExp(expConfig.medium)} {t('experience.exp')}
           </span>
           <span className="exp-rule-item hard">
-            {texts.hard}: 30 EXP
+            {t('realms.hard')}: {formatExp(expConfig.hard)} {t('experience.exp')}
           </span>
           <span className="exp-rule-item treasure">
-            {texts.treasure}: 50 EXP
+            {t('realms.treasure')}: {formatExp(expConfig.treasure)} {t('experience.exp')}
           </span>
         </div>
       </div>
@@ -158,7 +173,7 @@ const RealmHelpTooltip: React.FC<RealmHelpTooltipProps> = ({
           const expRequired = calculateExpForRealm(realm);
           const estimate = calculateProblemEstimate(expRequired);
           const isCurrent = realm.name === currentRealm.name;
-          const realmName = isZh ? realm.name : realm.nameEn;
+          const realmName = t(`realms.${realm.translationKey}`);
           
           return (
             <div 
@@ -170,19 +185,22 @@ const RealmHelpTooltip: React.FC<RealmHelpTooltipProps> = ({
                 <span className="realm-item-icon">{realm.icon}</span>
                 <div className="realm-item-info">
                   <span className="realm-item-name">{realmName}</span>
-                  {isCurrent && <span className="current-badge">{texts.current}</span>}
+                  {isCurrent && <span className="current-badge">{t('realms.current')}</span>}
                 </div>
               </div>
               <div className="realm-item-right">
-                <div className="realm-item-level">
-                  Lv.{realm.minLevel}-{realm.maxLevel === 999 ? '∞' : realm.maxLevel}
-                </div>
+                {/* 飞升仙界不显示等级 */}
+                {realm.translationKey !== 'ascension' && (
+                  <div className="realm-item-level">
+                    Lv.{realm.minLevel}{realm.maxLevel === 999 ? '+' : ''}
+                  </div>
+                )}
                 <div className="realm-item-exp">
-                  {expRequired === 0 ? texts.start : `${expRequired} EXP`}
+                  {expRequired === 0 ? t('realms.start') : `${formatExp(expRequired)} ${t('experience.exp')}`}
                 </div>
                 {expRequired > 0 && (
                   <div className="realm-item-estimate">
-                    ~{estimate.easyCount + estimate.mediumCount + estimate.hardCount}{isZh ? '题' : ' problems'}
+                    ~{estimate.easyCount + estimate.mediumCount + estimate.hardCount}{t('realms.problems')}
                   </div>
                 )}
               </div>

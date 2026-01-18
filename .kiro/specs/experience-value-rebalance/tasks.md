@@ -14,7 +14,7 @@ This implementation plan breaks down the experience value rebalance system into 
   - _Requirements: 6.2, 8.1, 8.2_
 
 
-- [ ] 2. Implement Configuration Manager
+- [x] 2. Implement Configuration Manager
   - [x] 2.1 Create ConfigurationManager class with loadConfig and validateConfig methods
     - Implement JSON/YAML file loading
     - Implement schema validation using JSON schema validator
@@ -31,7 +31,7 @@ This implementation plan breaks down the experience value rebalance system into 
     - Test default value fallback
     - _Requirements: 8.1, 8.3, 8.4_
 
-- [ ] 3. Implement Node Registry
+- [x] 3. Implement Node Registry
   - [x] 3.1 Create NodeRegistry class with node storage and retrieval methods
     - Implement getAllNodes, getNode, getProblemNodes, getTreasureNodes methods
     - Support filtering by difficulty and tier
@@ -43,7 +43,7 @@ This implementation plan breaks down the experience value rebalance system into 
     - Test edge cases (empty registry, non-existent nodes)
     - _Requirements: 2.1, 4.1_
 
-- [ ] 4. Implement Experience Calculator
+- [x] 4. Implement Experience Calculator
   - [x] 4.1 Create ExperienceCalculator class with calculation methods
     - Implement calculateProblemExperience (base × multiplier formula)
     - Implement calculateTreasureExperience (direct lookup)
@@ -69,11 +69,11 @@ This implementation plan breaks down the experience value rebalance system into 
     - Test explanation output format
     - _Requirements: 2.4, 3.4, 6.1, 6.4_
 
-- [-] 5. Checkpoint - Ensure calculation logic works correctly
+- [x] 5. Checkpoint - Ensure calculation logic works correctly
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 6. Implement Validator
+- [x] 6. Implement Validator
   - [x] 6.1 Create Validator class with validation methods
     - Implement validateTotalExperience (sum check)
     - Implement validateDifficultyOrdering (average comparison)
@@ -108,7 +108,7 @@ This implementation plan breaks down the experience value rebalance system into 
     - Test edge cases (empty allocations, single node)
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
 
-- [ ] 7. Implement Realm System
+- [x] 7. Implement Realm System
   - [x] 7.1 Create RealmSystem class with realm calculation methods
     - Implement getRealmThresholds (return configured thresholds)
     - Implement getCurrentRealm (binary search for realm)
@@ -131,7 +131,7 @@ This implementation plan breaks down the experience value rebalance system into 
     - _Requirements: 5.1, 5.2, 5.4, 5.5_
 
 
-- [ ] 8. Implement Migration Service
+- [x] 8. Implement Migration Service
   - [x] 8.1 Create MigrationService class with migration methods
     - Implement migrateUserExperience (proportional scaling)
     - Implement realm preservation logic
@@ -162,11 +162,11 @@ This implementation plan breaks down the experience value rebalance system into 
     - Test edge cases (zero experience, max experience)
     - _Requirements: 10.1, 10.2, 10.4, 10.5, 10.6_
 
-- [ ] 9. Checkpoint - Ensure all core components work correctly
+- [x] 9. Checkpoint - Ensure all core components work correctly
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 10. Create default configuration file
-  - [ ] 10.1 Create config/experience-config.json with balanced values
+- [x] 10. Create default configuration file
+  - [x] 10.1 Create config/experience-config.json with balanced values
     - Set totalExperience to 1,000,000
     - Define difficulty base values (Easy: 5000, Medium: 8000, Hard: 12000)
     - Define importance multipliers (interview: 1.3, classic: 1.2, animation: 1.15)
@@ -174,15 +174,15 @@ This implementation plan breaks down the experience value rebalance system into 
     - Define 11 realm thresholds with psychological progression curve
     - _Requirements: 1.1, 2.1, 3.5, 4.1, 5.1, 8.2_
   
-  - [ ] 10.2 Run validation script to verify configuration
+  - [x] 10.2 Run validation script to verify configuration
     - Calculate total experience from configuration
     - Verify it sums to exactly 1,000,000
     - Adjust values if needed to meet constraint
     - _Requirements: 1.1, 1.2, 7.1_
 
 
-- [ ] 11. Create validation script
-  - [ ] 11.1 Create scripts/validate-experience.ts
+- [x] 11. Create validation script
+  - [x] 11.1 Create scripts/validate-experience.ts
     - Load configuration and node data
     - Calculate all experience allocations
     - Run all validation checks
@@ -200,7 +200,7 @@ This implementation plan breaks down the experience value rebalance system into 
     - Test output format
     - _Requirements: 7.1, 7.2, 7.6_
 
-- [ ] 12. Implement additional property tests
+- [x] 12. Implement additional property tests
   - [ ]* 12.1 Write property test for treasure tier consistency
     - **Property 8: Treasure Tier Consistency**
     - **Validates: Requirements 4.1**
@@ -213,8 +213,8 @@ This implementation plan breaks down the experience value rebalance system into 
     - **Property 13: Calculation Explanation Completeness**
     - **Validates: Requirements 6.4**
 
-- [ ] 13. Integration and wiring
-  - [ ] 13.1 Create main ExperienceSystem facade class
+- [x] 13. Integration and wiring
+  - [x] 13.1 Create main ExperienceSystem facade class
     - Wire together ConfigurationManager, Calculator, Validator, RealmSystem
     - Provide high-level API for experience operations
     - Add error handling and logging
@@ -226,8 +226,8 @@ This implementation plan breaks down the experience value rebalance system into 
     - Test migration workflow
     - _Requirements: 1.1, 6.3, 10.1, 10.2_
 
-- [ ] 14. Create migration utilities
-  - [ ] 14.1 Create scripts/migrate-users.ts
+- [x] 14. Create migration utilities
+  - [x] 14.1 Create scripts/migrate-users.ts
     - Load old user data from database/file
     - Run migration for all users
     - Generate migration report
@@ -240,7 +240,7 @@ This implementation plan breaks down the experience value rebalance system into 
     - Test report generation
     - _Requirements: 10.1, 10.2, 10.5_
 
-- [ ] 15. Final checkpoint - Ensure all tests pass and system is ready
+- [x] 15. Final checkpoint - Ensure all tests pass and system is ready
   - Run full test suite (unit + property tests)
   - Run validation script with real configuration
   - Verify all 19 properties are tested

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { completionStorage, CompletionRecord } from '../../../services/completionStorage';
-import { experienceStorage, DIFFICULTY_EXP, ExperienceRecord } from '../../../services/experienceStorage';
+import { experienceAdapter } from '../../../services/experience-adapter';
+import { ExperienceRecord } from '../../../services/experienceStorage';
 
 interface CompletionStats {
   total: number;
@@ -44,7 +45,7 @@ export function useCompletionStatus(): UseCompletionStatusReturn {
       setCompletions(data);
       
       // 同时加载经验值
-      const exp = await experienceStorage.getTotalExperience();
+      const exp = await experienceAdapter.getTotalExperience();
       setExperience(exp);
     } catch (error) {
       console.error('加载完成状态失败:', error);
@@ -68,12 +69,12 @@ export function useCompletionStatus(): UseCompletionStatusReturn {
       
       // 更新经验值
       if (difficulty) {
-        const expAmount = DIFFICULTY_EXP[difficulty];
+        const expAmount = experienceAdapter.getDifficultyExperience(difficulty);
         let newExp: ExperienceRecord;
         
         if (newCompleted) {
           // 完成题目，增加经验值
-          newExp = await experienceStorage.addExperience(expAmount);
+          newExp = await experienceAdapter.addExperience(expAmount);
           
           // 触发经验值变化事件
           window.dispatchEvent(new CustomEvent('expChange', {
@@ -81,7 +82,7 @@ export function useCompletionStatus(): UseCompletionStatusReturn {
           }));
         } else {
           // 取消完成，减少经验值
-          newExp = await experienceStorage.removeExperience(expAmount);
+          newExp = await experienceAdapter.removeExperience(expAmount);
           
           // 触发经验值变化事件（负数表示减少）
           window.dispatchEvent(new CustomEvent('expChange', {
@@ -116,7 +117,7 @@ export function useCompletionStatus(): UseCompletionStatusReturn {
   const resetAllProgress = useCallback(async () => {
     try {
       await completionStorage.clearAll();
-      await experienceStorage.resetAll();
+      await experienceAdapter.resetAll();
       setCompletions(new Map());
       setExperience({
         id: 'total',
@@ -140,7 +141,7 @@ export function useCompletionStatus(): UseCompletionStatusReturn {
       problems.forEach(problem => {
         if (completions.get(problem.problemId)?.completed) {
           problemsToReset.push(problem.problemId);
-          expToRemove += DIFFICULTY_EXP[problem.difficulty];
+          expToRemove += experienceAdapter.getDifficultyExperience(problem.difficulty);
         }
       });
       
@@ -155,11 +156,11 @@ export function useCompletionStatus(): UseCompletionStatusReturn {
       );
       
       // 扣除经验值
-      const newExp = await experienceStorage.removeExperience(expToRemove);
+      const newExp = await experienceAdapter.removeExperience(expToRemove);
       
       // 重置该路径相关的宝箱（如果有的话）
       // 宝箱ID格式: 'path-{pathId}-stage-{stageIndex}' 或 'detail-{pathId}-stage-{stageIndex}'
-      const treasures = await experienceStorage.getAllOpenedTreasures();
+      const treasures = await experienceAdapter.getAllOpenedTreasures();
       const pathTreasures = treasures.filter(t => 
         t.treasureId.includes(`path-${pathId}-`) || 
         t.treasureId.includes(`detail-${pathId}-`)
@@ -173,9 +174,9 @@ export function useCompletionStatus(): UseCompletionStatusReturn {
       
       let finalExp = newExp;
       if (treasureExpToRemove > 0) {
-        finalExp = await experienceStorage.removeExperience(treasureExpToRemove);
+        finalExp = await experienceAdapter.removeExperience(treasureExpToRemove);
         // 重置宝箱状态
-        await experienceStorage.resetPathTreasures(pathId);
+        await experienceAdapter.resetPathTreasures(pathId);
       }
       
       // 更新本地状态

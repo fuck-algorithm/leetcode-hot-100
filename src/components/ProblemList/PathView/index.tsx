@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Problem } from '../types';
 import { learningPaths, getDifficultyWeight } from '../data/learningPaths';
+import { initializeTreasureTiers } from '../../../services/experience-adapter';
 import PathOverview from './PathOverview';
 import PathDetail from './PathDetail';
 import './PathView.css';
@@ -95,6 +96,26 @@ const PathView: React.FC<PathViewProps> = ({
       };
     }).filter(item => item.problems.length > 0); // 只显示有题目的路径
   }, [problems]);
+
+  // Initialize treasure tiers when paths are loaded
+  useEffect(() => {
+    if (pathsWithProblems.length > 0) {
+      // Collect all treasure IDs from all paths
+      const treasureIds: string[] = [];
+      pathsWithProblems.forEach(({ path }) => {
+        // Generate treasure IDs for this path (assuming 3-4 treasures per path)
+        // Format: path-{pathId}-treasure-{index}
+        for (let i = 0; i < 4; i++) {
+          treasureIds.push(`path-${path.id}-treasure-${i}`);
+        }
+      });
+      
+      // Initialize treasure tiers
+      if (treasureIds.length > 0) {
+        initializeTreasureTiers(treasureIds);
+      }
+    }
+  }, [pathsWithProblems]);
 
   // 如果URL中有路径ID，显示详情视图
   if (selectedPathId) {

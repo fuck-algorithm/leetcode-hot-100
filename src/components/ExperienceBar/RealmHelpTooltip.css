@@ -9,8 +9,8 @@
     0 0 40px rgba(245, 158, 11, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
   padding: 16px 20px;
-  min-width: 480px;
-  max-width: 520px;
+  min-width: 520px;
+  max-width: 560px;
   z-index: 999999;
   animation: tooltipFadeIn 0.2s ease-out;
   overflow: visible;
@@ -80,7 +80,8 @@
 .exp-rule-items {
   display: flex;
   flex-wrap: nowrap;
-  gap: 8px;
+  gap: 6px;
+  overflow-x: visible;
 }
 
 .exp-rule-item {
@@ -90,6 +91,8 @@
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .exp-rule-item.easy {
@@ -209,7 +212,7 @@
 .realm-item-right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
   text-align: right;
   white-space: nowrap;
 }
@@ -218,20 +221,20 @@
   font-size: 11px;
   font-weight: 600;
   color: #78716c;
-  min-width: 60px;
+  min-width: 65px;
 }
 
 .realm-item-exp {
   font-size: 11px;
   font-weight: 700;
   color: #b45309;
-  min-width: 70px;
+  min-width: 100px;
 }
 
 .realm-item-estimate {
   font-size: 10px;
   color: #78716c;
-  min-width: 70px;
+  min-width: 75px;
 }
 
 /* 响应式设计 */

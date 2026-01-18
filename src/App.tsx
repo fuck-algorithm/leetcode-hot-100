@@ -9,11 +9,20 @@ import './i18n/i18n'; // 导入 i18n 配置
 // 导入GitHub图标
 import { FaGithub, FaStar } from 'react-icons/fa';
 import { useGitHubStars } from './hooks/useGitHubStars';
+// 导入经验值系统初始化
+import { initializeExperienceSystem } from './services/experience-adapter';
 
 const App: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { stars } = useGitHubStars('fuck-algorithm', 'leetcode-hot-100');
   const navigate = useNavigate();
+  
+  // 初始化经验值系统（包括迁移检查）
+  useEffect(() => {
+    initializeExperienceSystem().catch(error => {
+      console.error('Failed to initialize experience system:', error);
+    });
+  }, []);
   
   // 监听语言变化，更新页面标题
   useEffect(() => {

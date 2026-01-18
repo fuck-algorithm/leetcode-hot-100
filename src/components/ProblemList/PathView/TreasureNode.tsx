@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { experienceStorage, TREASURE_EXP } from '../../../services/experienceStorage';
+import { experienceAdapter } from '../../../services/experience-adapter';
 import './TreasureNode.css';
 
 interface TreasureNodeProps {
@@ -81,6 +81,13 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
   const [isOpening, setIsOpening] = useState(false);
   const [showReward, setShowReward] = useState(false);
   const [blessing, setBlessing] = useState('');
+  const [treasureExp, setTreasureExp] = useState(0);
+
+  // 获取宝箱经验值
+  useEffect(() => {
+    const exp = experienceAdapter.getTreasureExperience(treasureId);
+    setTreasureExp(exp);
+  }, [treasureId]);
 
   // 获取宝箱名称
   const getTreasureName = () => {
@@ -103,7 +110,7 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
   useEffect(() => {
     const loadTreasureState = async () => {
       try {
-        const opened = await experienceStorage.isTreasureOpened(treasureId);
+        const opened = await experienceAdapter.isTreasureOpened(treasureId);
         setIsOpened(opened);
       } catch (error) {
         console.error('加载宝箱状态失败:', error);
@@ -120,7 +127,7 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
     setBlessing(getRandomBlessing());
     
     try {
-      const { treasure, newExp } = await experienceStorage.openTreasure(treasureId);
+      const { treasure, newExp } = await experienceAdapter.openTreasure(treasureId);
       
       // 播放开启动画
       setTimeout(() => {
@@ -130,7 +137,7 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
         
         // 触发经验值变化事件
         window.dispatchEvent(new CustomEvent('expChange', {
-          detail: { amount: TREASURE_EXP, newExp }
+          detail: { amount: treasure.expAwarded, newExp }
         }));
         
         // 回调
@@ -224,7 +231,7 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
         <span className="treasure-reward">
           {isOpened 
             ? (currentLang === 'zh' ? '✓ 已领取' : '✓ Claimed')
-            : `+${TREASURE_EXP} EXP`
+            : `+${treasureExp.toLocaleString()} EXP`
           }
         </span>
       </div>
@@ -233,7 +240,7 @@ const TreasureNode: React.FC<TreasureNodeProps> = ({
       {showReward && (
         <div className="treasure-reward-popup">
           <span className="reward-blessing">{blessing}</span>
-          <span className="reward-text">+{TREASURE_EXP} EXP</span>
+          <span className="reward-text">+{treasureExp.toLocaleString()} EXP</span>
         </div>
       )}
       

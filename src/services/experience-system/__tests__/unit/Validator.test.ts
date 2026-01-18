@@ -550,34 +550,23 @@ describe('Validator', () => {
     });
 
     it('should pass with valid allocations and config', () => {
-      const nodes: Node[] = [
-        {
-          id: 'easy1',
+      // Create enough nodes to distribute 1,000,000 experience
+      // with each node <= 50,000 (5% max)
+      const nodes: Node[] = [];
+      const allocations = new Map<string, number>();
+      
+      // Add 20 nodes with 50,000 each = 1,000,000 total
+      for (let i = 0; i < 20; i++) {
+        const nodeId = `node${i}`;
+        nodes.push({
+          id: nodeId,
           type: 'problem',
-          difficulty: 'easy',
+          difficulty: i % 3 === 0 ? 'easy' : i % 3 === 1 ? 'medium' : 'hard',
           tags: [],
-          title: 'Easy Problem',
-        },
-        {
-          id: 'medium1',
-          type: 'problem',
-          difficulty: 'medium',
-          tags: [],
-          title: 'Medium Problem',
-        },
-        {
-          id: 'treasure1',
-          type: 'treasure',
-          tier: 'early',
-          position: 1,
-        },
-      ];
-
-      const allocations = new Map([
-        ['easy1', 400000],
-        ['medium1', 450000],
-        ['treasure1', 150000],
-      ]);
+          title: `Problem ${i}`,
+        });
+        allocations.set(nodeId, 50000);
+      }
 
       const config = createValidConfig();
       const result = validator.validateAll(allocations, nodes, config);

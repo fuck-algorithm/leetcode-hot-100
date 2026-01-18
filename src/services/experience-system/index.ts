@@ -12,7 +12,7 @@ export * from './types';
 export {
   ConfigurationManager,
   createDefaultConfigurationManager,
-  createConfigurationManagerFromFile,
+  createConfigurationManagerFromConfig,
 } from './ConfigurationManager';
 
 // Export NodeRegistry
@@ -38,6 +38,13 @@ export {
   RealmSystem,
   createRealmSystem,
 } from './RealmSystem';
+
+// Export ExperienceSystem facade
+export {
+  ExperienceSystem,
+  createExperienceSystem,
+  createExperienceSystemFromConfig,
+} from './ExperienceSystem';
 
 // Export MigrationService
 export {

@@ -111,6 +111,7 @@ export interface Config {
   importanceMultipliers: ImportanceMultipliers;
   treasureTierValues: TreasureTierValues;
   realmThresholds: number[];  // Array of 11 thresholds (0 to 1,000,000)
+  levelThresholds: number[];  // Array of 100 thresholds for levels 1-100
   constraints: Constraints;
 }
 

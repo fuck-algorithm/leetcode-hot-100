@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { experienceStorage, ExperienceRecord, calculateLevelProgress } from '../../services/experienceStorage';
+import { useTranslation } from 'react-i18next';
+import { experienceAdapter } from '../../services/experience-adapter';
+import { ExperienceRecord } from '../../services/experienceStorage';
 import RealmHelpTooltip from './RealmHelpTooltip';
 import './ExperienceBar.css';
 
@@ -15,6 +17,7 @@ interface ExperienceBarProps {
 interface RealmInfo {
   name: string;
   nameEn: string;
+  translationKey: string;
   minLevel: number;
   maxLevel: number;
   color: string;
@@ -22,58 +25,21 @@ interface RealmInfo {
   bgGradient: string;
 }
 
-// 中文数字转换
-const chineseNumbers = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
-const getChineseNumber = (num: number): string => {
-  if (num <= 0) return '一';
-  if (num <= 10) return chineseNumbers[num - 1];
-  if (num < 20) return '十' + (num === 10 ? '' : chineseNumbers[num - 11]);
-  if (num < 100) {
-    const tens = Math.floor(num / 10);
-    const ones = num % 10;
-    return chineseNumbers[tens - 1] + '十' + (ones === 0 ? '' : chineseNumbers[ones - 1]);
-  }
-  return num.toString();
-};
-
-// 玄幻修仙风格 - 深色背景配绿色主题
-// 经验值系统说明：
-// - 100道题目总经验值约1920 EXP (EASY:10×20=200, MEDIUM:20×68=1360, HARD:30×12=360)
-// - 14个学习路径的宝箱总经验值约1150 EXP (23个宝箱×50)
-// - 总计约3070 EXP，对应约31级
-// - 境界系统设计为每个境界3层，共10个境界，确保用户能达到最终境界
+// 玄幻修仙风格 - 深色背景配金色主题
+// 新系统：11个境界，基于realm索引（0-10）
 const REALMS: RealmInfo[] = [
-  { name: '练气期', nameEn: 'Qi Refining', minLevel: 1, maxLevel: 3, color: '#92400e', icon: '🌱', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '筑基期', nameEn: 'Foundation', minLevel: 4, maxLevel: 6, color: '#a16207', icon: '🌿', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '金丹期', nameEn: 'Golden Core', minLevel: 7, maxLevel: 9, color: '#b45309', icon: '💫', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '元婴期', nameEn: 'Nascent Soul', minLevel: 10, maxLevel: 12, color: '#ca8a04', icon: '🔥', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '化神期', nameEn: 'Spirit Severing', minLevel: 13, maxLevel: 15, color: '#d97706', icon: '⚡', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '炼虚期', nameEn: 'Void Refining', minLevel: 16, maxLevel: 18, color: '#eab308', icon: '🌀', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '合体期', nameEn: 'Body Integration', minLevel: 19, maxLevel: 21, color: '#f59e0b', icon: '💎', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '大乘期', nameEn: 'Mahayana', minLevel: 22, maxLevel: 24, color: '#fbbf24', icon: '🌸', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '渡劫期', nameEn: 'Tribulation', minLevel: 25, maxLevel: 27, color: '#fcd34d', icon: '⛈️', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '大罗金仙', nameEn: 'Golden Immortal', minLevel: 28, maxLevel: 999, color: '#fde68a', icon: '👑', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '练气期', nameEn: 'Qi Refining', translationKey: 'qiRefining', minLevel: 1, maxLevel: 1, color: '#78716c', icon: '🌱', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '筑基期', nameEn: 'Foundation', translationKey: 'foundation', minLevel: 2, maxLevel: 2, color: '#22c55e', icon: '🌿', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '金丹期', nameEn: 'Golden Core', translationKey: 'goldenCore', minLevel: 3, maxLevel: 3, color: '#eab308', icon: '�', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '元婴期', nameEn: 'Nascent Soul', translationKey: 'nascentSoul', minLevel: 4, maxLevel: 4, color: '#f97316', icon: '🔥', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '化神期', nameEn: 'Spirit Severing', translationKey: 'spiritSevering', minLevel: 5, maxLevel: 5, color: '#ef4444', icon: '⚡', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '炼虚期', nameEn: 'Void Refining', translationKey: 'voidRefining', minLevel: 6, maxLevel: 6, color: '#a855f7', icon: '🌀', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '合体期', nameEn: 'Body Integration', translationKey: 'bodyIntegration', minLevel: 7, maxLevel: 7, color: '#6366f1', icon: '💎', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '大乘期', nameEn: 'Mahayana', translationKey: 'mahayana', minLevel: 8, maxLevel: 8, color: '#ec4899', icon: '🌸', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '渡劫期', nameEn: 'Tribulation', translationKey: 'tribulation', minLevel: 9, maxLevel: 9, color: '#14b8a6', icon: '⛈️', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '大罗金仙', nameEn: 'Golden Immortal', translationKey: 'goldenImmortal', minLevel: 10, maxLevel: 10, color: '#fbbf24', icon: '👑', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '飞升仙界', nameEn: 'Ascension', translationKey: 'ascension', minLevel: 11, maxLevel: 999, color: '#fde68a', icon: '✨', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
 ];
-
-// 根据等级获取境界信息
-const getRealmByLevel = (level: number): RealmInfo => {
-  for (const realm of REALMS) {
-    if (level >= realm.minLevel && level <= realm.maxLevel) {
-      return realm;
-    }
-  }
-  return REALMS[REALMS.length - 1]; // 默认返回最高境界
-};
-
-// 获取下一个境界信息
-const getNextRealm = (level: number): RealmInfo | null => {
-  const currentRealm = getRealmByLevel(level);
-  const currentIndex = REALMS.findIndex(r => r.name === currentRealm.name);
-  if (currentIndex < REALMS.length - 1) {
-    return REALMS[currentIndex + 1];
-  }
-  return null;
-};
 
 const ExperienceBar: React.FC<ExperienceBarProps> = ({ 
   currentLang, 
@@ -81,6 +47,7 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
   completedProblems = 0,
   totalProblems = 100
 }) => {
+  const { t } = useTranslation();
   const [experience, setExperience] = useState<ExperienceRecord>({
     id: 'total',
     totalExp: 0,
@@ -95,7 +62,7 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
 
   const loadExperience = useCallback(async () => {
     try {
-      const exp = await experienceStorage.getTotalExperience();
+      const exp = await experienceAdapter.getTotalExperience();
       setExperience(exp);
     } catch (error) {
       console.error('加载经验值失败:', error);
@@ -126,17 +93,22 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
     };
   }, []);
 
-  const levelProgress = calculateLevelProgress(experience.totalExp);
-  const expToNextLevel = 100 - levelProgress;
-  const currentRealm = getRealmByLevel(experience.level);
-  const nextRealm = getNextRealm(experience.level);
+  // 使用新的realm系统
+  const currentRealmIndex = experienceAdapter.getCurrentRealm(experience.totalExp);
+  const realmProgress = experienceAdapter.getRealmProgress(experience.totalExp);
+  const expToNextRealm = experienceAdapter.getExperienceToNextRealm(experience.totalExp);
   
-  // 计算当前境界内的层数
-  const layerInRealm = experience.level - currentRealm.minLevel + 1;
-  // 生成称号文本：中文用"练气期一层"格式，英文用"Qi Refining Layer 1"格式
-  const realmTitle = currentLang === 'zh' 
-    ? `${currentRealm.name}${getChineseNumber(layerInRealm)}层`
-    : `${currentRealm.nameEn} Layer ${layerInRealm}`;
+  // 获取当前realm信息（realm索引0-10对应REALMS数组）
+  const currentRealm = REALMS[Math.min(currentRealmIndex, REALMS.length - 1)];
+  const nextRealm = currentRealmIndex < REALMS.length - 1 ? REALMS[currentRealmIndex + 1] : null;
+  
+  // 计算当前等级进度（用于进度条显示）
+  const levelProgress = realmProgress;
+  const expToNextLevel = expToNextRealm;
+  
+  // 生成称号文本：直接使用境界名称，不再有"层"的概念
+  const realmName = t(`realms.${currentRealm.translationKey}`);
+  const realmTitle = realmName;
 
   // 计算题目完成百分比
   const problemPercentage = totalProblems > 0 ? Math.round((completedProblems / totalProblems) * 100) : 0;
@@ -165,7 +137,7 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
             }}
             onMouseLeave={() => setShowHelpTooltip(false)}
           >
-            <button className="help-icon" aria-label={currentLang === 'zh' ? '查看境界说明' : 'View realm info'}>
+            <button className="help-icon" aria-label={t('experience.viewRealmInfo')}>
               ?
             </button>
             <RealmHelpTooltip
@@ -207,15 +179,14 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
               <div className="exp-bar-shine"></div>
             </div>
             <div className="exp-bar-text">
-              <span className="exp-current">{experience.totalExp} EXP</span>
+              <span className="exp-current">{experience.totalExp.toLocaleString()} {t('experience.exp')}</span>
               <span className="exp-next">
                 {nextRealm 
-                  ? (currentLang === 'zh' 
-                      ? `距 ${nextRealm.name} 还需 ${(nextRealm.minLevel - experience.level) * 100 - levelProgress} EXP`
-                      : `${(nextRealm.minLevel - experience.level) * 100 - levelProgress} EXP to ${nextRealm.nameEn}`)
-                  : (currentLang === 'zh' 
-                      ? `距下一级还需 ${expToNextLevel} EXP`
-                      : `${expToNextLevel} EXP to next level`)
+                  ? t('experience.toNextRealm', { 
+                      realm: t(`realms.${nextRealm.translationKey}`),
+                      exp: expToNextRealm.toLocaleString()
+                    })
+                  : t('experience.toNextLevel', { exp: expToNextLevel.toLocaleString() })
                 }
               </span>
             </div>
@@ -226,7 +197,7 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
       {/* 经验值获取动画 */}
       {showExpGain && (
         <div className="exp-gain-popup">
-          +{expGainAmount} EXP
+          +{expGainAmount.toLocaleString()} {t('experience.exp')}
         </div>
       )}
     </div>

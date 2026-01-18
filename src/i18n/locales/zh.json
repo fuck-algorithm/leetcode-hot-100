@@ -80,5 +80,42 @@
     "all": "全部题目",
     "completed": "已完成",
     "incomplete": "未完成"
+  },
+  "experience": {
+    "exp": "经验值",
+    "level": "等级",
+    "realm": "境界",
+    "toNextLevel": "距下一级还需",
+    "toNextRealm": "距 {{realm}} 还需 {{exp}} 经验值",
+    "viewRealmInfo": "查看境界说明",
+    "problemProgress": "题目进度",
+    "completed": "已完成",
+    "total": "总计"
+  },
+  "realms": {
+    "qiRefining": "练气期",
+    "foundation": "筑基期",
+    "goldenCore": "金丹期",
+    "nascentSoul": "元婴期",
+    "spiritSevering": "化神期",
+    "voidRefining": "炼虚期",
+    "bodyIntegration": "合体期",
+    "mahayana": "大乘期",
+    "tribulation": "渡劫期",
+    "goldenImmortal": "大罗金仙",
+    "ascension": "飞升仙界",
+    "layer": "层",
+    "systemTitle": "修仙境界系统",
+    "expRules": "经验值规则",
+    "easy": "简单",
+    "medium": "中等",
+    "hard": "困难",
+    "treasure": "宝箱",
+    "expPerProblem": "每题经验",
+    "requiredExp": "所需EXP",
+    "estimatedProblems": "预估刷题",
+    "current": "当前",
+    "start": "起始",
+    "problems": "题"
   }
 } 

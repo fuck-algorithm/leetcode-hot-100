@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { experienceAdapter } from '../../services/experience-adapter';
 import './RealmHelpTooltip.css';
 
 // 修仙境界称号系统
@@ -8,8 +9,6 @@ interface RealmInfo {
   name: string;
   nameEn: string;
   translationKey: string;
-  minLevel: number;
-  maxLevel: number;
   color: string;
   icon: string;
   threshold: number; // 该境界的起始经验值阈值
@@ -41,22 +40,22 @@ const EXP_CONFIG = {
 
 // 境界数据 - 使用新的经验值系统
 const REALMS: RealmInfo[] = [
-  { name: '练气期', nameEn: 'Qi Refining', translationKey: 'qiRefining', minLevel: 1, maxLevel: 1, color: '#78716c', icon: '🌱', threshold: REALM_THRESHOLDS[0] },
-  { name: '筑基期', nameEn: 'Foundation', translationKey: 'foundation', minLevel: 2, maxLevel: 2, color: '#22c55e', icon: '🌿', threshold: REALM_THRESHOLDS[1] },
-  { name: '金丹期', nameEn: 'Golden Core', translationKey: 'goldenCore', minLevel: 3, maxLevel: 3, color: '#eab308', icon: '💫', threshold: REALM_THRESHOLDS[2] },
-  { name: '元婴期', nameEn: 'Nascent Soul', translationKey: 'nascentSoul', minLevel: 4, maxLevel: 4, color: '#f97316', icon: '🔥', threshold: REALM_THRESHOLDS[3] },
-  { name: '化神期', nameEn: 'Spirit Severing', translationKey: 'spiritSevering', minLevel: 5, maxLevel: 5, color: '#ef4444', icon: '⚡', threshold: REALM_THRESHOLDS[4] },
-  { name: '炼虚期', nameEn: 'Void Refining', translationKey: 'voidRefining', minLevel: 6, maxLevel: 6, color: '#a855f7', icon: '🌀', threshold: REALM_THRESHOLDS[5] },
-  { name: '合体期', nameEn: 'Body Integration', translationKey: 'bodyIntegration', minLevel: 7, maxLevel: 7, color: '#6366f1', icon: '💎', threshold: REALM_THRESHOLDS[6] },
-  { name: '大乘期', nameEn: 'Mahayana', translationKey: 'mahayana', minLevel: 8, maxLevel: 8, color: '#ec4899', icon: '🌸', threshold: REALM_THRESHOLDS[7] },
-  { name: '渡劫期', nameEn: 'Tribulation', translationKey: 'tribulation', minLevel: 9, maxLevel: 9, color: '#14b8a6', icon: '⛈️', threshold: REALM_THRESHOLDS[8] },
-  { name: '大罗金仙', nameEn: 'Golden Immortal', translationKey: 'goldenImmortal', minLevel: 10, maxLevel: 10, color: '#fbbf24', icon: '👑', threshold: REALM_THRESHOLDS[9] },
-  { name: '飞升仙界', nameEn: 'Ascension', translationKey: 'ascension', minLevel: 11, maxLevel: 999, color: '#fde68a', icon: '✨', threshold: REALM_THRESHOLDS[10] },
+  { name: '练气期', nameEn: 'Qi Refining', translationKey: 'qiRefining', color: '#78716c', icon: '🌱', threshold: REALM_THRESHOLDS[0] },
+  { name: '筑基期', nameEn: 'Foundation', translationKey: 'foundation', color: '#22c55e', icon: '🌿', threshold: REALM_THRESHOLDS[1] },
+  { name: '金丹期', nameEn: 'Golden Core', translationKey: 'goldenCore', color: '#eab308', icon: '💫', threshold: REALM_THRESHOLDS[2] },
+  { name: '元婴期', nameEn: 'Nascent Soul', translationKey: 'nascentSoul', color: '#f97316', icon: '🔥', threshold: REALM_THRESHOLDS[3] },
+  { name: '化神期', nameEn: 'Spirit Severing', translationKey: 'spiritSevering', color: '#ef4444', icon: '⚡', threshold: REALM_THRESHOLDS[4] },
+  { name: '炼虚期', nameEn: 'Void Refining', translationKey: 'voidRefining', color: '#a855f7', icon: '🌀', threshold: REALM_THRESHOLDS[5] },
+  { name: '合体期', nameEn: 'Body Integration', translationKey: 'bodyIntegration', color: '#6366f1', icon: '💎', threshold: REALM_THRESHOLDS[6] },
+  { name: '大乘期', nameEn: 'Mahayana', translationKey: 'mahayana', color: '#ec4899', icon: '🌸', threshold: REALM_THRESHOLDS[7] },
+  { name: '渡劫期', nameEn: 'Tribulation', translationKey: 'tribulation', color: '#14b8a6', icon: '⛈️', threshold: REALM_THRESHOLDS[8] },
+  { name: '大罗金仙', nameEn: 'Golden Immortal', translationKey: 'goldenImmortal', color: '#fbbf24', icon: '👑', threshold: REALM_THRESHOLDS[9] },
+  { name: '飞升仙界', nameEn: 'Ascension', translationKey: 'ascension', color: '#fde68a', icon: '✨', threshold: REALM_THRESHOLDS[10] },
 ];
 
 interface RealmHelpTooltipProps {
   currentLang: string;
-  currentLevel: number;
+  totalExp: number; // 使用经验值而不是等级
   isVisible: boolean;
   anchorRect?: DOMRect | null;
 }
@@ -106,19 +105,9 @@ export const calculateProblemEstimate = (totalExp: number): {
   };
 };
 
-// 根据等级获取当前境界
-const getRealmByLevel = (level: number): RealmInfo => {
-  for (const realm of REALMS) {
-    if (level >= realm.minLevel && level <= realm.maxLevel) {
-      return realm;
-    }
-  }
-  return REALMS[REALMS.length - 1];
-};
-
 const RealmHelpTooltip: React.FC<RealmHelpTooltipProps> = ({
   currentLang,
-  currentLevel,
+  totalExp,
   isVisible,
   anchorRect
 }) => {
@@ -126,7 +115,8 @@ const RealmHelpTooltip: React.FC<RealmHelpTooltipProps> = ({
   
   if (!isVisible) return null;
 
-  const currentRealm = getRealmByLevel(currentLevel);
+  // 使用 experienceAdapter 计算当前境界索引
+  const currentRealmIndex = experienceAdapter.getCurrentRealm(totalExp);
   const expConfig = getExpConfig();
 
   // 格式化经验值显示（使用千位分隔符）
@@ -172,7 +162,7 @@ const RealmHelpTooltip: React.FC<RealmHelpTooltipProps> = ({
         {REALMS.map((realm, index) => {
           const expRequired = calculateExpForRealm(realm);
           const estimate = calculateProblemEstimate(expRequired);
-          const isCurrent = realm.name === currentRealm.name;
+          const isCurrent = index === currentRealmIndex;
           const realmName = t(`realms.${realm.translationKey}`);
           
           return (
@@ -189,12 +179,6 @@ const RealmHelpTooltip: React.FC<RealmHelpTooltipProps> = ({
                 </div>
               </div>
               <div className="realm-item-right">
-                {/* 飞升仙界不显示等级 */}
-                {realm.translationKey !== 'ascension' && (
-                  <div className="realm-item-level">
-                    Lv.{realm.minLevel}{realm.maxLevel === 999 ? '+' : ''}
-                  </div>
-                )}
                 <div className="realm-item-exp">
                   {expRequired === 0 ? t('realms.start') : `${formatExp(expRequired)} ${t('experience.exp')}`}
                 </div>

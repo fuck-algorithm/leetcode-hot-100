@@ -69,6 +69,9 @@ export async function initializeExperienceSystem(): Promise<void> {
         }
       } else {
         console.log('[ExperienceSystem] No migration needed');
+        
+        // Check and fix incorrect level values
+        await fixIncorrectLevelValues();
       }
 
       // Mark as initialized
@@ -197,4 +200,29 @@ function showMigrationError(error: string): void {
  */
 export function isExperienceSystemInitialized(): boolean {
   return isInitialized;
+}
+
+/**
+ * Fix incorrect level values in existing data
+ * This fixes the bug where level field was incorrectly set to realm index (0-10)
+ * instead of user level (1-100)
+ */
+async function fixIncorrectLevelValues(): Promise<void> {
+  try {
+    const exp = await experienceAdapter.getTotalExperience();
+    const correctLevel = experienceAdapter.getCurrentLevel(exp.totalExp);
+    
+    // Check if level is incorrect (likely a realm index 0-10 instead of level 1-100)
+    if (exp.level !== correctLevel) {
+      console.log(`[ExperienceSystem] Fixing incorrect level value: ${exp.level} -> ${correctLevel}`);
+      
+      // Fix by triggering a zero-experience update (which recalculates level)
+      await experienceAdapter.addExperience(0);
+      
+      console.log('[ExperienceSystem] Level value fixed');
+    }
+  } catch (error) {
+    console.warn('[ExperienceSystem] Failed to fix level values:', error);
+    // Don't throw - this is a non-critical fix
+  }
 }

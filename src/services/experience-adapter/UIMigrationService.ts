@@ -98,10 +98,12 @@ export class UIMigrationService {
       console.log(`[Migration] New realm: ${newRealm}`);
 
       // 5. Update experience record with new values
+      // Note: level field represents user level (1-100), not realm index (0-10)
+      const newLevel = this.experienceSystem.getCurrentLevel(newExp);
       await this.writeNewExperience({
         id: 'total',
         totalExp: newExp,
-        level: newRealm,
+        level: newLevel,
         lastUpdated: Date.now(),
         schemaVersion: 2,
         migrationDate: Date.now()

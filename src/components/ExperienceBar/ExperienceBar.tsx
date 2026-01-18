@@ -18,8 +18,6 @@ interface RealmInfo {
   name: string;
   nameEn: string;
   translationKey: string;
-  minLevel: number;
-  maxLevel: number;
   color: string;
   icon: string;
   bgGradient: string;
@@ -28,17 +26,17 @@ interface RealmInfo {
 // 玄幻修仙风格 - 深色背景配金色主题
 // 新系统：11个境界，基于realm索引（0-10）
 const REALMS: RealmInfo[] = [
-  { name: '练气期', nameEn: 'Qi Refining', translationKey: 'qiRefining', minLevel: 1, maxLevel: 1, color: '#78716c', icon: '🌱', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '筑基期', nameEn: 'Foundation', translationKey: 'foundation', minLevel: 2, maxLevel: 2, color: '#22c55e', icon: '🌿', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '金丹期', nameEn: 'Golden Core', translationKey: 'goldenCore', minLevel: 3, maxLevel: 3, color: '#eab308', icon: '�', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '元婴期', nameEn: 'Nascent Soul', translationKey: 'nascentSoul', minLevel: 4, maxLevel: 4, color: '#f97316', icon: '🔥', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '化神期', nameEn: 'Spirit Severing', translationKey: 'spiritSevering', minLevel: 5, maxLevel: 5, color: '#ef4444', icon: '⚡', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '炼虚期', nameEn: 'Void Refining', translationKey: 'voidRefining', minLevel: 6, maxLevel: 6, color: '#a855f7', icon: '🌀', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '合体期', nameEn: 'Body Integration', translationKey: 'bodyIntegration', minLevel: 7, maxLevel: 7, color: '#6366f1', icon: '💎', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '大乘期', nameEn: 'Mahayana', translationKey: 'mahayana', minLevel: 8, maxLevel: 8, color: '#ec4899', icon: '🌸', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '渡劫期', nameEn: 'Tribulation', translationKey: 'tribulation', minLevel: 9, maxLevel: 9, color: '#14b8a6', icon: '⛈️', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '大罗金仙', nameEn: 'Golden Immortal', translationKey: 'goldenImmortal', minLevel: 10, maxLevel: 10, color: '#fbbf24', icon: '👑', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
-  { name: '飞升仙界', nameEn: 'Ascension', translationKey: 'ascension', minLevel: 11, maxLevel: 999, color: '#fde68a', icon: '✨', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '练气期', nameEn: 'Qi Refining', translationKey: 'qiRefining', color: '#78716c', icon: '🌱', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '筑基期', nameEn: 'Foundation', translationKey: 'foundation', color: '#22c55e', icon: '🌿', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '金丹期', nameEn: 'Golden Core', translationKey: 'goldenCore', color: '#eab308', icon: '💫', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '元婴期', nameEn: 'Nascent Soul', translationKey: 'nascentSoul', color: '#f97316', icon: '🔥', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '化神期', nameEn: 'Spirit Severing', translationKey: 'spiritSevering', color: '#ef4444', icon: '⚡', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '炼虚期', nameEn: 'Void Refining', translationKey: 'voidRefining', color: '#a855f7', icon: '🌀', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '合体期', nameEn: 'Body Integration', translationKey: 'bodyIntegration', color: '#6366f1', icon: '💎', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '大乘期', nameEn: 'Mahayana', translationKey: 'mahayana', color: '#ec4899', icon: '🌸', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '渡劫期', nameEn: 'Tribulation', translationKey: 'tribulation', color: '#14b8a6', icon: '⛈️', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '大罗金仙', nameEn: 'Golden Immortal', translationKey: 'goldenImmortal', color: '#fbbf24', icon: '👑', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
+  { name: '飞升仙界', nameEn: 'Ascension', translationKey: 'ascension', color: '#fde68a', icon: '✨', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
 ];
 
 const ExperienceBar: React.FC<ExperienceBarProps> = ({ 
@@ -142,7 +140,7 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
             </button>
             <RealmHelpTooltip
               currentLang={currentLang}
-              currentLevel={experience.level}
+              totalExp={experience.totalExp}
               isVisible={showHelpTooltip}
               anchorRect={helpIconRect}
             />

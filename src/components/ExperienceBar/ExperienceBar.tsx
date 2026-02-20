@@ -3,6 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { experienceAdapter } from '../../services/experience-adapter';
 import { ExperienceRecord } from '../../services/experienceStorage';
 import RealmHelpTooltip from './RealmHelpTooltip';
+import ShareModal from '../ShareModal';
+import { learningPaths } from '../ProblemList/data/learningPaths';
+import { useCompletionStatus } from '../ProblemList/hooks/useCompletionStatus';
 import './ExperienceBar.css';
 
 interface ExperienceBarProps {
@@ -39,8 +42,8 @@ const REALMS: RealmInfo[] = [
   { name: '飞升仙界', nameEn: 'Ascension', translationKey: 'ascension', color: '#fde68a', icon: '✨', bgGradient: 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%)' },
 ];
 
-const ExperienceBar: React.FC<ExperienceBarProps> = ({ 
-  currentLang, 
+const ExperienceBar: React.FC<ExperienceBarProps> = ({
+  currentLang,
   refreshTrigger,
   completedProblems = 0,
   totalProblems = 100
@@ -56,7 +59,10 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
   const [expGainAmount, setExpGainAmount] = useState(0);
   const [showHelpTooltip, setShowHelpTooltip] = useState(false);
   const [helpIconRect, setHelpIconRect] = useState<DOMRect | null>(null);
+  const [showShareModal, setShowShareModal] = useState(false);
   const helpIconRef = useRef<HTMLDivElement>(null);
+
+  const { getStatsForProblems } = useCompletionStatus();
 
   const loadExperience = useCallback(async () => {
     try {
@@ -111,6 +117,22 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
   // 计算题目完成百分比
   const problemPercentage = totalProblems > 0 ? Math.round((completedProblems / totalProblems) * 100) : 0;
 
+  // 准备路径进度数据
+  const getPathProgress = useCallback(() => {
+    return learningPaths.map(path => {
+      const stats = getStatsForProblems([]);
+      return {
+        id: path.id,
+        name: path.name,
+        nameEn: path.nameEn,
+        icon: path.icon,
+        color: path.color,
+        completed: 0,
+        total: 10
+      };
+    });
+  }, [getStatsForProblems]);
+
   return (
     <div className="experience-bar-container">
       <div className="experience-bar-content">
@@ -149,6 +171,22 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
         
         {/* 进度区域 */}
         <div className="progress-section">
+          {/* 分享按钮 */}
+          <button
+            className="share-button"
+            onClick={() => setShowShareModal(true)}
+            aria-label={t('share.shareProgress', '分享进度')}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
+            <span>{t('share.share', '分享')}</span>
+          </button>
+
           {/* 题目完成进度 */}
           <div className="problem-progress">
             <div className="problem-progress-info">
@@ -160,17 +198,17 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
               <span className="problem-percentage">{problemPercentage}%</span>
             </div>
             <div className="problem-progress-track">
-              <div 
+              <div
                 className="problem-progress-fill"
                 style={{ width: `${problemPercentage}%` }}
               />
             </div>
           </div>
-          
+
           {/* 经验条 */}
           <div className="exp-bar-wrapper">
             <div className="exp-bar-track">
-              <div 
+              <div
                 className="exp-bar-fill"
                 style={{ width: `${levelProgress}%` }}
               />
@@ -179,8 +217,8 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
             <div className="exp-bar-text">
               <span className="exp-current">{experience.totalExp.toLocaleString()} {t('experience.exp')}</span>
               <span className="exp-next">
-                {nextRealm 
-                  ? t('experience.toNextRealm', { 
+                {nextRealm
+                  ? t('experience.toNextRealm', {
                       realm: t(`realms.${nextRealm.translationKey}`),
                       exp: expToNextRealm.toLocaleString()
                     })
@@ -191,13 +229,32 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
           </div>
         </div>
       </div>
-      
+
       {/* 经验值获取动画 */}
       {showExpGain && (
         <div className="exp-gain-popup">
           +{expGainAmount.toLocaleString()} {t('experience.exp')}
         </div>
       )}
+
+      {/* 分享弹窗 */}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        currentLang={currentLang}
+        totalExp={experience.totalExp}
+        currentRealm={{
+          name: currentRealm.name,
+          nameEn: currentRealm.nameEn,
+          icon: currentRealm.icon,
+          color: currentRealm.color
+        }}
+        realmProgress={realmProgress}
+        expToNextRealm={expToNextRealm}
+        completedProblems={completedProblems}
+        totalProblems={totalProblems}
+        pathProgress={getPathProgress()}
+      />
     </div>
   );
 };

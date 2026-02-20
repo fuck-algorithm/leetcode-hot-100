@@ -117,5 +117,18 @@
     "current": "当前",
     "start": "起始",
     "problems": "题"
+  },
+  "share": {
+    "share": "分享",
+    "shareProgress": "分享进度",
+    "title": "分享我的算法学习进度",
+    "generating": "生成中...",
+    "generateImage": "生成分享图片",
+    "download": "下载图片",
+    "copyImage": "复制图片",
+    "regenerate": "重新生成",
+    "preview": "生成的图片",
+    "copiedSuccess": "图片已复制到剪贴板",
+    "copiedFailed": "复制失败，请尝试下载"
   }
 } 

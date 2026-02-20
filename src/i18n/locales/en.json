@@ -117,5 +117,18 @@
     "current": "Current",
     "start": "Start",
     "problems": "problems"
+  },
+  "share": {
+    "share": "Share",
+    "shareProgress": "Share Progress",
+    "title": "Share My Algorithm Learning Progress",
+    "generating": "Generating...",
+    "generateImage": "Generate Share Image",
+    "download": "Download Image",
+    "copyImage": "Copy Image",
+    "regenerate": "Regenerate",
+    "preview": "Generated Image",
+    "copiedSuccess": "Image copied to clipboard",
+    "copiedFailed": "Copy failed, please try downloading"
   }
 } 

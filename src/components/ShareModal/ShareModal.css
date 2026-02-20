@@ -1,0 +1,178 @@
+/* 分享弹窗遮罩层 */
+.share-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+
+/* 分享弹窗内容 */
+.share-modal-content {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(245, 158, 11, 0.2);
+  border: 2px solid rgba(245, 158, 11, 0.4);
+}
+
+/* 关闭按钮 */
+.share-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(245, 158, 11, 0.15);
+  border-radius: 50%;
+  font-size: 20px;
+  color: #92400e;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.share-modal-close:hover {
+  background: rgba(245, 158, 11, 0.3);
+  transform: rotate(90deg);
+}
+
+/* 弹窗标题 */
+.share-modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #92400e;
+  margin: 0 0 20px 0;
+  text-align: center;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+/* 分享卡片容器 */
+.share-card-container {
+  margin-bottom: 20px;
+}
+
+/* 生成的图片预览 */
+.share-preview-container {
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.share-preview-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #92400e;
+  margin: 0 0 12px 0;
+  text-align: center;
+}
+
+.share-preview-image {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 操作按钮区域 */
+.share-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* 按钮基础样式 */
+.share-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.share-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 主要按钮 */
+.share-btn-primary {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.share-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.5);
+}
+
+/* 次要按钮 */
+.share-btn-secondary {
+  background: rgba(255, 255, 255, 0.9);
+  color: #92400e;
+  border: 2px solid rgba(245, 158, 11, 0.4);
+}
+
+.share-btn-secondary:hover {
+  background: rgba(254, 243, 199, 0.9);
+  border-color: rgba(245, 158, 11, 0.6);
+}
+
+/* 第三按钮 */
+.share-btn-tertiary {
+  background: transparent;
+  color: #78716c;
+  border: 1px solid rgba(120, 113, 108, 0.3);
+}
+
+.share-btn-tertiary:hover {
+  background: rgba(120, 113, 108, 0.1);
+  color: #57534e;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .share-modal-overlay {
+    padding: 10px;
+  }
+
+  .share-modal-content {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .share-modal-title {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .share-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}

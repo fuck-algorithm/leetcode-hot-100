@@ -195,6 +195,47 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  position: relative;
+}
+
+/* 分享按钮 */
+.share-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(251, 191, 36, 0.2) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.share-button svg {
+  width: 14px;
+  height: 14px;
+  color: #b45309;
+}
+
+.share-button span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.share-button:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(251, 191, 36, 0.3) 100%);
+  border-color: rgba(245, 158, 11, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+}
+
+.share-button:active {
+  transform: translateY(0);
 }
 
 /* 题目完成进度 */
@@ -646,5 +687,13 @@
   
   .exp-bar-wrapper {
     width: 100%;
+  }
+
+  .share-button {
+    position: relative;
+    top: auto;
+    right: auto;
+    align-self: flex-end;
+    margin-bottom: 8px;
   }
 }

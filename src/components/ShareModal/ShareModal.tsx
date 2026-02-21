@@ -57,18 +57,6 @@ const ShareModal: React.FC<ShareModalProps> = ({
   const [isGenerating, setIsGenerating] = useState(true);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
-  // Auto-generate image when modal opens
-  useEffect(() => {
-    if (isOpen) {
-      setIsGenerating(true);
-      // Delay to ensure DOM is fully rendered
-      const timer = setTimeout(() => {
-        generateImage();
-      }, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen]);
-
   const generateImage = useCallback(async () => {
     if (!cardRef.current) return;
 
@@ -90,11 +78,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
           top: '0',
           opacity: '1',
         },
-        // 过滤掉可能导致问题的元素
-        filter: (node: Node) => {
-          // 保留所有元素，但确保样式正确
-          return true;
-        }
+        filter: () => true
       });
       
       setGeneratedImage(dataUrl);
@@ -109,6 +93,18 @@ const ShareModal: React.FC<ShareModalProps> = ({
       }
     }
   }, []);
+
+  // Auto-generate image when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsGenerating(true);
+      // Delay to ensure DOM is fully rendered
+      const timer = setTimeout(() => {
+        generateImage();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, generateImage]);
 
   const handleDownload = useCallback(() => {
     if (!generatedImage) return;

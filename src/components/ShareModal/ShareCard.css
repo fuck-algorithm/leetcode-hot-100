@@ -8,9 +8,9 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* Header - Premium Gradient */
+/* Header - Premium Deep Blue Gradient */
 .share-card-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0d4f6c 100%);
   padding: 32px;
   color: white;
   position: relative;
@@ -24,7 +24,7 @@
   right: -20%;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%);
   border-radius: 50%;
 }
 

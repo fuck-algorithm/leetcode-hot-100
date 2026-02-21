@@ -61,6 +61,9 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
       <div ref={ref} className="share-card-list">
         {/* 头部 - 标题和汇总统计 */}
         <div className="share-card-header">
+          {/* 流光扫过效果 */}
+          <div className="shimmer-effect"></div>
+          
           {/* 装饰性角落元素 */}
           <div className="share-card-corner-decoration top-left"></div>
           <div className="share-card-corner-decoration top-right"></div>

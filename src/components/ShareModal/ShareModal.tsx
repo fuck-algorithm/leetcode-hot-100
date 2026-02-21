@@ -66,18 +66,40 @@ const ShareModal: React.FC<ShareModalProps> = ({
     if (!cardRef.current) return;
 
     try {
+      // 临时将卡片显示在视口内但不可见，以便正确渲染
+      const originalStyle = cardRef.current.style.cssText;
+      cardRef.current.style.cssText = `${originalStyle}; position: fixed; left: 0; top: 0; opacity: 0; pointer-events: none; z-index: -9999;`;
+      
+      // 等待样式应用
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       const dataUrl = await domtoimage.toPng(cardRef.current, {
         quality: 1.0,
         bgcolor: '#ffffff',
         style: {
           transform: 'none',
+          position: 'relative',
+          left: '0',
+          top: '0',
+          opacity: '1',
         },
+        // 过滤掉可能导致问题的元素
+        filter: (node: Node) => {
+          // 保留所有元素，但确保样式正确
+          return true;
+        }
       });
+      
       setGeneratedImage(dataUrl);
     } catch (error) {
       console.error('生成分享图片失败:', error);
     } finally {
       setIsGenerating(false);
+      // 恢复原始样式
+      if (cardRef.current) {
+        cardRef.current.style.cssText = cardRef.current.style.cssText
+          .replace(/position: fixed; left: 0; top: 0; opacity: 0; pointer-events: none; z-index: -9999;/g, '');
+      }
     }
   }, []);
 
@@ -120,12 +142,15 @@ const ShareModal: React.FC<ShareModalProps> = ({
 
         <h2 className="share-modal-title">{t('share.title', '分享我的算法学习进度')}</h2>
 
-        {/* ShareCard for image generation - placed outside viewport but visible */}
+        {/* ShareCard for image generation - positioned in viewport but invisible */}
         <div style={{ 
-          position: 'absolute',
-          left: '-9999px',
+          position: 'fixed',
+          left: '0',
           top: '0',
-          width: '400px'
+          width: '400px',
+          opacity: '0',
+          pointerEvents: 'none',
+          zIndex: '-9999'
         }}>
           <ShareCard
             ref={cardRef}

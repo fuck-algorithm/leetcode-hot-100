@@ -77,7 +77,8 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
     resetPathProgress,
     getStatsForProblems,
     refreshCompletions,
-    experience
+    experience,
+    completions
   } = useCompletionStatus();
   
   // 创建一个包装函数，用于在切换完成状态时传递难度
@@ -252,6 +253,7 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
           completedProblems={getStatsForProblems(problems.map(p => p.questionFrontendId)).completed}
           totalProblems={problems.length}
           problems={problems}
+          completions={completions}
         />
       )}
       

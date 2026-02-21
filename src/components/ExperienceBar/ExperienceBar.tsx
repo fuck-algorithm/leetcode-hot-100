@@ -6,17 +6,20 @@ import RealmHelpTooltip from './RealmHelpTooltip';
 import ShareModal from '../ShareModal';
 import { learningPaths } from '../ProblemList/data/learningPaths';
 import { useCompletionStatus } from '../ProblemList/hooks/useCompletionStatus';
+import { CompletionRecord } from '../../services/completionStorage';
 import { Problem } from '../ProblemList/types';
 import './ExperienceBar.css';
 
 interface ExperienceBarProps {
   currentLang: string;
   refreshTrigger?: number; // 用于触发刷新
-  // 新增：题目完成进度
-  completedProblems?: number;
-  totalProblems?: number;
+  // 题目完成进度
+  completedProblems: number;
+  totalProblems: number;
   // 题目数据，用于计算路径进度
-  problems?: Problem[];
+  problems: Problem[];
+  // 完成状态数据（从父组件传入，确保数据一致性）
+  completions: Map<string, CompletionRecord>;
 }
 
 // 修仙境界称号系统
@@ -48,9 +51,10 @@ const REALMS: RealmInfo[] = [
 const ExperienceBar: React.FC<ExperienceBarProps> = ({
   currentLang,
   refreshTrigger,
-  completedProblems = 0,
-  totalProblems = 100,
-  problems = []
+  completedProblems,
+  totalProblems,
+  problems,
+  completions,
 }) => {
   const { t } = useTranslation();
   const [experience, setExperience] = useState<ExperienceRecord>({
@@ -66,7 +70,7 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
   const [showShareModal, setShowShareModal] = useState(false);
   const helpIconRef = useRef<HTMLDivElement>(null);
 
-  const { getStatsForProblems, completions } = useCompletionStatus();
+  const { getStatsForProblems } = useCompletionStatus();
 
   const loadExperience = useCallback(async () => {
     try {
@@ -147,9 +151,11 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
   // 转换completions为ShareModal需要的格式 Map<string, boolean>
   const completionStatusMap = useMemo(() => {
     const statusMap = new Map<string, boolean>();
-    completions.forEach((record, problemId) => {
-      statusMap.set(problemId, record.completed);
-    });
+    if (completions) {
+      completions.forEach((record, problemId) => {
+        statusMap.set(problemId, record.completed);
+      });
+    }
     return statusMap;
   }, [completions]);
 

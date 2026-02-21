@@ -61,8 +61,25 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
       <div ref={ref} className="share-card-list">
         {/* 头部 - 标题和汇总统计 */}
         <div className="share-card-header">
+          {/* 装饰性角落元素 */}
+          <div className="share-card-corner-decoration top-left"></div>
+          <div className="share-card-corner-decoration top-right"></div>
+          <div className="share-card-corner-decoration bottom-left"></div>
+          <div className="share-card-corner-decoration bottom-right"></div>
+          
+          {/* 浮动装饰点 */}
+          <div className="share-card-float-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          
           <div className="share-card-title-section">
-            <h1 className="share-card-main-title">LeetCode Hot 100</h1>
+            <div className="share-card-title-badge">
+              <span className="share-card-title-icon">🎯</span>
+              <h1 className="share-card-main-title">LeetCode Hot 100</h1>
+            </div>
             <p className="share-card-subtitle">
               {currentLang === 'zh' ? '算法学习进度' : 'Algorithm Learning Progress'}
             </p>
@@ -70,32 +87,52 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           
           <div className="share-card-summary">
             <div className="share-card-stat-box">
+              <div className="share-card-stat-icon">✅</div>
               <span className="share-card-stat-number">{completedProblems}</span>
               <span className="share-card-stat-label">
                 {currentLang === 'zh' ? '已完成' : 'Completed'}
               </span>
             </div>
-            <div className="share-card-stat-divider">/</div>
+            <div className="share-card-stat-divider">
+              <div className="divider-line"></div>
+              <span className="divider-text">/</span>
+              <div className="divider-line"></div>
+            </div>
             <div className="share-card-stat-box">
+              <div className="share-card-stat-icon">📚</div>
               <span className="share-card-stat-number">{totalProblems}</span>
               <span className="share-card-stat-label">
                 {currentLang === 'zh' ? '总题数' : 'Total'}
               </span>
             </div>
-            <div className="share-card-stat-percent">{problemPercentage}%</div>
+            <div className="share-card-stat-percent">
+              <span className="percent-icon">📊</span>
+              {problemPercentage}%
+            </div>
           </div>
 
           <div className="share-card-realm-info">
-            <span className="share-card-realm-icon">{currentRealm.icon}</span>
-            <span className="share-card-realm-name" style={{ color: currentRealm.color }}>
-              {currentLang === 'zh' ? currentRealm.name : currentRealm.nameEn}
-            </span>
-            <span className="share-card-exp">{totalExp.toLocaleString()} EXP</span>
+            <div className="realm-badge-container">
+              <span className="share-card-realm-icon">{currentRealm.icon}</span>
+              <span className="share-card-realm-name" style={{ color: currentRealm.color }}>
+                {currentLang === 'zh' ? currentRealm.name : currentRealm.nameEn}
+              </span>
+              <div className="realm-glow-effect" style={{ background: currentRealm.color }}></div>
+            </div>
+            <div className="exp-badge">
+              <span className="exp-icon">⚡</span>
+              <span className="share-card-exp">{totalExp.toLocaleString()} EXP</span>
+            </div>
           </div>
         </div>
 
         {/* 题目列表 */}
         <div className="share-card-problem-list">
+          <div className="share-card-list-decoration">
+            <div className="list-decoration-line"></div>
+            <span className="list-decoration-icon">📝</span>
+            <div className="list-decoration-line"></div>
+          </div>
           <div className="share-card-list-header">
             <span className="share-card-col-id">#</span>
             <span className="share-card-col-title">

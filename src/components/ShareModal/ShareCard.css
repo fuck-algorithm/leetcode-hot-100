@@ -289,3 +289,296 @@
     border: 1px solid #e2e8f0;
   }
 }
+
+/* ============ 新增装饰元素样式 ============ */
+
+/* 角落装饰 */
+.share-card-corner-decoration {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+}
+
+.share-card-corner-decoration.top-left {
+  top: 12px;
+  left: 12px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.share-card-corner-decoration.top-right {
+  top: 12px;
+  right: 12px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.share-card-corner-decoration.bottom-left {
+  bottom: 12px;
+  left: 12px;
+  border-right: none;
+  border-top: none;
+}
+
+.share-card-corner-decoration.bottom-right {
+  bottom: 12px;
+  right: 12px;
+  border-left: none;
+  border-top: none;
+}
+
+/* 浮动装饰点 */
+.share-card-float-dots {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.share-card-float-dots span {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  animation: float 3s ease-in-out infinite;
+}
+
+.share-card-float-dots span:nth-child(1) {
+  top: 20%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.share-card-float-dots span:nth-child(2) {
+  top: 60%;
+  left: 10%;
+  animation-delay: 0.5s;
+}
+
+.share-card-float-dots span:nth-child(3) {
+  top: 30%;
+  right: 15%;
+  animation-delay: 1s;
+}
+
+.share-card-float-dots span:nth-child(4) {
+  top: 70%;
+  right: 10%;
+  animation-delay: 1.5s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-10px) scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* 标题徽章 */
+.share-card-title-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.share-card-title-icon {
+  font-size: 32px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* 统计图标 */
+.share-card-stat-icon {
+  font-size: 20px;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* 分隔线装饰 */
+.share-card-stat-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.divider-line {
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.5), transparent);
+}
+
+.divider-text {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 300;
+  line-height: 1;
+}
+
+/* 百分比图标 */
+.percent-icon {
+  font-size: 16px;
+  margin-right: 4px;
+}
+
+/* 境界徽章容器 */
+.realm-badge-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.realm-glow-effect {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 3px;
+  border-radius: 3px;
+  filter: blur(2px);
+  opacity: 0.8;
+}
+
+/* 经验值徽章 */
+.exp-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(255, 215, 0, 0.2);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+}
+
+.exp-icon {
+  font-size: 14px;
+}
+
+/* 列表装饰 */
+.share-card-list-decoration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 28px 8px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.list-decoration-line {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #cbd5e1, transparent);
+  max-width: 100px;
+}
+
+.list-decoration-icon {
+  font-size: 20px;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+}
+
+/* 完成题目项增加更多装饰 */
+.share-card-problem-item {
+  position: relative;
+}
+
+.share-card-problem-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0;
+  background: #22c55e;
+  border-radius: 0 2px 2px 0;
+  transition: height 0.3s ease;
+}
+
+.share-card-problem-item.completed::before {
+  height: 60%;
+}
+
+/* 底部增加装饰 */
+.share-card-footer {
+  position: relative;
+  overflow: hidden;
+}
+
+.share-card-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #cbd5e1, transparent);
+}
+
+/* 状态图标美化 */
+.share-card-problem-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.share-card-problem-item.completed .share-card-problem-status {
+  background: #dcfce7;
+  color: #22c55e;
+  transform: scale(1.1);
+}
+
+/* 难度徽章 */
+.share-card-problem-difficulty {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* 题号样式 */
+.share-card-problem-id {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  border-radius: 10px;
+  font-weight: 700;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.share-card-problem-item.completed .share-card-problem-id {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  color: #166534;
+}

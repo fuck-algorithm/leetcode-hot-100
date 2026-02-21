@@ -475,6 +475,46 @@
   box-shadow: 0 1px 0 #d0d0d0;
 }
 
+/* 右键菜单分割线 */
+.context-menu-divider {
+  height: 1px;
+  background: #e0e0e0;
+  margin: 8px 0;
+}
+
+/* 设置按钮 */
+.context-menu-btn.settings-btn {
+  background: #f8f9fa;
+  color: #666;
+  box-shadow: 0 3px 0 #e0e0e0;
+}
+
+.context-menu-btn.settings-btn:hover {
+  background: #e9ecef;
+  transform: translateY(-1px);
+}
+
+.context-menu-btn.settings-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #e0e0e0;
+}
+
+/* 暗色模式 - 分割线 */
+[data-theme="dark"] .context-menu-divider {
+  background: #3a3f4e;
+}
+
+/* 暗色模式 - 设置按钮 */
+[data-theme="dark"] .context-menu-btn.settings-btn {
+  background: #2a2f3e;
+  color: #aaa;
+  box-shadow: 0 3px 0 #1a1f2e;
+}
+
+[data-theme="dark"] .context-menu-btn.settings-btn:hover {
+  background: #3a3f4e;
+}
+
 /* 里程碑标记 - 3D按钮风格 */
 .path-milestone-badge {
   position: absolute;

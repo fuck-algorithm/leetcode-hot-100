@@ -3,6 +3,8 @@ import { Problem } from '../types';
 import Tooltip from '../../Tooltip';
 import AnimationBadge from '../AnimationBadge';
 import TreasureNode from './TreasureNode';
+import ClickBehaviorSettings from './ClickBehaviorSettings';
+import { getClickBehavior, handleNodeClickWithBehavior } from './settings';
 import './DuolingoPath.css';
 
 interface DuolingoPathProps {
@@ -80,9 +82,10 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(600);
   const [expandedNodeId, setExpandedNodeId] = useState<string | null>(null);
-  const [, setRefreshKey] = useState(0);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isTogglingCompletion, setIsTogglingCompletion] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -354,16 +357,13 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     hideMenu();
   }, [hideMenu]);
 
-  // 左键单击 - 直接跳转到GitHub Pages（如果有动画）或LeetCode
+  // 左键单击 - 根据用户设置执行对应行为
   const handleNodeClick = (e: React.MouseEvent, problem: Problem) => {
     e.preventDefault();
     e.stopPropagation();
     
-    if (problem.hasAnimation && problem.repo?.pagesUrl) {
-      window.open(problem.repo.pagesUrl, '_blank');
-    } else {
-      window.open(`https://leetcode.cn/problems/${problem.titleSlug}/`, '_blank');
-    }
+    const behavior = getClickBehavior();
+    handleNodeClickWithBehavior(behavior, problem);
   };
 
   // 右键单击 - 显示菜单
@@ -561,6 +561,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
 
   return (
     <div 
+      key={refreshKey}
       className="duolingo-path-container" 
       style={{ minHeight: containerHeight }}
       ref={containerRef}
@@ -711,6 +712,21 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
                     >
                       📝 {currentLang === 'zh' ? '打开 LeetCode' : 'Open LeetCode'}
                     </button>
+                    
+                    {/* 菜单项分割线 */}
+                    <div className="context-menu-divider"></div>
+                    
+                    {/* 菜单项4: 设置默认行为 */}
+                    <button 
+                      className="context-menu-btn settings-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsSettingsOpen(true);
+                        hideMenu();
+                      }}
+                    >
+                      ⚙️ {currentLang === 'zh' ? '设置默认行为' : 'Set Default Behavior'}
+                    </button>
                   </div>
                 </div>
               )}
@@ -764,6 +780,13 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
           </div>
         );
       })()}
+      
+      {/* 设置弹窗 */}
+      <ClickBehaviorSettings
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        currentLang={currentLang}
+      />
     </div>
   );
 };

@@ -130,5 +130,26 @@
     "preview": "Generated Image",
     "copiedSuccess": "Image copied to clipboard",
     "copiedFailed": "Copy failed, please try downloading"
+  },
+  "clickBehavior": {
+    "settings": "Set Default Behavior",
+    "title": "Node Click Behavior Settings",
+    "description": "Choose the default behavior when clicking a problem node",
+    "options": {
+      "animation": {
+        "label": "Animation Demo",
+        "description": "Open GitHub Pages animation demo site"
+      },
+      "leetcode": {
+        "label": "LeetCode",
+        "description": "Open LeetCode problem page"
+      },
+      "none": {
+        "label": "No Action",
+        "description": "Only select the node, no navigation"
+      }
+    },
+    "save": "Save",
+    "cancel": "Cancel"
   }
 } 

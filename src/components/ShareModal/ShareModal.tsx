@@ -154,7 +154,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
           position: 'fixed',
           left: '0',
           top: '0',
-          width: '400px',
+          width: '600px',
           opacity: '0',
           pointerEvents: 'none',
           zIndex: '-9999'

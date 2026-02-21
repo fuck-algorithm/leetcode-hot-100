@@ -107,11 +107,6 @@
 }
 
 /* Problem List */
-.share-card-problem-list {
-  max-height: 500px;
-  overflow-y: auto;
-}
-
 .share-card-list-header {
   display: grid;
   grid-template-columns: 50px 1fr 60px 50px;

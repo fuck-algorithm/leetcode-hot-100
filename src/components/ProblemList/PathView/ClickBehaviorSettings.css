@@ -1,4 +1,4 @@
-/* 节点点击行为设置弹窗样式 */
+/* 节点点击行为设置弹窗样式 - Duolingo风格 */
 
 .click-behavior-settings-overlay {
   position: fixed;
@@ -16,56 +16,57 @@
 
 .click-behavior-settings-modal {
   background: white;
-  border-radius: 16px;
+  border-radius: 8px;
   width: 90%;
-  max-width: 400px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: modalSlideIn 0.3s ease-out;
+  max-width: 380px;
+  box-shadow: 0 4px 0 #d0d0d0, 0 8px 20px rgba(0, 0, 0, 0.15);
+  animation: modalSlideIn 0.2s ease-out;
   overflow: hidden;
 }
 
 @keyframes modalSlideIn {
   from {
     opacity: 0;
-    transform: translateY(-20px) scale(0.95);
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
-/* 头部 */
+/* 头部 - 使用绿色系 */
 .settings-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
-  border-bottom: 1px solid #e8e8e8;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #58cc02;
+  box-shadow: 0 2px 0 #46a302;
 }
 
 .settings-header h2 {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: white;
 }
 
 .close-btn {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 20px;
   color: white;
   cursor: pointer;
   padding: 0;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background 0.2s;
+  transition: background 0.15s;
 }
 
 .close-btn:hover {
@@ -74,13 +75,13 @@
 
 /* 内容区 */
 .settings-content {
-  padding: 20px 24px;
+  padding: 16px 20px;
 }
 
 .settings-description {
-  margin: 0 0 20px 0;
+  margin: 0 0 16px 0;
   color: #666;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
 }
 
@@ -88,28 +89,28 @@
 .behavior-options {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .behavior-option {
   display: flex;
   align-items: flex-start;
-  padding: 16px;
-  border: 2px solid #e8e8e8;
-  border-radius: 12px;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
   background: white;
 }
 
 .behavior-option:hover {
-  border-color: #667eea;
-  background: #f8f9ff;
+  border-color: #58cc02;
+  background: #f8fff5;
 }
 
 .behavior-option.selected {
-  border-color: #667eea;
-  background: #f0f2ff;
+  border-color: #58cc02;
+  background: #f0ffeb;
 }
 
 .behavior-option input[type="radio"] {
@@ -119,23 +120,23 @@
 }
 
 .radio-indicator {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border: 2px solid #d0d0d0;
   border-radius: 50%;
-  margin-right: 12px;
+  margin-right: 10px;
   flex-shrink: 0;
   position: relative;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
 
 .behavior-option:hover .radio-indicator {
-  border-color: #667eea;
+  border-color: #58cc02;
 }
 
 .behavior-option.selected .radio-indicator {
-  border-color: #667eea;
-  background: #667eea;
+  border-color: #58cc02;
+  background: #58cc02;
 }
 
 .behavior-option.selected .radio-indicator::after {
@@ -144,8 +145,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background: white;
   border-radius: 50%;
 }
@@ -153,17 +154,17 @@
 .option-content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .option-label {
-  font-weight: 600;
-  font-size: 15px;
+  font-weight: 700;
+  font-size: 14px;
   color: #333;
 }
 
 .option-description {
-  font-size: 13px;
+  font-size: 12px;
   color: #888;
 }
 
@@ -171,43 +172,52 @@
 .settings-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  padding: 16px 24px;
-  border-top: 1px solid #e8e8e8;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 1px solid #e0e0e0;
   background: #fafafa;
 }
 
 .btn-cancel,
 .btn-save {
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
 
 .btn-cancel {
   background: white;
-  border: 1px solid #d0d0d0;
+  border: none;
   color: #666;
+  box-shadow: 0 2px 0 #d0d0d0;
 }
 
 .btn-cancel:hover {
   background: #f5f5f5;
-  border-color: #c0c0c0;
+}
+
+.btn-cancel:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 #d0d0d0;
 }
 
 .btn-save {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #58cc02;
   border: none;
   color: white;
+  box-shadow: 0 2px 0 #46a302;
 }
 
 .btn-save:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  background: #4db802;
+}
+
+.btn-save:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 #46a302;
 }
 
 /* 响应式 */
@@ -218,18 +228,18 @@
   }
 
   .settings-header {
-    padding: 16px 20px;
+    padding: 14px 16px;
   }
 
   .settings-content {
-    padding: 16px 20px;
+    padding: 14px 16px;
   }
 
   .settings-footer {
-    padding: 12px 20px;
+    padding: 10px 16px;
   }
 
   .behavior-option {
-    padding: 12px;
+    padding: 10px;
   }
 }

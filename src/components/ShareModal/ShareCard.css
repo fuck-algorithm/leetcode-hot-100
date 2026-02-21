@@ -1,873 +1,216 @@
-/* Share Card - Premium HD Style */
-.share-card-list {
-  width: 720px;
+/* Share Card - Clean Professional Style */
+.share-card {
+  width: 680px;
   background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* Header - Premium Deep Blue Gradient */
+/* Header */
 .share-card-header {
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0d4f6c 100%);
-  padding: 32px;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  padding: 28px 32px;
   color: white;
-  position: relative;
-  overflow: hidden;
 }
 
-.share-card-header::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%);
-  border-radius: 50%;
-}
-
-.share-card-header::after {
-  content: '🔥';
-  position: absolute;
-  top: 16px;
-  right: 20px;
-  font-size: 40px;
-  opacity: 0.3;
-  transform: rotate(-15deg);
-}
-
-.share-card-title-section {
+.header-content {
   text-align: center;
   margin-bottom: 20px;
 }
 
-.share-card-main-title {
-  font-size: 36px;
-  font-weight: 800;
-  margin: 0 0 12px 0;
-  background: linear-gradient(90deg, #fff 0%, #ffd700 50%, #fff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-  letter-spacing: -0.5px;
-}
-
-.share-card-subtitle {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.85);
-  margin: 0;
-  font-weight: 500;
-}
-
-/* Summary Stats - Premium Cards */
-.share-card-summary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-.share-card-stat-box {
-  text-align: center;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 16px 24px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.share-card-stat-number {
-  display: block;
-  font-size: 40px;
-  font-weight: 800;
-  color: #fff;
-  line-height: 1;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.share-card-stat-label {
-  display: block;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.8);
-  margin-top: 6px;
-  font-weight: 500;
-}
-
-.share-card-stat-divider {
-  font-size: 32px;
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: 200;
-}
-
-.share-card-stat-percent {
+.header-title {
   font-size: 28px;
-  font-weight: 800;
-  color: #ffd700;
-  background: rgba(255, 215, 0, 0.2);
-  padding: 8px 20px;
-  border-radius: 24px;
-  border: 2px solid rgba(255, 215, 0, 0.4);
-  text-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  color: #ffffff;
 }
 
-/* Realm Info - Premium Badge */
-.share-card-realm-info {
+.header-subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+/* Stats */
+.header-stats {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 16px;
 }
 
-.share-card-realm-icon {
-  font-size: 28px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+.stat-item {
+  text-align: center;
 }
 
-.share-card-realm-name {
+.stat-value {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 4px;
+}
+
+.stat-divider {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.stat-percent {
   font-size: 20px;
   font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.share-card-exp {
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.2);
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.15);
   padding: 6px 14px;
-  border-radius: 16px;
-  font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
 }
 
-/* Problem List - Premium Styling */
-.share-card-list-header {
-  display: grid;
-  grid-template-columns: 60px 1fr 70px 60px;
+/* Realm */
+.header-realm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 12px;
-  padding: 16px 28px;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border-bottom: 2px solid #e2e8f0;
-  font-size: 13px;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.share-card-list-body {
-  padding: 0;
+.realm-icon {
+  font-size: 20px;
+}
+
+.realm-name {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.realm-exp {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+/* Problem List */
+.problem-list {
   background: #ffffff;
 }
 
-.share-card-problem-item {
+.list-header {
   display: grid;
-  grid-template-columns: 60px 1fr 70px 60px;
+  grid-template-columns: 50px 1fr 70px 60px;
   gap: 12px;
   padding: 14px 28px;
-  border-bottom: 1px solid #f1f5f9;
-  font-size: 15px;
-  align-items: center;
-  transition: all 0.2s ease;
-}
-
-.share-card-problem-item:last-child {
-  border-bottom: none;
-}
-
-.share-card-problem-item:hover {
-  background-color: #f8fafc;
-  transform: translateX(4px);
-}
-
-.share-card-problem-item.completed {
-  background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 100%);
-  border-left: 4px solid #22c55e;
-}
-
-.share-card-problem-item.completed:hover {
-  background: linear-gradient(90deg, #dcfce7 0%, #f0fdf4 100%);
-}
-
-.share-card-problem-id {
-  font-weight: 700;
-  color: #94a3b8;
-  font-size: 14px;
-  font-family: 'SF Mono', Monaco, monospace;
-}
-
-.share-card-problem-title {
-  color: #1e293b;
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 15px;
-}
-
-.share-card-problem-item.completed .share-card-problem-title {
-  color: #166534;
-  font-weight: 700;
-}
-
-.share-card-problem-difficulty {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
   font-size: 12px;
-  font-weight: 700;
-  text-align: center;
-  padding: 4px 10px;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.share-card-problem-status {
-  text-align: center;
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.share-card-problem-item.completed .share-card-problem-status {
-  color: #22c55e;
-}
-
-/* Footer - Premium Styling */
-.share-card-footer {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
-  padding: 24px 32px;
-  text-align: center;
-  border-top: 2px solid #e2e8f0;
-}
-
-.share-card-slogan {
-  font-size: 16px;
-  color: #475569;
-  margin: 0 0 10px 0;
   font-weight: 600;
-  font-style: italic;
+  color: #64748b;
+  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.share-card-url {
+.list-body {
+  padding: 0;
+}
+
+.problem-row {
+  display: grid;
+  grid-template-columns: 50px 1fr 70px 60px;
+  gap: 12px;
+  padding: 12px 28px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+  align-items: center;
+}
+
+.problem-row:last-child {
+  border-bottom: none;
+}
+
+.problem-row.completed {
+  background: #f0fdf4;
+}
+
+.problem-id {
+  font-weight: 600;
+  color: #94a3b8;
   font-size: 13px;
+}
+
+.problem-row.completed .problem-id {
+  color: #22c55e;
+}
+
+.problem-title {
+  color: #1e293b;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.problem-row.completed .problem-title {
+  color: #166534;
+}
+
+.problem-difficulty {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  padding: 4px 10px;
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+
+.problem-status {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+.problem-row.completed .problem-status {
+  color: #22c55e;
+}
+
+/* Footer */
+.share-card-footer {
+  background: #f8fafc;
+  padding: 20px 28px;
+  text-align: center;
+  border-top: 1px solid #e2e8f0;
+}
+
+.footer-slogan {
+  font-size: 14px;
+  color: #475569;
+  margin: 0 0 6px 0;
+  font-weight: 500;
+}
+
+.footer-url {
+  font-size: 12px;
   color: #64748b;
   margin: 0;
-  font-weight: 500;
   font-family: 'SF Mono', Monaco, monospace;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 6px 14px;
-  border-radius: 12px;
-  display: inline-block;
-  border: 1px solid #e2e8f0;
-}
-
-/* Scrollbar styling */
-.share-card-problem-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.share-card-problem-list::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
-
-.share-card-problem-list::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
-}
-
-.share-card-problem-list::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
 }
 
 /* Print optimization */
 @media print {
-  .share-card-list {
+  .share-card {
     box-shadow: none;
     border: 1px solid #e2e8f0;
   }
-}
-
-/* ============ 新增装饰元素样式 ============ */
-
-/* 角落装饰 */
-.share-card-corner-decoration {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-}
-
-.share-card-corner-decoration.top-left {
-  top: 12px;
-  left: 12px;
-  border-right: none;
-  border-bottom: none;
-}
-
-.share-card-corner-decoration.top-right {
-  top: 12px;
-  right: 12px;
-  border-left: none;
-  border-bottom: none;
-}
-
-.share-card-corner-decoration.bottom-left {
-  bottom: 12px;
-  left: 12px;
-  border-right: none;
-  border-top: none;
-}
-
-.share-card-corner-decoration.bottom-right {
-  bottom: 12px;
-  right: 12px;
-  border-left: none;
-  border-top: none;
-}
-
-/* 浮动装饰点 */
-.share-card-float-dots {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.share-card-float-dots span {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 50%;
-  animation: float 3s ease-in-out infinite;
-}
-
-.share-card-float-dots span:nth-child(1) {
-  top: 20%;
-  left: 15%;
-  animation-delay: 0s;
-}
-
-.share-card-float-dots span:nth-child(2) {
-  top: 60%;
-  left: 10%;
-  animation-delay: 0.5s;
-}
-
-.share-card-float-dots span:nth-child(3) {
-  top: 30%;
-  right: 15%;
-  animation-delay: 1s;
-}
-
-.share-card-float-dots span:nth-child(4) {
-  top: 70%;
-  right: 10%;
-  animation-delay: 1.5s;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-    opacity: 0.4;
-  }
-  50% {
-    transform: translateY(-10px) scale(1.2);
-    opacity: 0.8;
-  }
-}
-
-/* 标题徽章 */
-.share-card-title-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-
-.share-card-title-icon {
-  font-size: 32px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
-/* 统计图标 */
-.share-card-stat-icon {
-  font-size: 20px;
-  margin-bottom: 4px;
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
-}
-
-/* 分隔线装饰 */
-.share-card-stat-divider {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.divider-line {
-  width: 2px;
-  height: 20px;
-  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.5), transparent);
-}
-
-.divider-text {
-  font-size: 24px;
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: 300;
-  line-height: 1;
-}
-
-/* 百分比图标 */
-.percent-icon {
-  font-size: 16px;
-  margin-right: 4px;
-}
-
-/* 境界徽章容器 */
-.realm-badge-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  position: relative;
-  overflow: hidden;
-}
-
-.realm-glow-effect {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60%;
-  height: 3px;
-  border-radius: 3px;
-  filter: blur(2px);
-  opacity: 0.8;
-}
-
-/* 经验值徽章 */
-.exp-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  background: rgba(255, 215, 0, 0.2);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 215, 0, 0.4);
-}
-
-.exp-icon {
-  font-size: 14px;
-}
-
-/* 列表装饰 */
-.share-card-list-decoration {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 16px 28px 8px;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-}
-
-.list-decoration-line {
-  flex: 1;
-  height: 2px;
-  background: linear-gradient(to right, transparent, #cbd5e1, transparent);
-  max-width: 100px;
-}
-
-.list-decoration-icon {
-  font-size: 20px;
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
-}
-
-/* 完成题目项增加更多装饰 */
-.share-card-problem-item {
-  position: relative;
-}
-
-.share-card-problem-item::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 0;
-  background: #22c55e;
-  border-radius: 0 2px 2px 0;
-  transition: height 0.3s ease;
-}
-
-.share-card-problem-item.completed::before {
-  height: 60%;
-}
-
-/* 底部增加装饰 */
-.share-card-footer {
-  position: relative;
-  overflow: hidden;
-}
-
-.share-card-footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60%;
-  height: 2px;
-  background: linear-gradient(to right, transparent, #cbd5e1, transparent);
-}
-
-/* 状态图标美化 */
-.share-card-problem-status {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #f1f5f9;
-  font-size: 14px;
-  transition: all 0.3s ease;
-}
-
-.share-card-problem-item.completed .share-card-problem-status {
-  background: #dcfce7;
-  color: #22c55e;
-  transform: scale(1.1);
-}
-
-/* 难度徽章 */
-.share-card-problem-difficulty {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background: rgba(0, 0, 0, 0.05);
-}
-
-/* 题号样式 */
-.share-card-problem-id {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-  border-radius: 10px;
-  font-weight: 700;
-  color: #64748b;
-  font-size: 13px;
-}
-
-.share-card-problem-item.completed .share-card-problem-id {
-  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-  color: #166534;
-}
-
-/* ============ 额外精致装饰元素 ============ */
-
-/* 头部流光扫过效果和火焰图标 */
-.share-card-header::after {
-  content: '🔥';
-  position: absolute;
-  top: 16px;
-  right: 20px;
-  font-size: 40px;
-  opacity: 0.3;
-  transform: rotate(-15deg);
-}
-
-/* 独立的流光元素 */
-.share-card-header .shimmer-effect {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0.2),
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
-  animation: shimmer 5s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes shimmer {
-  0%, 100% {
-    left: -100%;
-  }
-  50% {
-    left: 150%;
-  }
-}
-
-/* 网格纹理叠加 */
-.share-card-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 30px 30px;
-  pointer-events: none;
-}
-
-/* 标题区域发光边框 */
-.share-card-title-section {
-  position: relative;
-  padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-}
-
-.share-card-title-section::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  right: -1px;
-  bottom: -1px;
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), transparent, rgba(56, 189, 248, 0.3));
-  border-radius: 16px;
-  z-index: -1;
-}
-
-/* 统计框发光效果 */
-.share-card-stat-box {
-  position: relative;
-  overflow: hidden;
-}
-
-.share-card-stat-box::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.share-card-stat-box:hover::after {
-  opacity: 1;
-}
-
-/* 百分比环形装饰 */
-.share-card-stat-percent {
-  position: relative;
-}
-
-.share-card-stat-percent::before {
-  content: '';
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  right: -4px;
-  bottom: -4px;
-  border: 2px solid rgba(255, 215, 0, 0.3);
-  border-radius: 28px;
-  animation: pulse-ring 2s ease-in-out infinite;
-}
-
-@keyframes pulse-ring {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.8;
-  }
-}
-
-/* 境界图标旋转光效 */
-.realm-badge-container {
-  position: relative;
-}
-
-.realm-badge-container::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50px;
-  height: 50px;
-  border: 2px dashed rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  animation: rotate 10s linear infinite;
-}
-
-@keyframes rotate {
-  from {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-/* 经验值闪光效果 */
-.exp-badge {
-  position: relative;
-  overflow: hidden;
-}
-
-.exp-badge::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  animation: flash 3s ease-in-out infinite;
-}
-
-@keyframes flash {
-  0%, 100% {
-    left: -100%;
-  }
-  50% {
-    left: 100%;
-  }
-}
-
-/* 列表区域精致边框 */
-.share-card-problem-list {
-  position: relative;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-}
-
-.share-card-problem-list::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 20px;
-  right: 20px;
-  height: 1px;
-  background: linear-gradient(to right, transparent, #cbd5e1, transparent);
-}
-
-/* 表头精致样式 */
-.share-card-list-header {
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-/* 题目行悬停光效 */
-.share-card-problem-item::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.05), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.share-card-problem-item:hover::after {
-  opacity: 1;
-}
-
-/* 完成题目星尘效果 */
-.share-card-problem-item.completed::after {
-  content: '✨';
-  position: absolute;
-  right: 80px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 12px;
-  opacity: 0;
-  animation: sparkle 2s ease-in-out infinite;
-}
-
-@keyframes sparkle {
-  0%, 100% {
-    opacity: 0;
-    transform: translateY(-50%) scale(0.5);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(-50%) scale(1);
-  }
-}
-
-/* 难度标签精致样式 */
-.share-card-problem-difficulty {
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-/* 状态图标发光 */
-.share-card-problem-item.completed .share-card-problem-status {
-  box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
-}
-
-/* 底部区域星空效果 */
-.share-card-footer {
-  position: relative;
-  overflow: hidden;
-}
-
-.share-card-footer::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: radial-gradient(circle, rgba(100, 116, 139, 0.1) 1px, transparent 1px);
-  background-size: 20px 20px;
-  pointer-events: none;
-}
-
-/* 链接悬停发光 */
-.share-card-url {
-  transition: all 0.3s ease;
-}
-
-.share-card-url:hover {
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
 }

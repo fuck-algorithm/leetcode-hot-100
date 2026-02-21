@@ -58,118 +58,71 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
     };
 
     return (
-      <div ref={ref} className="share-card-list">
-        {/* 头部 - 标题和汇总统计 */}
+      <div ref={ref} className="share-card">
+        {/* Header */}
         <div className="share-card-header">
-          {/* 流光扫过效果 */}
-          <div className="shimmer-effect"></div>
-          
-          {/* 装饰性角落元素 */}
-          <div className="share-card-corner-decoration top-left"></div>
-          <div className="share-card-corner-decoration top-right"></div>
-          <div className="share-card-corner-decoration bottom-left"></div>
-          <div className="share-card-corner-decoration bottom-right"></div>
-          
-          {/* 浮动装饰点 */}
-          <div className="share-card-float-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          
-          <div className="share-card-title-section">
-            <div className="share-card-title-badge">
-              <span className="share-card-title-icon">🎯</span>
-              <h1 className="share-card-main-title">LeetCode Hot 100</h1>
-            </div>
-            <p className="share-card-subtitle">
+          <div className="header-content">
+            <h1 className="header-title">LeetCode Hot 100</h1>
+            <p className="header-subtitle">
               {currentLang === 'zh' ? '算法学习进度' : 'Algorithm Learning Progress'}
             </p>
           </div>
           
-          <div className="share-card-summary">
-            <div className="share-card-stat-box">
-              <div className="share-card-stat-icon">✅</div>
-              <span className="share-card-stat-number">{completedProblems}</span>
-              <span className="share-card-stat-label">
-                {currentLang === 'zh' ? '已完成' : 'Completed'}
-              </span>
+          <div className="header-stats">
+            <div className="stat-item">
+              <span className="stat-value">{completedProblems}</span>
+              <span className="stat-label">{currentLang === 'zh' ? '已完成' : 'Done'}</span>
             </div>
-            <div className="share-card-stat-divider">
-              <div className="divider-line"></div>
-              <span className="divider-text">/</span>
-              <div className="divider-line"></div>
+            <div className="stat-divider">/</div>
+            <div className="stat-item">
+              <span className="stat-value">{totalProblems}</span>
+              <span className="stat-label">{currentLang === 'zh' ? '总题数' : 'Total'}</span>
             </div>
-            <div className="share-card-stat-box">
-              <div className="share-card-stat-icon">📚</div>
-              <span className="share-card-stat-number">{totalProblems}</span>
-              <span className="share-card-stat-label">
-                {currentLang === 'zh' ? '总题数' : 'Total'}
-              </span>
-            </div>
-            <div className="share-card-stat-percent">
-              <span className="percent-icon">📊</span>
-              {problemPercentage}%
-            </div>
+            <div className="stat-percent">{problemPercentage}%</div>
           </div>
 
-          <div className="share-card-realm-info">
-            <div className="realm-badge-container">
-              <span className="share-card-realm-icon">{currentRealm.icon}</span>
-              <span className="share-card-realm-name" style={{ color: currentRealm.color }}>
-                {currentLang === 'zh' ? currentRealm.name : currentRealm.nameEn}
-              </span>
-              <div className="realm-glow-effect" style={{ background: currentRealm.color }}></div>
-            </div>
-            <div className="exp-badge">
-              <span className="exp-icon">⚡</span>
-              <span className="share-card-exp">{totalExp.toLocaleString()} EXP</span>
-            </div>
+          <div className="header-realm">
+            <span className="realm-icon">{currentRealm.icon}</span>
+            <span className="realm-name" style={{ color: currentRealm.color }}>
+              {currentLang === 'zh' ? currentRealm.name : currentRealm.nameEn}
+            </span>
+            <span className="realm-exp">{totalExp.toLocaleString()} EXP</span>
           </div>
         </div>
 
-        {/* 题目列表 */}
-        <div className="share-card-problem-list">
-          <div className="share-card-list-decoration">
-            <div className="list-decoration-line"></div>
-            <span className="list-decoration-icon">📝</span>
-            <div className="list-decoration-line"></div>
-          </div>
-          <div className="share-card-list-header">
-            <span className="share-card-col-id">#</span>
-            <span className="share-card-col-title">
-              {currentLang === 'zh' ? '题目' : 'Problem'}
-            </span>
-            <span className="share-card-col-diff">
-              {currentLang === 'zh' ? '难度' : 'Diff'}
-            </span>
-            <span className="share-card-col-status">
-              {currentLang === 'zh' ? '状态' : 'Status'}
-            </span>
+        {/* Problem List */}
+        <div className="problem-list">
+          <div className="list-header">
+            <span className="col-id">#</span>
+            <span className="col-title">{currentLang === 'zh' ? '题目' : 'Problem'}</span>
+            <span className="col-diff">{currentLang === 'zh' ? '难度' : 'Diff'}</span>
+            <span className="col-status">{currentLang === 'zh' ? '状态' : 'Status'}</span>
           </div>
           
-          <div className="share-card-list-body">
-            {problems.map((problem, index) => {
+          <div className="list-body">
+            {problems.map((problem) => {
               const isCompleted = isProblemCompleted(problem.questionFrontendId);
               return (
                 <div 
                   key={problem.questionFrontendId} 
-                  className={`share-card-problem-item ${isCompleted ? 'completed' : ''}`}
+                  className={`problem-row ${isCompleted ? 'completed' : ''}`}
                 >
-                  <span className="share-card-problem-id">{problem.questionFrontendId}</span>
-                  <span className="share-card-problem-title">
+                  <span className="problem-id">{problem.questionFrontendId}</span>
+                  <span className="problem-title">
                     {currentLang === 'zh' && problem.translatedTitle 
                       ? problem.translatedTitle 
                       : problem.title}
                   </span>
                   <span 
-                    className="share-card-problem-difficulty"
-                    style={{ color: getDifficultyColor(problem.difficulty) }}
+                    className="problem-difficulty"
+                    style={{ 
+                      color: getDifficultyColor(problem.difficulty),
+                      backgroundColor: `${getDifficultyColor(problem.difficulty)}15`
+                    }}
                   >
                     {getDifficultyLabel(problem.difficulty)}
                   </span>
-                  <span className="share-card-problem-status">
+                  <span className="problem-status">
                     {isCompleted ? '✓' : '○'}
                   </span>
                 </div>
@@ -178,12 +131,12 @@ const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
           </div>
         </div>
 
-        {/* 底部 */}
+        {/* Footer */}
         <div className="share-card-footer">
-          <p className="share-card-slogan">
-            {currentLang === 'zh' ? '让天下没有难学的算法！' : 'Make algorithms easy to learn!'}
+          <p className="footer-slogan">
+            {currentLang === 'zh' ? '让天下没有难学的算法' : 'Make algorithms easy to learn'}
           </p>
-          <p className="share-card-url">github.com/fuck-algorithm/leetcode-hot-100</p>
+          <p className="footer-url">github.com/fuck-algorithm/leetcode-hot-100</p>
         </div>
       </div>
     );

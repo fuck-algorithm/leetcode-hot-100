@@ -251,6 +251,7 @@ const ProblemList: React.FC<ProblemListProps> = ({ viewMode: propViewMode }) => 
           refreshTrigger={experience.totalExp}
           completedProblems={getStatsForProblems(problems.map(p => p.questionFrontendId)).completed}
           totalProblems={problems.length}
+          problems={problems}
         />
       )}
       

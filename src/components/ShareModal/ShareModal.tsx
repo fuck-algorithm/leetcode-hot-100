@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import domtoimage from 'dom-to-image';
 import { useTranslation } from 'react-i18next';
 import './ShareModal.css';
@@ -47,13 +47,24 @@ const ShareModal: React.FC<ShareModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const cardRef = useRef<HTMLDivElement>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(true);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
-  const handleGenerateImage = useCallback(async () => {
+  // Auto-generate image when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsGenerating(true);
+      // Delay to ensure DOM is fully rendered
+      const timer = setTimeout(() => {
+        generateImage();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  const generateImage = useCallback(async () => {
     if (!cardRef.current) return;
 
-    setIsGenerating(true);
     try {
       const dataUrl = await domtoimage.toPng(cardRef.current, {
         quality: 1.0,
@@ -109,8 +120,13 @@ const ShareModal: React.FC<ShareModalProps> = ({
 
         <h2 className="share-modal-title">{t('share.title', '分享我的算法学习进度')}</h2>
 
-        {/* 分享卡片区域 */}
-        <div className="share-card-container">
+        {/* ShareCard for image generation - placed outside viewport but visible */}
+        <div style={{ 
+          position: 'absolute',
+          left: '-9999px',
+          top: '0',
+          width: '400px'
+        }}>
           <ShareCard
             ref={cardRef}
             currentLang={currentLang}
@@ -124,49 +140,44 @@ const ShareModal: React.FC<ShareModalProps> = ({
           />
         </div>
 
-        {/* 生成的图片预览 */}
-        {generatedImage && (
-          <div className="share-preview-container">
-            <p className="share-preview-title">{t('share.preview', '生成的图片')}</p>
-            <img src={generatedImage} alt="Share preview" className="share-preview-image" />
-          </div>
-        )}
-
-        {/* 操作按钮 */}
-        <div className="share-actions">
-          {!generatedImage ? (
-            <button
-              className="share-btn share-btn-primary"
-              onClick={handleGenerateImage}
-              disabled={isGenerating}
-            >
-              {isGenerating
-                ? t('share.generating', '生成中...')
-                : t('share.generateImage', '生成分享图片')}
-            </button>
+        {/* Generated Image Display */}
+        <div className="share-image-container">
+          {isGenerating ? (
+            <div className="share-loading">
+              <div className="share-loading-spinner"></div>
+              <p>{t('share.generating', '生成分享图片中...')}</p>
+            </div>
+          ) : generatedImage ? (
+            <img 
+              src={generatedImage} 
+              alt="Share Card" 
+              className="share-generated-image"
+            />
           ) : (
-            <>
-              <button
-                className="share-btn share-btn-primary"
-                onClick={handleDownload}
-              >
-                {t('share.download', '下载图片')}
-              </button>
-              <button
-                className="share-btn share-btn-secondary"
-                onClick={handleCopyImage}
-              >
-                {t('share.copyImage', '复制图片')}
-              </button>
-              <button
-                className="share-btn share-btn-tertiary"
-                onClick={() => setGeneratedImage(null)}
-              >
-                {t('share.regenerate', '重新生成')}
-              </button>
-            </>
+            <div className="share-error">
+              <p>{t('share.generateFailed', '生成失败，请重试')}</p>
+              <button onClick={generateImage}>{t('share.retry', '重试')}</button>
+            </div>
           )}
         </div>
+
+        {/* 操作按钮 */}
+        {!isGenerating && generatedImage && (
+          <div className="share-actions">
+            <button
+              className="share-btn share-btn-primary"
+              onClick={handleDownload}
+            >
+              {t('share.download', '下载图片')}
+            </button>
+            <button
+              className="share-btn share-btn-secondary"
+              onClick={handleCopyImage}
+            >
+              {t('share.copyImage', '复制图片')}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

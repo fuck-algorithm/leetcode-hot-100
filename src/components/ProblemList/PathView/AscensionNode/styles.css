@@ -13,10 +13,6 @@
   transform: scale(1.05);
 }
 
-.ascension-node:active {
-  transform: scale(0.98);
-}
-
 /* 主节点 */
 .ascension-main {
   position: relative;
@@ -396,13 +392,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s ease;
   position: relative;
   z-index: 20;
   flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  pointer-events: auto;
 }
 
-.editor-close:hover {
+.editor-close:hover,
+.editor-close:active {
   background: #e0e0e0;
   color: #333;
 }
@@ -582,7 +581,100 @@
 }
 
 
-/* ========== 响应式设计 ========== */
+/* ========== Logo 图片上传 ========== */
+.logo-upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.logo-upload-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  border: 2px dashed #e0e0e0;
+  border-radius: 10px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.logo-upload-btn:hover {
+  border-color: #fbbf24;
+  background: #fffbeb;
+}
+
+.upload-icon {
+  font-size: 24px;
+}
+
+.logo-preview-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-preview-image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  background: white;
+}
+
+.logo-preview-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.logo-change-btn,
+.logo-clear-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.logo-change-btn {
+  background: #fbbf24;
+  color: #7c5800;
+}
+
+.logo-change-btn:hover {
+  background: #f59e0b;
+}
+
+.logo-clear-btn {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.logo-clear-btn:hover {
+  background: #e0e0e0;
+}
+
+.upload-error {
+  color: #ef4444;
+  font-size: 12px;
+  padding: 6px 10px;
+  background: #fef2f2;
+  border-radius: 6px;
+  border: 1px solid #fecaca;
+}
+
+.upload-hint {
+  font-size: 11px;
+  color: #9ca3af;
+}
 @media (max-width: 768px) {
   .ascension-main {
     width: 100px;
@@ -785,4 +877,40 @@
 
 [data-theme="dark"] .editor-cancel-btn:hover {
   background: #4b5563;
+}
+
+/* Dark mode for logo upload */
+[data-theme="dark"] .logo-upload-btn {
+  background: #374151;
+  border-color: #4b5563;
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .logo-upload-btn:hover {
+  border-color: #fbbf24;
+  background: #422006;
+}
+
+[data-theme="dark"] .logo-preview-image {
+  border-color: #4b5563;
+  background: #374151;
+}
+
+[data-theme="dark"] .logo-clear-btn {
+  background: #374151;
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .logo-clear-btn:hover {
+  background: #4b5563;
+}
+
+[data-theme="dark"] .upload-error {
+  background: #451a03;
+  border-color: #92400e;
+  color: #fca5a5;
+}
+
+[data-theme="dark"] .upload-hint {
+  color: #6b7280;
 }

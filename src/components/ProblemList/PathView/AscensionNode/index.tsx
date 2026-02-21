@@ -3,6 +3,7 @@ import ProgressRing from './ProgressRing';
 import InfoCard from './InfoCard';
 import GoalEditor from './GoalEditor';
 import { CompanyLogo } from './CompanyLogos';
+import { logoImageDB } from './logoImageDB';
 import { 
   AscensionGoal, 
   DEFAULT_GOAL, 
@@ -33,19 +34,33 @@ const AscensionNode: React.FC<AscensionNodeProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editingGoal, setEditingGoal] = useState<AscensionGoal>(DEFAULT_GOAL);
   const [isHovered, setIsHovered] = useState(false);
+  const [customLogoImage, setCustomLogoImage] = useState<string | null>(null);
 
-  // 加载保存的目标
+  // 加载保存的目标和自定义Logo
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        setGoal(parsed);
-        setEditingGoal(parsed);
+    const loadData = async () => {
+      try {
+        // 加载目标配置
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          setGoal(parsed);
+          setEditingGoal(parsed);
+          
+          // 如果有自定义Logo，从IndexedDB加载
+          if (parsed.companyId === null && parsed.customLogoImage) {
+            const imageData = await logoImageDB.getLogoImage('custom-logo');
+            if (imageData) {
+              setCustomLogoImage(imageData);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('加载飞升目标失败:', error);
       }
-    } catch (error) {
-      console.error('加载飞升目标失败:', error);
-    }
+    };
+    
+    loadData();
   }, []);
 
   // 保存目标
@@ -73,6 +88,7 @@ const AscensionNode: React.FC<AscensionNodeProps> = ({
         return {
           name: currentLang === 'zh' ? preset.name : preset.nameEn,
           logo: preset.logo,
+          logoImage: null,
           color: preset.color,
         };
       }
@@ -80,9 +96,10 @@ const AscensionNode: React.FC<AscensionNodeProps> = ({
     return {
       name: goal.customName || (currentLang === 'zh' ? '设置目标' : 'Set Goal'),
       logo: goal.customLogo || '🎯',
+      logoImage: customLogoImage,
       color: goal.color || '#FFD700',
     };
-  }, [goal, currentLang]);
+  }, [goal, currentLang, customLogoImage]);
 
   const displayInfo = getDisplayInfo();
 
@@ -117,6 +134,12 @@ const AscensionNode: React.FC<AscensionNodeProps> = ({
           <span className="ascension-logo">
             {goal.companyId ? (
               <CompanyLogo companyId={goal.companyId} size={72} />
+            ) : displayInfo.logoImage ? (
+              <img 
+                src={displayInfo.logoImage} 
+                alt={displayInfo.name}
+                style={{ width: 72, height: 72, objectFit: 'contain', borderRadius: 8 }}
+              />
             ) : (
               displayInfo.logo
             )}

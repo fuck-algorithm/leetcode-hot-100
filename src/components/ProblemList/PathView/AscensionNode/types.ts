@@ -41,6 +41,7 @@ export interface AscensionGoal {
   companyId: string | null; // 预置公司ID，null表示自定义
   customName: string; // 自定义公司名称
   customLogo: string; // 自定义logo（emoji）
+  customLogoImage: string | null; // 自定义logo图片（base64或blob URL）
   salary: string; // 薪资包
   motivation: string; // 勉励自己的话
   color: string; // 主题色
@@ -51,6 +52,7 @@ export const DEFAULT_GOAL: AscensionGoal = {
   companyId: 'google',
   customName: '',
   customLogo: '',
+  customLogoImage: null,
   salary: '100万',
   motivation: '',
   color: '#4285F4',
@@ -63,5 +65,6 @@ export const STORAGE_KEY = 'leetcode-hot-100-ascension-goal';
 export interface DisplayInfo {
   name: string;
   logo: string;
+  logoImage: string | null; // 自定义图片logo
   color: string;
 }

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { AscensionGoal, PresetCompany, PRESET_COMPANIES } from './types';
 import { CompanyLogo } from './CompanyLogos';
+import { fileToBase64, validateImageFile, logoImageDB } from './logoImageDB';
 
 interface GoalEditorProps {
   currentLang: string;
@@ -17,6 +18,9 @@ const GoalEditor: React.FC<GoalEditorProps> = ({
   onSave,
   onCancel,
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
   // 选择预置公司
   const selectPresetCompany = (company: PresetCompany) => {
     setEditingGoal({
@@ -34,10 +38,58 @@ const GoalEditor: React.FC<GoalEditorProps> = ({
     });
   };
 
+  // 处理文件上传
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // 验证文件
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      setUploadError(validation.error || (currentLang === 'zh' ? '图片验证失败' : 'Image validation failed'));
+      return;
+    }
+
+    setUploadError(null);
+
+    try {
+      // 转换为 base64
+      const base64 = await fileToBase64(file);
+      
+      // 保存到 IndexedDB
+      await logoImageDB.saveLogoImage('custom-logo', base64);
+      
+      // 更新状态
+      setEditingGoal({
+        ...editingGoal,
+        customLogoImage: base64,
+      });
+    } catch (error) {
+      console.error('上传图片失败:', error);
+      setUploadError(currentLang === 'zh' ? '上传图片失败，请重试' : 'Failed to upload image, please try again');
+    }
+  };
+
+  // 清除自定义图片
+  const handleClearImage = async () => {
+    try {
+      await logoImageDB.deleteLogoImage('custom-logo');
+      setEditingGoal({
+        ...editingGoal,
+        customLogoImage: null,
+      });
+    } catch (error) {
+      console.error('删除图片失败:', error);
+    }
+  };
+
+  // 触发文件选择
+  const triggerFileSelect = () => {
+    fileInputRef.current?.click();
+  };
+
   // 处理关闭
-  const handleClose = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleClose = () => {
     onCancel();
   };
 
@@ -107,8 +159,69 @@ const GoalEditor: React.FC<GoalEditorProps> = ({
                   placeholder={currentLang === 'zh' ? '输入公司名称' : 'Enter company name'}
                 />
               </div>
+              
+              {/* Logo 图片上传 */}
               <div className="custom-row">
-                <label>{currentLang === 'zh' ? 'Logo (emoji)' : 'Logo (emoji)'}</label>
+                <label>{currentLang === 'zh' ? 'Logo 图片' : 'Logo Image'}</label>
+                <div className="logo-upload-section">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={handleFileUpload}
+                    style={{ display: 'none' }}
+                  />
+                  
+                  {editingGoal.customLogoImage ? (
+                    <div className="logo-preview-container">
+                      <img 
+                        src={editingGoal.customLogoImage} 
+                        alt="Company Logo" 
+                        className="logo-preview-image"
+                      />
+                      <div className="logo-preview-actions">
+                        <button 
+                          type="button" 
+                          className="logo-change-btn"
+                          onClick={triggerFileSelect}
+                        >
+                          {currentLang === 'zh' ? '更换图片' : 'Change Image'}
+                        </button>
+                        <button 
+                          type="button" 
+                          className="logo-clear-btn"
+                          onClick={handleClearImage}
+                        >
+                          {currentLang === 'zh' ? '清除' : 'Clear'}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button 
+                      type="button" 
+                      className="logo-upload-btn"
+                      onClick={triggerFileSelect}
+                    >
+                      <span className="upload-icon">📁</span>
+                      <span>{currentLang === 'zh' ? '选择本地图片' : 'Select Local Image'}</span>
+                    </button>
+                  )}
+                  
+                  {uploadError && (
+                    <div className="upload-error">{uploadError}</div>
+                  )}
+                  
+                  <div className="upload-hint">
+                    {currentLang === 'zh' 
+                      ? '支持 JPEG、PNG、GIF、WebP，最大 2MB' 
+                      : 'Supports JPEG, PNG, GIF, WebP, max 2MB'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Emoji Logo (fallback) */}
+              <div className="custom-row">
+                <label>{currentLang === 'zh' ? '或 Emoji Logo' : 'Or Emoji Logo'}</label>
                 <input
                   type="text"
                   value={editingGoal.customLogo}
@@ -117,6 +230,7 @@ const GoalEditor: React.FC<GoalEditorProps> = ({
                   maxLength={2}
                 />
               </div>
+              
               <div className="custom-row">
                 <label>{currentLang === 'zh' ? '主题色' : 'Theme Color'}</label>
                 <input

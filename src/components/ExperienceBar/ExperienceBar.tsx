@@ -66,7 +66,7 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
   const [showShareModal, setShowShareModal] = useState(false);
   const helpIconRef = useRef<HTMLDivElement>(null);
 
-  const { getStatsForProblems } = useCompletionStatus();
+  const { getStatsForProblems, completions } = useCompletionStatus();
 
   const loadExperience = useCallback(async () => {
     try {
@@ -143,6 +143,15 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
       };
     }).filter(path => path.total > 0); // 只显示有题目的路径
   }, [problems, getStatsForProblems]);
+
+  // 转换completions为ShareModal需要的格式 Map<string, boolean>
+  const completionStatusMap = useMemo(() => {
+    const statusMap = new Map<string, boolean>();
+    completions.forEach((record, problemId) => {
+      statusMap.set(problemId, record.completed);
+    });
+    return statusMap;
+  }, [completions]);
 
   return (
     <div className="experience-bar-container">
@@ -267,7 +276,7 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
         totalProblems={totalProblems}
         pathProgress={pathProgress}
         problems={problems}
-        completions={new Map()}
+        completions={completionStatusMap}
       />
     </div>
   );

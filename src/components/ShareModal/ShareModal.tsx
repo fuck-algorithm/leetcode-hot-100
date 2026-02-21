@@ -3,6 +3,7 @@ import domtoimage from 'dom-to-image';
 import { useTranslation } from 'react-i18next';
 import './ShareModal.css';
 import ShareCard from './ShareCard';
+import { Problem } from '../ProblemList/types';
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -31,6 +32,10 @@ interface ShareModalProps {
     completed: number;
     total: number;
   }>;
+  // 题目列表数据
+  problems: Problem[];
+  // 完成状态数据
+  completions: Map<string, boolean>;
 }
 
 const ShareModal: React.FC<ShareModalProps> = ({
@@ -44,6 +49,8 @@ const ShareModal: React.FC<ShareModalProps> = ({
   completedProblems,
   totalProblems,
   pathProgress,
+  problems,
+  completions,
 }) => {
   const { t } = useTranslation();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -162,6 +169,8 @@ const ShareModal: React.FC<ShareModalProps> = ({
             completedProblems={completedProblems}
             totalProblems={totalProblems}
             pathProgress={pathProgress}
+            problems={problems}
+            completions={completions}
           />
         </div>
 

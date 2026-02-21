@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
 import './ShareCard.css';
+import { Problem } from '../ProblemList/types';
 
 interface ShareCardProps {
   currentLang: string;
@@ -23,130 +24,126 @@ interface ShareCardProps {
     completed: number;
     total: number;
   }>;
+  problems: Problem[];
+  completions: Map<string, boolean>;
 }
 
 const ShareCard = forwardRef<HTMLDivElement, ShareCardProps>(
-  ({ currentLang, totalExp, currentRealm, realmProgress, expToNextRealm, completedProblems, totalProblems, pathProgress }, ref) => {
+  ({ currentLang, totalExp, currentRealm, completedProblems, totalProblems, problems, completions }, ref) => {
     const problemPercentage = totalProblems > 0 ? Math.round((completedProblems / totalProblems) * 100) : 0;
 
-    const getNodePosition = (index: number) => {
-      const containerWidth = 400;
-      const margin = 80;
-      const leftBound = margin;
-      const rightBound = containerWidth - margin;
-      const centerX = containerWidth / 2;
-      const y = 280 + index * 140;
-      const pattern = index % 4;
-      let x = centerX;
-      if (pattern === 1) x = leftBound;
-      if (pattern === 3) x = rightBound;
-      return { x, y };
+    // 获取难度颜色
+    const getDifficultyColor = (difficulty: string) => {
+      switch (difficulty) {
+        case 'EASY': return '#22c55e';
+        case 'MEDIUM': return '#f59e0b';
+        case 'HARD': return '#ef4444';
+        default: return '#6b7280';
+      }
     };
 
-    const getPathPoints = () => {
-      if (pathProgress.length < 2) return '';
-      let points = '';
-      pathProgress.forEach((_, index) => {
-        const pos = getNodePosition(index);
-        if (index === 0) {
-          points += `M ${pos.x} ${pos.y}`;
-        } else {
-          const prev = getNodePosition(index - 1);
-          points += ` C ${prev.x} ${prev.y + 70}, ${pos.x} ${pos.y - 70}, ${pos.x} ${pos.y}`;
-        }
-      });
-      return points;
+    // 获取难度标签
+    const getDifficultyLabel = (difficulty: string) => {
+      switch (difficulty) {
+        case 'EASY': return currentLang === 'zh' ? '简单' : 'Easy';
+        case 'MEDIUM': return currentLang === 'zh' ? '中等' : 'Medium';
+        case 'HARD': return currentLang === 'zh' ? '困难' : 'Hard';
+        default: return difficulty;
+      }
     };
 
-    const pathPoints = getPathPoints();
-    const lastPos = pathProgress.length > 0 ? getNodePosition(pathProgress.length - 1) : { x: 200, y: 280 };
-    const cardHeight = lastPos.y + 200;
+    // 检查题目是否完成
+    const isProblemCompleted = (problemId: string) => {
+      return completions.get(problemId) ?? false;
+    };
 
     return (
-      <div ref={ref} className="share-card-duolingo" style={{ height: cardHeight }}>
-        <div className="share-card-duolingo-header">
-          <div className="share-card-duolingo-logo">
-            <span className="share-card-duolingo-logo-icon">🎯</span>
-            <span className="share-card-duolingo-logo-text">LeetCode Hot 100</span>
+      <div ref={ref} className="share-card-list">
+        {/* 头部 - 标题和汇总统计 */}
+        <div className="share-card-header">
+          <div className="share-card-title-section">
+            <h1 className="share-card-main-title">LeetCode Hot 100</h1>
+            <p className="share-card-subtitle">
+              {currentLang === 'zh' ? '算法学习进度' : 'Algorithm Learning Progress'}
+            </p>
           </div>
-          <div className="share-card-duolingo-stats">
-            <div className="share-card-duolingo-stat-item">
-              <div className="share-card-duolingo-stat-icon" style={{ color: currentRealm.color }}>{currentRealm.icon}</div>
-              <div className="share-card-duolingo-stat-info">
-                <span className="share-card-duolingo-stat-label">{currentLang === 'zh' ? '当前境界' : 'Current Realm'}</span>
-                <span className="share-card-duolingo-stat-value" style={{ color: currentRealm.color }}>
-                  {currentLang === 'zh' ? currentRealm.name : currentRealm.nameEn}
-                </span>
-              </div>
+          
+          <div className="share-card-summary">
+            <div className="share-card-stat-box">
+              <span className="share-card-stat-number">{completedProblems}</span>
+              <span className="share-card-stat-label">
+                {currentLang === 'zh' ? '已完成' : 'Completed'}
+              </span>
             </div>
-            <div className="share-card-duolingo-stat-divider" />
-            <div className="share-card-duolingo-stat-item">
-              <div className="share-card-duolingo-stat-numbers">
-                <span className="share-card-duolingo-completed">{completedProblems}</span>
-                <span className="share-card-duolingo-separator">/</span>
-                <span className="share-card-duolingo-total">{totalProblems}</span>
-              </div>
-              <span className="share-card-duolingo-stat-label">{currentLang === 'zh' ? '已完成' : 'Solved'}</span>
-              <span className="share-card-duolingo-percent">{problemPercentage}%</span>
+            <div className="share-card-stat-divider">/</div>
+            <div className="share-card-stat-box">
+              <span className="share-card-stat-number">{totalProblems}</span>
+              <span className="share-card-stat-label">
+                {currentLang === 'zh' ? '总题数' : 'Total'}
+              </span>
             </div>
+            <div className="share-card-stat-percent">{problemPercentage}%</div>
           </div>
-          <div className="share-card-duolingo-exp">
-            <div className="share-card-duolingo-exp-header">
-              <span>{totalExp.toLocaleString()} EXP</span>
-              <span>{expToNextRealm > 0 ? `${expToNextRealm.toLocaleString()} to next` : 'Max'}</span>
-            </div>
-            <div className="share-card-duolingo-exp-bar">
-              <div className="share-card-duolingo-exp-fill" style={{ width: `${realmProgress}%`, background: currentRealm.color }} />
-            </div>
+
+          <div className="share-card-realm-info">
+            <span className="share-card-realm-icon">{currentRealm.icon}</span>
+            <span className="share-card-realm-name" style={{ color: currentRealm.color }}>
+              {currentLang === 'zh' ? currentRealm.name : currentRealm.nameEn}
+            </span>
+            <span className="share-card-exp">{totalExp.toLocaleString()} EXP</span>
           </div>
         </div>
 
-        <div className="share-card-duolingo-path-container" style={{ height: cardHeight - 280 }}>
-          <svg className="share-card-duolingo-path-svg" width="400" height={cardHeight - 280} viewBox={`0 0 400 ${cardHeight - 280}`}>
-            {pathPoints && (
-              <>
-                <path d={pathPoints} fill="none" stroke="rgba(0,0,0,0.1)" strokeWidth="12" strokeLinecap="round" />
-                <path d={pathPoints} fill="none" stroke="#e2e8f0" strokeWidth="8" strokeLinecap="round" />
-                <path d={pathPoints} fill="none" stroke="url(#progressGradient)" strokeWidth="8" strokeLinecap="round" 
-                  strokeDasharray="1000" strokeDashoffset={1000 - (problemPercentage / 100) * 1000} />
-                <defs>
-                  <linearGradient id="progressGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor={currentRealm.color} />
-                    <stop offset="100%" stopColor={`${currentRealm.color}80`} />
-                  </linearGradient>
-                </defs>
-              </>
-            )}
-          </svg>
-
-          {pathProgress.map((path, index) => {
-            const pos = getNodePosition(index);
-            const progress = path.total > 0 ? (path.completed / path.total) * 100 : 0;
-            const isCompleted = progress >= 100;
-            return (
-              <div key={path.id} className={`share-card-duolingo-node ${isCompleted ? 'completed' : ''}`}
-                style={{ left: pos.x, top: pos.y }}>
-                <div className="share-card-duolingo-node-circle" 
-                  style={{ background: isCompleted ? path.color : '#fff', borderColor: path.color, boxShadow: `0 4px 15px ${path.color}40` }}>
-                  <span className="share-card-duolingo-node-icon" style={{ color: isCompleted ? '#fff' : path.color }}>{path.icon}</span>
-                  {isCompleted && (
-                    <div className="share-card-duolingo-node-check">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
-                    </div>
-                  )}
+        {/* 题目列表 */}
+        <div className="share-card-problem-list">
+          <div className="share-card-list-header">
+            <span className="share-card-col-id">#</span>
+            <span className="share-card-col-title">
+              {currentLang === 'zh' ? '题目' : 'Problem'}
+            </span>
+            <span className="share-card-col-diff">
+              {currentLang === 'zh' ? '难度' : 'Diff'}
+            </span>
+            <span className="share-card-col-status">
+              {currentLang === 'zh' ? '状态' : 'Status'}
+            </span>
+          </div>
+          
+          <div className="share-card-list-body">
+            {problems.map((problem, index) => {
+              const isCompleted = isProblemCompleted(problem.questionFrontendId);
+              return (
+                <div 
+                  key={problem.questionFrontendId} 
+                  className={`share-card-problem-item ${isCompleted ? 'completed' : ''}`}
+                >
+                  <span className="share-card-problem-id">{problem.questionFrontendId}</span>
+                  <span className="share-card-problem-title">
+                    {currentLang === 'zh' && problem.translatedTitle 
+                      ? problem.translatedTitle 
+                      : problem.title}
+                  </span>
+                  <span 
+                    className="share-card-problem-difficulty"
+                    style={{ color: getDifficultyColor(problem.difficulty) }}
+                  >
+                    {getDifficultyLabel(problem.difficulty)}
+                  </span>
+                  <span className="share-card-problem-status">
+                    {isCompleted ? '✓' : '○'}
+                  </span>
                 </div>
-                <div className="share-card-duolingo-node-info">
-                  <span className="share-card-duolingo-node-name">{currentLang === 'zh' ? path.name : path.nameEn}</span>
-                  <span className="share-card-duolingo-node-count">{path.completed}/{path.total}</span>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
-        <div className="share-card-duolingo-footer">
-          <p className="share-card-duolingo-slogan">{currentLang === 'zh' ? '让天下没有难学的算法！' : 'Make algorithms easy to learn!'}</p>
-          <p className="share-card-duolingo-url">github.com/fuck-algorithm/leetcode-hot-100</p>
+        {/* 底部 */}
+        <div className="share-card-footer">
+          <p className="share-card-slogan">
+            {currentLang === 'zh' ? '让天下没有难学的算法！' : 'Make algorithms easy to learn!'}
+          </p>
+          <p className="share-card-url">github.com/fuck-algorithm/leetcode-hot-100</p>
         </div>
       </div>
     );

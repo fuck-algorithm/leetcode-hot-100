@@ -266,6 +266,8 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
         completedProblems={completedProblems}
         totalProblems={totalProblems}
         pathProgress={pathProgress}
+        problems={problems}
+        completions={new Map()}
       />
     </div>
   );

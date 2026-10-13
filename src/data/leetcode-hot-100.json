@@ -480,10 +480,10 @@
           "repo": {
             "name": "leetcode-53-maximum-subarray",
             "url": "https://github.com/fuck-algorithm/leetcode-53-maximum-subarray",
-            "isPublic": false,
-            "pagesUrl": null
+            "isPublic": true,
+            "pagesUrl": "https://fuck-algorithm.github.io/leetcode-53-maximum-subarray/"
           },
-          "hasAnimation": false
+          "hasAnimation": true
         },
         {
           "difficulty": "MEDIUM",

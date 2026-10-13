@@ -170,8 +170,8 @@
   "53": {
     "name": "leetcode-53-maximum-subarray",
     "url": "https://github.com/fuck-algorithm/leetcode-53-maximum-subarray",
-    "isPublic": false,
-    "pagesUrl": null
+    "isPublic": true,
+    "pagesUrl": "https://fuck-algorithm.github.io/leetcode-53-maximum-subarray/"
   },
   "54": {
     "name": "leetcode-54-spiral-matrix",

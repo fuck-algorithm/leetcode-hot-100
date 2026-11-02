@@ -1,32 +1,17 @@
 import React from 'react';
 import { IconProps } from './types';
+import IconBase from './IconBase';
 
 /**
- * 二分查找图标
- * 概念：每次排除一半，聚焦中点
- * 视觉：有序数组 + 放大镜
+ * 二分查找
+ * 概念：在有序序列中锁定中点，逐次排除一半
  */
 const BinarySearchIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 32 32"
-    fill="none"
-    className={className}
-    aria-hidden="true"
-    focusable="false"
-  >
-    {/* 有序数组 */}
-    <rect x="2.5" y="21" width="4.2" height="6" rx="2" fill={color} fillOpacity="0.08" />
-    <rect x="8.2" y="18" width="4.2" height="9" rx="2" fill={color} fillOpacity="0.4" />
-    <rect x="13.9" y="15" width="4.2" height="12" rx="2" fill={color} fillOpacity="0.6" />
-    <rect x="19.6" y="12" width="4.2" height="15" rx="2" fill={color} />
-    <rect x="25.3" y="15" width="4.2" height="12" rx="2" fill={color} fillOpacity="0.08" />
-
-    {/* 放大镜 */}
-    <circle cx="16" cy="6" r="5.5" stroke={color} strokeWidth="2.5" />
-    <path d="M20.5 10.5L24 14" stroke={color} strokeWidth="2.6" strokeLinecap="round" />
-  </svg>
+  <IconBase size={size} color={color} className={className}>
+    <circle cx="14.2" cy="14.2" r="7.3" strokeWidth={2.6} />
+    <path d="M19.7 19.7L26 26" strokeWidth={3.2} />
+    <path d="M11.1 18.6v-3.6M14.2 18.6v-6.6M17.3 18.6v-9.2" strokeWidth={2.6} />
+  </IconBase>
 );
 
 export default BinarySearchIcon;

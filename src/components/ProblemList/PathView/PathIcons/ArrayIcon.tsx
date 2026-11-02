@@ -1,36 +1,16 @@
 import React from 'react';
 import { IconProps } from './types';
+import IconBase from './IconBase';
 
 /**
- * 数组与矩阵图标
- * 概念：连续内存 / 二维矩阵
- * 视觉：数组括号 + 2×2 矩阵
+ * 数组与矩阵
+ * 概念：连续的存储单元排成二维网格
  */
 const ArrayIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 32 32"
-    fill="none"
-    className={className}
-    aria-hidden="true"
-    focusable="false"
-  >
-    {/* 数组括号 */}
-    <path
-      d="M8 6H4v20h4M24 6h4v20h-4"
-      stroke={color}
-      strokeWidth="2.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-
-    {/* 2×2 矩阵 */}
-    <rect x="10" y="10" width="5" height="5" rx="1.2" fill={color} />
-    <rect x="17" y="10" width="5" height="5" rx="1.2" fill={color} fillOpacity="0.4" />
-    <rect x="10" y="17" width="5" height="5" rx="1.2" fill={color} fillOpacity="0.4" />
-    <rect x="17" y="17" width="5" height="5" rx="1.2" fill={color} fillOpacity="0.4" />
-  </svg>
+  <IconBase size={size} color={color} className={className}>
+    <rect x="5.6" y="6.6" width="20.8" height="18.8" rx="3.6" strokeWidth={2.6} />
+    <path d="M16 6.6v18.8M5.6 16h20.8" strokeWidth={2.6} />
+  </IconBase>
 );
 
 export default ArrayIcon;

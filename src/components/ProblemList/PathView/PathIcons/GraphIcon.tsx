@@ -1,37 +1,23 @@
 import React from 'react';
 import { IconProps } from './types';
+import IconBase from './IconBase';
 
 /**
- * 图论图标
+ * 图论
  * 概念：顶点与边组成的网络
- * 视觉：五节点网络
  */
 const GraphIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 32 32"
-    fill="none"
-    className={className}
-    aria-hidden="true"
-    focusable="false"
-  >
-    {/* 边 */}
+  <IconBase size={size} color={color} className={className}>
     <path
-      d="M16 5L6 13.5M16 5L26 13.5M6 13.5L10 25M26 13.5L22 25M10 25L22 25"
-      stroke={color}
-      strokeWidth="2.1"
-      strokeOpacity="0.5"
-      strokeLinecap="round"
+      d="M16 5.3L6 15.6M16 5.3L26 15.6M6 15.6L16 26.3M26 15.6L16 26.3"
+      strokeWidth={2.4}
+      strokeOpacity={0.7}
     />
-
-    {/* 顶点 */}
-    <circle cx="16" cy="5" r="3.5" fill={color} />
-    <circle cx="6" cy="13.5" r="3" fill={color} fillOpacity="0.9" />
-    <circle cx="26" cy="13.5" r="3" fill={color} fillOpacity="0.9" />
-    <circle cx="10" cy="25" r="3" fill={color} fillOpacity="0.75" />
-    <circle cx="22" cy="25" r="3" fill={color} fillOpacity="0.75" />
-  </svg>
+    <circle cx="16" cy="5.3" r="3.2" fill={color} />
+    <circle cx="6" cy="15.6" r="3.1" fill={color} fillOpacity={0.85} />
+    <circle cx="26" cy="15.6" r="3.1" fill={color} fillOpacity={0.85} />
+    <circle cx="16" cy="26.3" r="3.1" fill={color} fillOpacity={0.85} />
+  </IconBase>
 );
 
 export default GraphIcon;

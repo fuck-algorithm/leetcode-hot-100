@@ -1,38 +1,17 @@
 import React from 'react';
 import { IconProps } from './types';
+import IconBase from './IconBase';
 
 /**
- * 贪心算法图标
- * 概念：每一步选当前最优
- * 视觉：大小币 + 勾选
+ * 贪心算法
+ * 概念：每一步都取当前最优，像从一堆金币里挑出最好的那枚
  */
 const GreedyIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 32 32"
-    fill="none"
-    className={className}
-    aria-hidden="true"
-    focusable="false"
-  >
-    {/* 最优大币 */}
-    <circle cx="20" cy="18" r="7" fill={color} fillOpacity="0.12" stroke={color} strokeWidth="2.6" />
-    <circle cx="20" cy="18" r="4.5" fill={color} />
-
-    {/* 勾选 */}
-    <path
-      d="M16.5 18L19 20.5L23.5 16"
-      stroke="#fff"
-      strokeWidth="2.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-
-    {/* 小候选币 */}
-    <circle cx="8" cy="24" r="3.8" fill={color} fillOpacity="0.2" stroke={color} strokeWidth="2" />
-    <circle cx="3" cy="27" r="2.5" fill={color} fillOpacity="0.15" />
-  </svg>
+  <IconBase size={size} color={color} className={className}>
+    <circle cx="16" cy="16" r="9.2" strokeWidth={2.7} fill={color} fillOpacity={0.1} />
+    <circle cx="16" cy="16" r="6.4" strokeWidth={1.8} strokeOpacity={0.5} />
+    <path d="M12.6 16.4L15 18.8L19.6 12.8" strokeWidth={2.6} />
+  </IconBase>
 );
 
 export default GreedyIcon;

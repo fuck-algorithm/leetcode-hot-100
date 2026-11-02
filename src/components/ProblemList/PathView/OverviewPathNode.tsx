@@ -80,7 +80,7 @@ const OverviewPathNode: React.FC<OverviewPathNodeProps> = ({
         <span className="node-icon">
           <PathIcon
             pathId={path.id}
-            size={nodeRadius >= 52 ? 34 : nodeRadius >= 46 ? 30 : 28}
+            size={nodeRadius >= 52 ? 38 : nodeRadius >= 46 ? 34 : 31}
             color={isAllCompleted ? '#7a5600' : '#fff'}
             fallback={path.icon}
           />

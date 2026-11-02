@@ -35,10 +35,9 @@
 .experience-bar-container::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 200%;
-  height: 100%;
+  inset: 0;
+  border-radius: 10px;
+  /* 用 background-position 扫光，避免宽 200% 的元素撑出横向滚动条 */
   background: linear-gradient(
     90deg, 
     transparent 0%, 
@@ -49,14 +48,15 @@
     rgba(255, 255, 255, 0.1) 80%,
     transparent 100%
   );
+  background-size: 200% 100%;
   animation: immortalShimmer 5s ease-in-out infinite;
   pointer-events: none;
 }
 
 @keyframes immortalShimmer {
-  0% { transform: translateX(-50%); opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { transform: translateX(50%); opacity: 0.6; }
+  0% { background-position: 200% 0; opacity: 0.6; }
+  50% { background-position: 100% 0; opacity: 1; }
+  100% { background-position: -100% 0; opacity: 0.6; }
 }
 
 .experience-bar-content {
@@ -700,5 +700,67 @@
     right: auto;
     align-self: flex-end;
     margin-bottom: 8px;
+  }
+}
+
+/* ========== 移动端：改为上下两行，避免挤压换行 ========== */
+@media (max-width: 600px) {
+  .experience-bar-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .realm-section {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .realm-badge {
+    min-width: 0;
+    padding: 7px 14px;
+  }
+
+  .realm-icon {
+    font-size: 22px;
+  }
+
+  .realm-name {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .progress-section {
+    width: 100%;
+    padding-top: 0;
+  }
+
+  .exp-bar-wrapper {
+    width: 100%;
+  }
+
+  .exp-bar-text {
+    gap: 8px;
+  }
+
+  .exp-current {
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  .exp-next {
+    min-width: 0;
+    max-width: 62%;
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+  }
+
+  .share-button span {
+    font-size: 11px;
   }
 }

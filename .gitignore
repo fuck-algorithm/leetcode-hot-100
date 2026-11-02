@@ -91,6 +91,9 @@ coverage/
 .netlify
 .github/.temp
 
+# 状态栏本地服务入口（含内网地址）
+server-url.txt
+
 # Kiro AI 相关
 .kiro/.temp
 .kiro/cache

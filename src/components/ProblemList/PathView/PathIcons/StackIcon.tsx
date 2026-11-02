@@ -2,77 +2,52 @@ import React from 'react';
 import { IconProps } from './types';
 
 /**
- * 栈图标 - Stack (LIFO)
- * 设计理念：
- * - 三层堆叠的书本/托盘，体现"后进先出"的特性
- * - 顶部元素正在弹出，带有动感的弧线
- * - 渐变透明度表示栈的深度
- * - 侧面阴影增加立体感
+ * 栈图标
+ * 概念：后进先出
+ * 视觉：三层堆叠 + 从顶部压入的元素箭头
  */
-const StackIcon: React.FC<IconProps> = ({ size = 32, color = '#fff' }) => (
-  <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
-    {/* 底层托盘 - 最稳固 */}
-    <path 
-      d="M5 24L16 28L27 24L16 20L5 24Z" 
-      fill={color} 
-      fillOpacity="0.3"
-    />
-    <path 
-      d="M5 24L16 28L27 24" 
-      stroke={color} 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    />
-    
-    {/* 中层托盘 */}
-    <path 
-      d="M5 18L16 22L27 18L16 14L5 18Z" 
-      fill={color} 
-      fillOpacity="0.5"
-    />
-    <path 
-      d="M5 18L16 22L27 18" 
-      stroke={color} 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    />
-    
-    {/* 顶层托盘 - 正在弹出 */}
-    <path 
-      d="M7 10L16 13L25 10L16 7L7 10Z" 
+const StackIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 32 32"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+    focusable="false"
+  >
+    {/* 栈元素 */}
+    <rect x="5.5" y="10" width="21" height="5" rx="2.5" fill={color} />
+    <rect
+      x="5.5"
+      y="16.5"
+      width="21"
+      height="5"
+      rx="2.5"
       fill={color}
+      fillOpacity="0.22"
+      stroke={color}
+      strokeWidth="2"
     />
-    
-    {/* 弹出动画弧线 */}
-    <path 
-      d="M16 5C14 5 12.5 4 12 3" 
-      stroke={color} 
-      strokeWidth="1.5" 
+    <rect
+      x="5.5"
+      y="23"
+      width="21"
+      height="5"
+      rx="2.5"
+      fill={color}
+      fillOpacity="0.22"
+      stroke={color}
+      strokeWidth="2"
+    />
+
+    {/* 压栈箭头 */}
+    <path d="M16 2.5v5.6" stroke={color} strokeWidth="2.4" strokeLinecap="round" />
+    <path
+      d="M13.4 5.7L16 8.2l2.6-2.5"
+      stroke={color}
+      strokeWidth="2.4"
       strokeLinecap="round"
-      strokeOpacity="0.6"
-    />
-    <path 
-      d="M16 5C18 5 19.5 4 20 3" 
-      stroke={color} 
-      strokeWidth="1.5" 
-      strokeLinecap="round"
-      strokeOpacity="0.6"
-    />
-    
-    {/* 向上弹出箭头 */}
-    <path 
-      d="M16 7V2" 
-      stroke={color} 
-      strokeWidth="2.5" 
-      strokeLinecap="round"
-    />
-    <path 
-      d="M13.5 4L16 1L18.5 4" 
-      stroke={color} 
-      strokeWidth="2" 
-      strokeLinecap="round" 
       strokeLinejoin="round"
     />
   </svg>

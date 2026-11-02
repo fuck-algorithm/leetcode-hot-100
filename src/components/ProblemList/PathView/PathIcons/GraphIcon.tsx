@@ -3,30 +3,34 @@ import { IconProps } from './types';
 
 /**
  * 图论图标
- * 概念：节点和边组成的网络
- * 设计：社交网络，人与人之间的连接
+ * 概念：顶点与边组成的网络
+ * 视觉：五节点网络，实心顶点 + 半透明连边
  */
-const GraphIcon: React.FC<IconProps> = ({ size = 32, color = '#fff' }) => (
-  <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
-    {/* 边 - 连接关系 */}
-    <line x1="16" y1="6" x2="6" y2="13" stroke={color} strokeWidth="2" strokeOpacity="0.5"/>
-    <line x1="16" y1="6" x2="26" y2="13" stroke={color} strokeWidth="2" strokeOpacity="0.5"/>
-    <line x1="6" y1="13" x2="10" y2="25" stroke={color} strokeWidth="2" strokeOpacity="0.5"/>
-    <line x1="26" y1="13" x2="22" y2="25" stroke={color} strokeWidth="2" strokeOpacity="0.5"/>
-    <line x1="10" y1="25" x2="22" y2="25" stroke={color} strokeWidth="2" strokeOpacity="0.5"/>
-    {/* 交叉边 - 复杂关系 */}
-    <line x1="6" y1="13" x2="22" y2="25" stroke={color} strokeWidth="1.5" strokeOpacity="0.3"/>
-    <line x1="26" y1="13" x2="10" y2="25" stroke={color} strokeWidth="1.5" strokeOpacity="0.3"/>
-    <line x1="16" y1="6" x2="16" y2="16" stroke={color} strokeWidth="1.5" strokeOpacity="0.3"/>
-    
-    {/* 节点 - 人 */}
-    <circle cx="16" cy="6" r="4" fill={color}/>
-    <circle cx="6" cy="13" r="3.5" fill={color}/>
-    <circle cx="26" cy="13" r="3.5" fill={color}/>
-    <circle cx="10" cy="25" r="3.5" fill={color}/>
-    <circle cx="22" cy="25" r="3.5" fill={color}/>
-    {/* 中心节点 */}
-    <circle cx="16" cy="16" r="2.5" fill={color} fillOpacity="0.7"/>
+const GraphIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 32 32"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+    focusable="false"
+  >
+    {/* 边 */}
+    <path
+      d="M16 5L6 13.5M16 5L26 13.5M6 13.5L10 25M26 13.5L22 25M10 25L22 25"
+      stroke={color}
+      strokeWidth="2"
+      strokeOpacity="0.45"
+      strokeLinecap="round"
+    />
+
+    {/* 顶点 */}
+    <circle cx="16" cy="5" r="3.4" fill={color} />
+    <circle cx="6" cy="13.5" r="3" fill={color} fillOpacity="0.85" />
+    <circle cx="26" cy="13.5" r="3" fill={color} fillOpacity="0.85" />
+    <circle cx="10" cy="25" r="3" fill={color} fillOpacity="0.7" />
+    <circle cx="22" cy="25" r="3" fill={color} fillOpacity="0.7" />
   </svg>
 );
 

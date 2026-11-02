@@ -6,8 +6,15 @@ interface ProgressRingProps {
 }
 
 const ProgressRing: React.FC<ProgressRingProps> = ({ percentage, color }) => {
+  const safePercentage = Math.max(0, Math.min(100, percentage));
+
   return (
-    <svg className="ascension-progress-ring" viewBox="0 0 120 120">
+    <svg
+      className="ascension-progress-ring"
+      viewBox="0 0 120 120"
+      aria-hidden="true"
+      focusable="false"
+    >
       <circle
         className="progress-bg"
         cx="60"
@@ -23,7 +30,7 @@ const ProgressRing: React.FC<ProgressRingProps> = ({ percentage, color }) => {
         r="54"
         fill="none"
         strokeWidth="8"
-        strokeDasharray={`${percentage * 3.39} 339`}
+        strokeDasharray={`${safePercentage * 3.39} 339`}
         strokeLinecap="round"
         style={{ stroke: color }}
       />

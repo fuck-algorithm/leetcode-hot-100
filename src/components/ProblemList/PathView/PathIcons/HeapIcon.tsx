@@ -2,44 +2,52 @@ import React from 'react';
 import { IconProps } from './types';
 
 /**
- * 堆图标 - Heap (Priority Queue)
- * 设计理念：
- * - 完全二叉树结构，体现堆的本质
- * - 顶部节点最大/最小，带皇冠标识优先级
- * - 节点间的连线展示父子关系
- * - 节点大小递减，体现堆的层级特性
+ * 堆图标
+ * 概念：带优先级的完全二叉树
+ * 视觉：根节点高亮 + 二叉结构 + 右侧优先级上升箭头
  */
-const HeapIcon: React.FC<IconProps> = ({ size = 32, color = '#fff' }) => (
-  <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
-    {/* 连接线 - 父子关系 */}
-    <path 
-      d="M16 10L9 18M16 10L23 18M9 18L5 26M9 18L13 26M23 18L19 26M23 18L27 26" 
-      stroke={color} 
-      strokeWidth="1.5" 
-      strokeOpacity="0.4"
+const HeapIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 32 32"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+    focusable="false"
+  >
+    {/* 连线 */}
+    <path d="M14 10.5L11.2 15.7M18 10.5L20.8 15.7" stroke={color} strokeWidth="2.1" strokeLinecap="round" />
+    <path
+      d="M8.2 21.4L6 25.3M10.8 21.4L12.6 25.3M21.2 21.4L19.4 25.3M23.8 21.4L26 25.3"
+      stroke={color}
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeOpacity="0.55"
     />
-    
-    {/* 第三层节点 - 叶子 */}
-    <circle cx="5" cy="27" r="3" fill={color} fillOpacity="0.4"/>
-    <circle cx="13" cy="27" r="3" fill={color} fillOpacity="0.4"/>
-    <circle cx="19" cy="27" r="3" fill={color} fillOpacity="0.4"/>
-    <circle cx="27" cy="27" r="3" fill={color} fillOpacity="0.4"/>
-    
-    {/* 第二层节点 */}
-    <circle cx="9" cy="19" r="3.5" fill={color} fillOpacity="0.7"/>
-    <circle cx="23" cy="19" r="3.5" fill={color} fillOpacity="0.7"/>
-    
-    {/* 根节点 - 最高优先级 */}
-    <circle cx="16" cy="10" r="4.5" fill={color}/>
-    
-    {/* 皇冠 - 表示最高优先级 */}
-    <path 
-      d="M11 5L13.5 2L16 4.5L18.5 2L21 5L19 6H13L11 5Z" 
-      fill={color}
+
+    {/* 根节点 */}
+    <circle cx="16" cy="7" r="4" fill={color} />
+
+    {/* 子节点 */}
+    <circle cx="9.5" cy="18.5" r="3.2" fill={color} fillOpacity="0.28" stroke={color} strokeWidth="2.1" />
+    <circle cx="22.5" cy="18.5" r="3.2" fill={color} fillOpacity="0.28" stroke={color} strokeWidth="2.1" />
+
+    {/* 叶子节点 */}
+    <circle cx="5.5" cy="27" r="1.9" fill={color} fillOpacity="0.6" />
+    <circle cx="13" cy="27" r="1.9" fill={color} fillOpacity="0.6" />
+    <circle cx="19" cy="27" r="1.9" fill={color} fillOpacity="0.6" />
+    <circle cx="26.5" cy="27" r="1.9" fill={color} fillOpacity="0.6" />
+
+    {/* 优先级上升 */}
+    <path d="M28 14.5V5" stroke={color} strokeWidth="2.2" strokeLinecap="round" />
+    <path
+      d="M25.7 7.3L28 5l2.3 2.3"
+      stroke={color}
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
-    
-    {/* 皇冠宝石 */}
-    <circle cx="16" cy="3.5" r="1" fill={color} fillOpacity="0.5"/>
   </svg>
 );
 

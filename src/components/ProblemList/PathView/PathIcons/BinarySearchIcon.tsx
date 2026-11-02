@@ -3,28 +3,34 @@ import { IconProps } from './types';
 
 /**
  * 二分查找图标
- * 概念：每次排除一半，快速定位
- * 设计：放大镜聚焦中点，两边逐渐模糊
+ * 概念：每次排除一半，聚焦中点
+ * 视觉：有序数组 + 放大镜对准中间元素
  */
-const BinarySearchIcon: React.FC<IconProps> = ({ size = 32, color = '#fff' }) => (
-  <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
-    {/* 有序数组 - 高度递增表示有序 */}
-    <rect x="2" y="18" width="4" height="6" rx="1" fill={color} fillOpacity="0.25"/>
-    <rect x="7" y="16" width="4" height="8" rx="1" fill={color} fillOpacity="0.4"/>
-    <rect x="12" y="14" width="4" height="10" rx="1" fill={color} fillOpacity="0.6"/>
-    <rect x="17" y="12" width="4" height="12" rx="1" fill={color}/>
-    <rect x="22" y="14" width="4" height="10" rx="1" fill={color} fillOpacity="0.6"/>
-    <rect x="27" y="16" width="4" height="8" rx="1" fill={color} fillOpacity="0.4"/>
-    
+const BinarySearchIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 32 32"
+    fill="none"
+    className={className}
+    aria-hidden="true"
+    focusable="false"
+  >
+    {/* 数组元素 */}
+    <rect x="2.5" y="20.5" width="4.2" height="6" rx="1.6" fill={color} fillOpacity="0.25" />
+    <rect x="8.2" y="20.5" width="4.2" height="6" rx="1.6" fill={color} fillOpacity="0.42" />
+    <rect x="13.9" y="20.5" width="4.2" height="6" rx="1.6" fill={color} />
+    <rect x="19.6" y="20.5" width="4.2" height="6" rx="1.6" fill={color} fillOpacity="0.42" />
+    <rect x="25.3" y="20.5" width="4.2" height="6" rx="1.6" fill={color} fillOpacity="0.25" />
+
     {/* 放大镜 */}
-    <circle cx="19" cy="7" r="5" stroke={color} strokeWidth="2.5" fill="none"/>
-    <line x1="23" y1="10" x2="27" y2="14" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
-    
-    {/* 聚焦点 */}
-    <circle cx="19" cy="7" r="2" fill={color}/>
-    
-    {/* 指向 mid */}
-    <line x1="19" y1="10" x2="19" y2="12" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+    <circle cx="17" cy="9.5" r="5.2" stroke={color} strokeWidth="2.4" />
+    <path
+      d="M20.7 13.2L24.5 17"
+      stroke={color}
+      strokeWidth="2.6"
+      strokeLinecap="round"
+    />
   </svg>
 );
 

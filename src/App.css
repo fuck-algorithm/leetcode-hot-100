@@ -129,3 +129,58 @@
 .github-badge:hover svg {
   fill: #1890ff;
 } 
+/* ========== 移动端头部 ========== */
+@media (max-width: 600px) {
+  .app {
+    padding: 8px;
+  }
+
+  .app-header {
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
+
+  .app-logo-title {
+    gap: 8px;
+  }
+
+  .app-logo {
+    width: 26px;
+    height: 26px;
+  }
+
+  .app-header h1 {
+    font-size: 17px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .app-slogan {
+    display: none;
+  }
+
+  .header-right {
+    gap: 8px;
+  }
+
+  .github-link {
+    margin-right: 0;
+  }
+
+  .github-stars {
+    font-size: 12px;
+  }
+
+  .github-link svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 380px) {
+  .github-stars {
+    display: none;
+  }
+}

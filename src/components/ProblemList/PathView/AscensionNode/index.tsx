@@ -1,16 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import ProgressRing from './ProgressRing';
-import InfoCard from './InfoCard';
+import React, { useMemo, useState } from 'react';
+import AscensionOrb from './AscensionOrb';
+import GoalCard from './GoalCard';
 import GoalEditor from './GoalEditor';
-import { CompanyLogo } from './CompanyLogos';
-import { logoImageDB } from './logoImageDB';
-import { 
-  AscensionGoal, 
-  DEFAULT_GOAL, 
-  STORAGE_KEY, 
-  PRESET_COMPANIES,
-  DisplayInfo 
-} from './types';
+import { useAscensionGoal } from './useAscensionGoal';
+import { PRESET_COMPANIES, DisplayInfo } from './types';
 import './styles.css';
 
 // 导出类型供外部使用
@@ -30,60 +23,23 @@ const AscensionNode: React.FC<AscensionNodeProps> = ({
   totalProblems,
   completedProblems,
 }) => {
-  const [goal, setGoal] = useState<AscensionGoal>(DEFAULT_GOAL);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingGoal, setEditingGoal] = useState<AscensionGoal>(DEFAULT_GOAL);
   const [isHovered, setIsHovered] = useState(false);
-  const [customLogoImage, setCustomLogoImage] = useState<string | null>(null);
+  const {
+    goal,
+    editingGoal,
+    setEditingGoal,
+    isEditing,
+    customLogoImage,
+    startEditing,
+    cancelEdit,
+    saveGoal,
+  } = useAscensionGoal();
 
-  // 加载保存的目标和自定义Logo
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        // 加载目标配置
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          setGoal(parsed);
-          setEditingGoal(parsed);
-          
-          // 如果有自定义Logo，从IndexedDB加载
-          if (parsed.companyId === null && parsed.customLogoImage) {
-            const imageData = await logoImageDB.getLogoImage('custom-logo');
-            if (imageData) {
-              setCustomLogoImage(imageData);
-            }
-          }
-        }
-      } catch (error) {
-        console.error('加载飞升目标失败:', error);
-      }
-    };
-    
-    loadData();
-  }, []);
+  const isComplete = completionPercentage >= 100;
 
-  // 保存目标
-  const saveGoal = useCallback(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(editingGoal));
-      setGoal(editingGoal);
-      setIsEditing(false);
-    } catch (error) {
-      console.error('保存飞升目标失败:', error);
-    }
-  }, [editingGoal]);
-
-  // 取消编辑
-  const cancelEdit = useCallback(() => {
-    setEditingGoal(goal);
-    setIsEditing(false);
-  }, [goal]);
-
-  // 获取当前显示的公司信息
-  const getDisplayInfo = useCallback((): DisplayInfo => {
+  const displayInfo = useMemo<DisplayInfo>(() => {
     if (goal.companyId) {
-      const preset = PRESET_COMPANIES.find(c => c.id === goal.companyId);
+      const preset = PRESET_COMPANIES.find(company => company.id === goal.companyId);
       if (preset) {
         return {
           name: currentLang === 'zh' ? preset.name : preset.nameEn,
@@ -93,6 +49,7 @@ const AscensionNode: React.FC<AscensionNodeProps> = ({
         };
       }
     }
+
     return {
       name: goal.customName || (currentLang === 'zh' ? '设置目标' : 'Set Goal'),
       logo: goal.customLogo || '🎯',
@@ -101,59 +58,34 @@ const AscensionNode: React.FC<AscensionNodeProps> = ({
     };
   }, [goal, currentLang, customLogoImage]);
 
-  const displayInfo = getDisplayInfo();
+  const handleActivate = () => {
+    if (!isEditing) startEditing();
+  };
 
   return (
-    <div 
-      className={`ascension-node ${isEditing ? 'editing' : ''}`}
+    <div
+      className={`ascension-node ${isEditing ? 'editing' : ''} ${
+        isComplete ? 'is-complete' : ''
+      }`}
+      style={{ '--ascension-color': displayInfo.color } as React.CSSProperties}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* 飞升标签 */}
       <div className="ascension-label">
-        🚀 {currentLang === 'zh' ? '飞升目标' : 'Ascension Goal'}
+        {isComplete
+          ? (currentLang === 'zh' ? '🎉 已飞升' : '🎉 Ascended')
+          : (currentLang === 'zh' ? '🚀 飞升目标' : '🚀 Ascension Goal')}
       </div>
 
-      {/* 主节点 */}
-      <div 
-        className="ascension-main"
-        style={{ '--ascension-color': displayInfo.color } as React.CSSProperties}
-        onClick={() => !isEditing && setIsEditing(true)}
-      >
-        {/* 进度环 */}
-        <ProgressRing 
-          percentage={completionPercentage} 
-          color={displayInfo.color} 
-        />
+      <AscensionOrb
+        goal={goal}
+        displayInfo={displayInfo}
+        completionPercentage={completionPercentage}
+        isComplete={isComplete}
+        onActivate={handleActivate}
+      />
 
-        {/* 节点内容 */}
-        <div 
-          className="ascension-content"
-          style={{ backgroundColor: '#ffffff' }}
-        >
-          <span className="ascension-logo">
-            {goal.companyId ? (
-              <CompanyLogo companyId={goal.companyId} size={72} />
-            ) : displayInfo.logoImage ? (
-              <img 
-                src={displayInfo.logoImage} 
-                alt={displayInfo.name}
-                style={{ width: 72, height: 72, objectFit: 'contain', borderRadius: 8 }}
-              />
-            ) : (
-              displayInfo.logo
-            )}
-          </span>
-        </div>
-
-        {/* 飞升光效 */}
-        {completionPercentage === 100 && (
-          <div className="ascension-glow"></div>
-        )}
-      </div>
-
-      {/* 节点信息卡片 */}
-      <InfoCard
+      <GoalCard
         displayInfo={displayInfo}
         goal={goal}
         currentLang={currentLang}
@@ -162,10 +94,10 @@ const AscensionNode: React.FC<AscensionNodeProps> = ({
         completionPercentage={completionPercentage}
         isHovered={isHovered}
         isEditing={isEditing}
-        onEdit={() => !isEditing && setIsEditing(true)}
+        isComplete={isComplete}
+        onEdit={handleActivate}
       />
 
-      {/* 编辑弹窗 */}
       {isEditing && (
         <GoalEditor
           currentLang={currentLang}

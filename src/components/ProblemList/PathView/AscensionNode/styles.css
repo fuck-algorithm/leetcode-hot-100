@@ -1,23 +1,82 @@
-/* 飞升节点容器 */
+/* ========== 飞升节点 ========== */
 .ascension-node {
+  --ascension-orb: 150px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
+  width: 260px;
+  padding-top: 48px; /* 给顶部标签留出空间 */
   cursor: pointer;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  padding-top: 50px; /* 为标签留出空间 */
 }
 
-.ascension-node:hover {
-  transform: scale(1.05);
+/* 飞升标签 */
+.ascension-label {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #ffd700 0%, #ffb800 100%);
+  color: #7c5800;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 7px 18px;
+  border-radius: 8px;
+  white-space: nowrap;
+  box-shadow:
+    0 4px 0 #e6a700,
+    0 6px 12px rgba(255, 184, 0, 0.3);
+  z-index: 20;
+  animation: labelFloat 3s ease-in-out infinite;
 }
 
-/* 主节点 */
+.ascension-label::after {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #e6a700;
+}
+
+@keyframes labelFloat {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-4px); }
+}
+
+/* 飞升光球 */
 .ascension-main {
   position: relative;
-  width: 140px;
-  height: 140px;
+  width: var(--ascension-orb);
+  height: var(--ascension-orb);
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ascension-main:hover,
+.ascension-main:focus-visible {
+  transform: translateY(-3px) scale(1.03);
+}
+
+.ascension-aura {
+  position: absolute;
+  inset: -22px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--ascension-color, #ffd700) 24%, transparent) 0%,
+    transparent 68%
+  );
+  animation: auraPulse 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes auraPulse {
+  0%, 100% { opacity: 0.65; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.06); }
 }
 
 /* 进度环 */
@@ -32,245 +91,245 @@
 }
 
 .ascension-progress-ring .progress-bg {
-  stroke: #e8e8e8;
+  stroke: rgba(0, 0, 0, 0.07);
 }
 
 .ascension-progress-ring .progress-fill {
-  transition: stroke-dasharray 0.5s ease;
+  transition: stroke-dasharray 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--ascension-color, #ffd700) 55%, transparent));
 }
 
-/* 节点内容 - 3D立体效果 */
+/* 光球内容 */
 .ascension-content {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 112px;
-  height: 112px;
+  width: calc(100% - 34px);
+  height: calc(100% - 34px);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
-  transition: all 0.15s ease;
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.1),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.05);
-  border: 3px solid #e5e5e5;
+  background: #ffffff;
+  border: 3px solid #ffffff;
+  box-shadow:
+    0 6px 0 rgba(0, 0, 0, 0.08),
+    0 10px 24px rgba(0, 0, 0, 0.12),
+    inset 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: transform 0.15s ease;
 }
 
-/* 3D底座效果 - 简化版 */
-.ascension-content::before {
+/* 围绕光球的虚线轨道 */
+.ascension-content::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: -11px;
   border-radius: 50%;
-  background: #f5f5f5;
-  transform: translateY(4px);
-  z-index: -1;
+  border: 2px dashed color-mix(in srgb, var(--ascension-color, #ffd700) 45%, transparent);
+  animation: orbitSpin 24s linear infinite;
+  pointer-events: none;
 }
 
-.ascension-node:hover .ascension-content {
+@keyframes orbitSpin {
+  to { transform: rotate(360deg); }
+}
+
+.ascension-main:hover .ascension-content {
   transform: translate(-50%, -52%);
 }
 
-.ascension-node:hover .ascension-content::before {
-  transform: translateY(6px);
-}
-
 .ascension-logo {
-  font-size: 42px;
+  font-size: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 1;
 }
 
-/* 飞升光效 */
+/* 100% 时的飞升光效 */
 .ascension-glow {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 140px;
-  height: 140px;
+  width: 100%;
+  height: 100%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.6) 0%, transparent 70%);
-  animation: ascensionGlow 2s ease-in-out infinite;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.55) 0%, transparent 68%);
+  animation: ascensionGlow 2.2s ease-in-out infinite;
   pointer-events: none;
   z-index: 0;
 }
 
 @keyframes ascensionGlow {
-  0%, 100% {
-    opacity: 0.5;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.3);
-  }
+  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.25); }
 }
 
-/* 节点信息卡片 */
+/* 装饰星点 */
+.ascension-spark {
+  position: absolute;
+  font-size: 14px;
+  animation: sparkle 2.4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.ascension-spark-1 { top: 2%; right: 2%; animation-delay: 0s; }
+.ascension-spark-2 { bottom: 8%; left: -4%; font-size: 12px; animation-delay: 0.8s; }
+.ascension-spark-3 { top: 42%; left: -12%; font-size: 10px; animation-delay: 1.6s; }
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.85) rotate(0deg); }
+  50% { opacity: 0.9; transform: scale(1.15) rotate(15deg); }
+}
+
+/* ========== 目标信息卡 ========== */
 .ascension-info {
+  box-sizing: border-box;
   margin-top: 16px;
-  text-align: center;
-  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-  padding: 14px 20px;
-  border-radius: 10px;
-  min-width: 150px;
-  box-shadow: 
-    0 4px 0 #fcd34d,
-    0 6px 16px rgba(251, 191, 36, 0.2);
-  border: 2px solid #fbbf24;
-  transition: all 0.15s ease;
+  width: 240px;
+  text-align: left;
+  background: #fffdf5;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 2px solid #ffe08a;
+  box-shadow:
+    0 5px 0 #f6d77a,
+    0 10px 22px rgba(180, 130, 0, 0.12);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.18s ease;
 }
 
-.ascension-node:hover .ascension-info {
+.ascension-info:hover,
+.ascension-info:focus-visible {
   transform: translateY(-2px);
-  box-shadow: 
-    0 6px 0 #fcd34d,
-    0 8px 20px rgba(251, 191, 36, 0.25);
+  box-shadow:
+    0 7px 0 #f6d77a,
+    0 14px 28px rgba(180, 130, 0, 0.18);
+}
+
+.ascension-info-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .ascension-company-name {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 800;
-  color: #92400e;
-  margin: 0 0 8px 0;
+  color: #8a5a00;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ascension-edit-icon {
+  font-size: 12px;
+  opacity: 0.55;
+  flex-shrink: 0;
+}
+
+.ascension-mini-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #f3e6c4;
+  overflow: hidden;
+}
+
+.ascension-mini-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .ascension-progress-text {
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 7px;
+  font-size: 12px;
   font-weight: 700;
-  color: #b45309;
-  margin-bottom: 4px;
+  color: #8a6a3a;
 }
 
 .progress-completed {
-  color: #059669;
+  color: #b45309;
   font-size: 16px;
+  font-weight: 900;
 }
 
 .progress-separator {
-  color: #9ca3af;
-  margin: 0 2px;
+  color: #c9b07a;
+  margin: 0 1px;
 }
 
 .progress-total {
-  color: #6b7280;
+  color: #8a6a3a;
 }
 
 .progress-label {
-  color: #9ca3af;
+  color: #a88f5f;
 }
 
 .ascension-percentage {
-  font-size: 24px;
+  font-size: 12px;
   font-weight: 900;
-  color: #d97706;
-  margin: 4px 0;
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.14);
+  padding: 3px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.ascension-goal-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
 }
 
 .ascension-salary {
-  font-size: 22px;
-  font-weight: 900;
-  background: linear-gradient(135deg, #ffd700 0%, #ffb800 50%, #ffd700 100%);
-  background-size: 200% 100%;
-  padding: 10px 20px;
-  border-radius: 12px;
-  margin-top: 12px;
-  color: #7c2d12;
-  text-shadow: 0 1px 2px rgba(255, 215, 0, 0.5);
-  box-shadow: 
-    0 4px 0 #d97706,
-    0 6px 20px rgba(251, 191, 36, 0.4),
-    inset 0 2px 4px rgba(255, 255, 255, 0.4);
-  border: 2px solid #f59e0b;
-  position: relative;
-  overflow: hidden;
-  animation: salaryShine 2s ease-in-out infinite, salaryPulse 1.5s ease-in-out infinite;
-}
-
-.ascension-salary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    transparent
-  );
-  animation: salaryGlitter 2s ease-in-out infinite;
-}
-
-.ascension-salary::after {
-  content: '✨';
-  position: absolute;
-  right: -5px;
-  top: -5px;
-  font-size: 16px;
-  animation: sparkle 1s ease-in-out infinite;
-}
-
-@keyframes salaryShine {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-@keyframes salaryPulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.03);
-  }
-}
-
-@keyframes salaryGlitter {
-  0% {
-    left: -100%;
-  }
-  50%, 100% {
-    left: 100%;
-  }
-}
-
-@keyframes sparkle {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
-  50% {
-    opacity: 0.6;
-    transform: scale(1.2) rotate(15deg);
-  }
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #7c4a00;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffe57a 0%, #ffc933 100%);
+  box-shadow: 0 2px 0 #e0a800;
+  white-space: nowrap;
 }
 
 .ascension-motivation {
-  font-size: 12px;
+  flex: 1 1 100%;
+  font-size: 11px;
   font-style: italic;
-  color: #78350f;
-  margin-top: 8px;
+  color: #8a6a3a;
+  margin: 0;
   line-height: 1.4;
-  max-width: 180px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .ascension-edit-hint {
-  font-size: 11px;
-  color: #9ca3af;
-  margin-top: 8px;
+  display: block;
+  font-size: 10px;
+  color: #b99a55;
+  margin-top: 7px;
+  text-align: center;
   animation: fadeIn 0.2s ease;
 }
 
@@ -279,40 +338,18 @@
   to { opacity: 1; }
 }
 
-/* 飞升标签 */
-.ascension-label {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(180deg, #ffd700 0%, #ffb800 100%);
-  color: #7c5800;
-  font-size: 14px;
-  font-weight: 800;
-  padding: 8px 20px;
-  border-radius: 6px;
-  white-space: nowrap;
-  box-shadow: 
-    0 4px 0 #e6a700,
-    0 6px 12px rgba(255, 184, 0, 0.3);
-  z-index: 20;
-  animation: labelFloat 3s ease-in-out infinite;
+/* 完成状态 */
+.ascension-node.is-complete .ascension-label {
+  animation: labelFloat 3s ease-in-out infinite, completeShine 2s ease-in-out infinite;
 }
 
-.ascension-label::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 10px solid #e6a700;
+@keyframes completeShine {
+  0%, 100% { box-shadow: 0 4px 0 #e6a700, 0 6px 12px rgba(255, 184, 0, 0.3); }
+  50% { box-shadow: 0 4px 0 #e6a700, 0 6px 26px rgba(255, 184, 0, 0.65); }
 }
 
-@keyframes labelFloat {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-5px); }
+.ascension-info.is-complete {
+  background: linear-gradient(135deg, #fff9e6 0%, #fff3c4 100%);
 }
 
 /* ========== 编辑弹窗 ========== */
@@ -676,38 +713,6 @@
   color: #9ca3af;
 }
 @media (max-width: 768px) {
-  .ascension-main {
-    width: 100px;
-    height: 100px;
-  }
-
-  .ascension-content {
-    width: 80px;
-    height: 80px;
-  }
-
-  .ascension-logo {
-    font-size: 36px;
-  }
-
-  .ascension-info {
-    min-width: 130px;
-    padding: 12px 16px;
-  }
-
-  .ascension-company-name {
-    font-size: 16px;
-  }
-
-  .ascension-percentage {
-    font-size: 20px;
-  }
-
-  .ascension-label {
-    font-size: 12px;
-    padding: 6px 16px;
-  }
-
   .preset-companies {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -719,38 +724,43 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 560px) {
   .ascension-node {
-    padding-top: 45px;
+    --ascension-orb: 128px;
+    width: 228px;
+    padding-top: 44px;
   }
 
-  .ascension-main {
-    width: 90px;
-    height: 90px;
+  .ascension-label {
+    font-size: 12px;
+    padding: 6px 15px;
   }
 
   .ascension-content {
-    width: 72px;
-    height: 72px;
+    width: calc(100% - 30px);
+    height: calc(100% - 30px);
   }
 
-  .ascension-logo {
-    font-size: 32px;
+  .ascension-content::after {
+    inset: -9px;
   }
 
   .ascension-info {
-    min-width: 120px;
-    padding: 10px 14px;
+    width: 210px;
+    padding: 11px 12px;
   }
 
   .ascension-company-name {
-    font-size: 14px;
+    font-size: 15px;
   }
 
-  .ascension-percentage {
-    font-size: 18px;
+  .ascension-salary {
+    font-size: 11px;
+    padding: 3px 9px;
   }
+}
 
+@media (max-width: 480px) {
   .ascension-editor-overlay {
     padding: 10px;
   }
@@ -913,4 +923,52 @@
 
 [data-theme="dark"] .upload-hint {
   color: #6b7280;
+}
+
+/* ========== 新版飞升节点暗色覆盖 ========== */
+[data-theme="dark"] .ascension-content {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow:
+    0 6px 0 rgba(0, 0, 0, 0.35),
+    0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .ascension-info {
+  background: linear-gradient(135deg, #3b2a08 0%, #2c2006 100%);
+  border-color: #a16207;
+  box-shadow:
+    0 5px 0 #78350f,
+    0 10px 22px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .ascension-info:hover,
+[data-theme="dark"] .ascension-info:focus-visible {
+  box-shadow:
+    0 7px 0 #78350f,
+    0 14px 28px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .ascension-mini-track {
+  background: #4a3608;
+}
+
+[data-theme="dark"] .ascension-salary {
+  color: #3f2a00;
+  background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+  box-shadow: 0 2px 0 #b45309;
+}
+
+[data-theme="dark"] .progress-label,
+[data-theme="dark"] .progress-total,
+[data-theme="dark"] .progress-separator {
+  color: #d1a54a;
+}
+
+[data-theme="dark"] .ascension-edit-hint {
+  color: #b99a55;
+}
+
+[data-theme="dark"] .ascension-progress-ring .progress-bg {
+  stroke: rgba(255, 255, 255, 0.12);
 }

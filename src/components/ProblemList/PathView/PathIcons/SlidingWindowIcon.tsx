@@ -3,8 +3,8 @@ import { IconProps } from './types';
 
 /**
  * 滑动窗口图标
- * 概念：一个固定大小的窗口在数据序列上滑动
- * 视觉：数据柱 + 框住中间三根柱子的窗口 + 滑动方向箭头
+ * 概念：固定窗口在数据上滑动
+ * 视觉：数据柱 + 窗框（带把手）+ 滑轨 + 动态箭头
  */
 const SlidingWindowIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }) => (
   <svg
@@ -16,31 +16,49 @@ const SlidingWindowIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', cla
     aria-hidden="true"
     focusable="false"
   >
-    {/* 数据序列 */}
-    <rect x="3.2" y="13" width="2.6" height="8" rx="1.3" fill={color} fillOpacity="0.35" />
-    <rect x="7.7" y="13" width="2.6" height="8" rx="1.3" fill={color} fillOpacity="0.35" />
-    <rect x="12.2" y="13" width="2.6" height="8" rx="1.3" fill={color} />
-    <rect x="16.7" y="13" width="2.6" height="8" rx="1.3" fill={color} />
-    <rect x="21.2" y="13" width="2.6" height="8" rx="1.3" fill={color} />
-    <rect x="25.7" y="13" width="2.6" height="8" rx="1.3" fill={color} fillOpacity="0.35" />
+    <defs>
+      <linearGradient id="winGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor={color} stopOpacity="0.2" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.05" />
+      </linearGradient>
+    </defs>
 
-    {/* 窗口 */}
+    {/* 数据柱 - 渐变高度 */}
+    <rect x="3" y="16" width="2.4" height="7" rx="1.2" fill={color} fillOpacity="0.25" />
+    <rect x="7" y="14" width="2.4" height="9" rx="1.2" fill={color} fillOpacity="0.4" />
+    <rect x="11" y="12" width="2.4" height="11" rx="1.2" fill={color} fillOpacity="0.7" />
+    <rect x="15" y="10" width="2.4" height="13" rx="1.2" fill={color} />
+    <rect x="19" y="12" width="2.4" height="11" rx="1.2" fill={color} fillOpacity="0.7" />
+    <rect x="23" y="14" width="2.4" height="9" rx="1.2" fill={color} fillOpacity="0.4" />
+    <rect x="27" y="16" width="2.4" height="7" rx="1.2" fill={color} fillOpacity="0.25" />
+
+    {/* 窗框 */}
     <rect
-      x="9.9"
-      y="9.5"
-      width="15.5"
-      height="15"
-      rx="3"
-      fill={color}
-      fillOpacity="0.1"
+      x="8.5"
+      y="7.5"
+      width="17"
+      height="16.5"
+      rx="3.5"
+      fill="url(#winGrad)"
       stroke={color}
       strokeWidth="2.4"
     />
 
-    {/* 滑动方向 */}
-    <path d="M18 28h7.5" stroke={color} strokeWidth="2.2" strokeLinecap="round" />
+    {/* 窗框格线 */}
+    <line x1="17" y1="7.5" x2="17" y2="24" stroke={color} strokeWidth="1.6" strokeOpacity="0.4" />
+    <line x1="8.5" y1="15.75" x2="25.5" y2="15.75" stroke={color} strokeWidth="1.6" strokeOpacity="0.4" />
+
+    {/* 窗把手 */}
+    <circle cx="22" cy="20" r="1.8" fill={color} />
+
+    {/* 滑轨 */}
+    <line x1="9" y1="27" x2="23" y2="27" stroke={color} strokeWidth="2.2" strokeLinecap="round" />
+
+    {/* 滑块与箭头 */}
+    <rect x="13" y="25" width="6" height="4" rx="1.5" fill={color} />
+    <path d="M21 27h5" stroke={color} strokeWidth="2.2" strokeLinecap="round" />
     <path
-      d="M23 25.5L25.5 28L23 30.5"
+      d="M24 25L26 27L24 29"
       stroke={color}
       strokeWidth="2.2"
       strokeLinecap="round"

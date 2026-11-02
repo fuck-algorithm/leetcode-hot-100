@@ -4,7 +4,7 @@ import { IconProps } from './types';
 /**
  * 栈图标
  * 概念：后进先出
- * 视觉：三层堆叠 + 从顶部压入的元素箭头
+ * 视觉：四层堆叠 + 顶部弹出动画 + 侧边编号
  */
 const StackIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }) => (
   <svg
@@ -16,35 +16,29 @@ const StackIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }
     aria-hidden="true"
     focusable="false"
   >
-    {/* 栈元素 */}
-    <rect x="5.5" y="10" width="21" height="5" rx="2.5" fill={color} />
-    <rect
-      x="5.5"
-      y="16.5"
-      width="21"
-      height="5"
-      rx="2.5"
-      fill={color}
-      fillOpacity="0.22"
-      stroke={color}
-      strokeWidth="2"
-    />
-    <rect
-      x="5.5"
-      y="23"
-      width="21"
-      height="5"
-      rx="2.5"
-      fill={color}
-      fillOpacity="0.22"
-      stroke={color}
-      strokeWidth="2"
-    />
+    <defs>
+      <linearGradient id="stackGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor={color} stopOpacity="1" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.3" />
+      </linearGradient>
+    </defs>
 
-    {/* 压栈箭头 */}
-    <path d="M16 2.5v5.6" stroke={color} strokeWidth="2.4" strokeLinecap="round" />
+    {/* 栈层 - 从下到上 */}
+    <rect x="5.5" y="21" width="21" height="4.5" rx="2.2" fill={color} fillOpacity="0.2" stroke={color} strokeWidth="2" />
+    <rect x="5.5" y="15.5" width="21" height="4.5" rx="2.2" fill={color} fillOpacity="0.4" stroke={color} strokeWidth="2" />
+    <rect x="5.5" y="10" width="21" height="4.5" rx="2.2" fill={color} fillOpacity="0.65" stroke={color} strokeWidth="2" />
+    <rect x="5.5" y="4.5" width="21" height="4.5" rx="2.2" fill={color} />
+
+    {/* 侧边编号 */}
+    <text x="30" y="24" fill={color} fontSize="4" fontWeight="bold" textAnchor="middle">1</text>
+    <text x="30" y="18.5" fill={color} fontSize="4" fontWeight="bold" textAnchor="middle">2</text>
+    <text x="30" y="13" fill={color} fontSize="4" fontWeight="bold" textAnchor="middle">3</text>
+    <text x="30" y="7.5" fill={color} fontSize="4" fontWeight="bold" textAnchor="middle">4</text>
+
+    {/* 弹出动画 */}
+    <path d="M16 2v1.5" stroke={color} strokeWidth="2.4" strokeLinecap="round" />
     <path
-      d="M13.4 5.7L16 8.2l2.6-2.5"
+      d="M13.5 1L16 3.5L18.5 1"
       stroke={color}
       strokeWidth="2.4"
       strokeLinecap="round"

@@ -4,7 +4,7 @@ import { IconProps } from './types';
 /**
  * 二叉树图标
  * 概念：每个节点最多两个子节点
- * 视觉：完整二叉树，根节点带星号，层级阴影渐变
+ * 视觉：二叉树结构
  */
 const BinaryTreeIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }) => (
   <svg
@@ -16,13 +16,6 @@ const BinaryTreeIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', classN
     aria-hidden="true"
     focusable="false"
   >
-    <defs>
-      <radialGradient id="treeGrad" cx="50%" cy="30%" r="70%">
-        <stop offset="0%" stopColor={color} stopOpacity="1" />
-        <stop offset="100%" stopColor={color} stopOpacity="0.4" />
-      </radialGradient>
-    </defs>
-
     {/* 连线 */}
     <path d="M14 10.5L10.5 15.5M18 10.5L21.5 15.5" stroke={color} strokeWidth="2.3" strokeLinecap="round" />
     <path
@@ -35,9 +28,8 @@ const BinaryTreeIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', classN
 
     {/* 根节点 */}
     <circle cx="16" cy="7" r="4.2" fill={color} />
-    <text x="16" y="8.5" fill="#fff" fontSize="4" fontWeight="bold" textAnchor="middle">★</text>
 
-    {/* 左右子节点 */}
+    {/* 子节点 */}
     <circle cx="9" cy="18.5" r="3.5" fill={color} fillOpacity="0.35" stroke={color} strokeWidth="2.3" />
     <circle cx="23" cy="18.5" r="3.5" fill={color} fillOpacity="0.35" stroke={color} strokeWidth="2.3" />
 

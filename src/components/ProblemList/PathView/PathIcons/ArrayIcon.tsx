@@ -4,7 +4,7 @@ import { IconProps } from './types';
 /**
  * 数组与矩阵图标
  * 概念：连续内存 / 二维矩阵
- * 视觉：3×3 矩阵，行列索引标注，对角线高亮
+ * 视觉：数组括号 + 2×2 矩阵
  */
 const ArrayIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }) => (
   <svg
@@ -16,44 +16,20 @@ const ArrayIcon: React.FC<IconProps> = ({ size = 32, color = '#fff', className }
     aria-hidden="true"
     focusable="false"
   >
-    <defs>
-      <linearGradient id="arrayGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor={color} stopOpacity="0.3" />
-        <stop offset="100%" stopColor={color} stopOpacity="0.7" />
-      </linearGradient>
-    </defs>
-
-    {/* 矩阵外框 */}
-    <rect x="4" y="4" width="24" height="24" rx="3" stroke={color} strokeWidth="2.2" />
-
-    {/* 3×3 格子，对角线高亮 */}
-    <rect x="5.33" y="5.33" width="6.67" height="6.67" rx="1.3" fill={color} fillOpacity="0.2" />
-    <rect x="12.67" y="5.33" width="6.67" height="6.67" rx="1.3" fill={color} fillOpacity="0.45" />
-    <rect x="20" y="5.33" width="6.67" height="6.67" rx="1.3" fill={color} fillOpacity="0.2" />
-
-    <rect x="5.33" y="12.67" width="6.67" height="6.67" rx="1.3" fill={color} fillOpacity="0.45" />
-    <rect x="12.67" y="12.67" width="6.67" height="6.67" rx="1.3" fill={color} fillOpacity="0.8" />
-    <rect x="20" y="12.67" width="6.67" height="6.67" rx="1.3" fill={color} fillOpacity="0.45" />
-
-    <rect x="5.33" y="20" width="6.67" height="6.67" rx="1.3" fill={color} fillOpacity="0.2" />
-    <rect x="12.67" y="20" width="6.67" height="6.67" rx="1.3" fill={color} fillOpacity="0.45" />
-    <rect x="20" y="20" width="6.67" height="6.67" rx="1.3" fill={color} fillOpacity="0.2" />
-
-    {/* 网格线 */}
+    {/* 数组括号 */}
     <path
-      d="M12 4v24M20 4v24M4 12h24M4 20h24"
+      d="M8 6H4v20h4M24 6h4v20h-4"
       stroke={color}
-      strokeWidth="1.4"
-      strokeOpacity="0.3"
+      strokeWidth="2.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
 
-    {/* 行列索引小点 */}
-    <circle cx="8.67" cy="2" r="1" fill={color} fillOpacity="0.6" />
-    <circle cx="16" cy="2" r="1" fill={color} fillOpacity="0.6" />
-    <circle cx="23.33" cy="2" r="1" fill={color} fillOpacity="0.6" />
-    <circle cx="2" cy="8.67" r="1" fill={color} fillOpacity="0.6" />
-    <circle cx="2" cy="16" r="1" fill={color} fillOpacity="0.6" />
-    <circle cx="2" cy="23.33" r="1" fill={color} fillOpacity="0.6" />
+    {/* 2×2 矩阵 */}
+    <rect x="10" y="10" width="5" height="5" rx="1.2" fill={color} />
+    <rect x="17" y="10" width="5" height="5" rx="1.2" fill={color} fillOpacity="0.4" />
+    <rect x="10" y="17" width="5" height="5" rx="1.2" fill={color} fillOpacity="0.4" />
+    <rect x="17" y="17" width="5" height="5" rx="1.2" fill={color} fillOpacity="0.4" />
   </svg>
 );
 

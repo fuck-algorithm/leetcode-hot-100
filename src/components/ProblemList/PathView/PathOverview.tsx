@@ -6,7 +6,11 @@ import OverviewPathNode, {
   OverviewPathStats,
 } from './OverviewPathNode';
 import TrailConnectors, { TrailConnection } from './trail/TrailConnectors';
-import { buildConnectorPath, buildOverviewPositions } from './trail/geometry';
+import {
+  buildOverviewPositions,
+  buildWindingConnectorPath,
+  getWindingStyle,
+} from './trail/geometry';
 import { useElementWidth } from './trail/useElementWidth';
 import './PathOverview.css';
 
@@ -85,15 +89,27 @@ const PathOverview: React.FC<PathOverviewProps> = ({
   const nodeRadius = width <= 480 ? 44 : width <= 768 ? 48 : 56;
 
   const layout = useMemo(() => {
-    // 节点下方是名称胶囊，间距要容纳「节点 + 胶囊」
-    const spacing = compact ? 180 : 196;
-    const amplitude = compact ? 62 : 118;
+    // 间距拉大：每段「路」更长，蜿蜒才有施展空间
+    const spacing = compact ? 300 : 420;
+    // 节点摆幅收敛一点，把两侧的空间让给连接曲线的波头
+    const amplitude = compact ? 110 : 220;
     // 给「开始/继续」气泡留出空间，避免压到页头
     const startY = nodeRadius + 58;
+    // 每条路径用自己的蜿蜒风格：节点骨架与连接曲线的性格都不同
+    const styleAt = (index: number) =>
+      getWindingStyle(decoratedPaths[index]?.path.id);
+    // 每段「路」的长度也随两端分类的风格变化，14 段长短不一
+    const spacingAt = (index: number) => {
+      const prev = getWindingStyle(decoratedPaths[index - 1]?.path.id);
+      const next = getWindingStyle(decoratedPaths[index]?.path.id);
+      return (prev.spacingScale + next.spacingScale) / 2;
+    };
     const positions = buildOverviewPositions(decoratedPaths.length, width, {
       startY,
       spacing,
       amplitude,
+      styleAt,
+      spacingAt,
     });
 
     const lastNode = positions[positions.length - 1];
@@ -110,17 +126,33 @@ const PathOverview: React.FC<PathOverviewProps> = ({
       height: ascensionY + (compact ? 300 : 340),
       orbRadius,
       labelSpace,
+      // 段内波幅预算：逼近画布半宽，让弯头能甩到两侧去
+      waveAmplitude: Math.max(90, width / 2 - 24),
     };
-  }, [compact, nodeRadius, width, decoratedPaths.length]);
+  }, [compact, nodeRadius, width, decoratedPaths]);
 
   const connections = useMemo<TrailConnection[]>(() => {
     const result: TrailConnection[] = [];
-    const { positions, ascension, orbRadius } = layout;
+    const { positions, ascension, waveAmplitude } = layout;
+    const bounds = { minX: 10, maxX: Math.max(10, width - 10) };
 
     for (let i = 0; i < decoratedPaths.length - 1; i++) {
       result.push({
         key: `overview-path-${i}`,
-        d: buildConnectorPath(positions[i], positions[i + 1], nodeRadius, nodeRadius),
+        d: buildWindingConnectorPath(
+          positions[i],
+          positions[i + 1],
+          positions[i - 1] ?? null,
+          positions[i + 2] ?? null,
+          {
+            style: getWindingStyle(decoratedPaths[i].path.id),
+            edgeIndex: i,
+            amplitude: waveAmplitude,
+            // 圆头折返：短段里也能连续绕好几圈，比一个平缓的 S 蜿蜒得多
+            forceLoop: true,
+            ...bounds,
+          }
+        ),
         completed: decoratedPaths[i].completionStats.percentage >= 100,
       });
     }
@@ -129,13 +161,27 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     if (lastPosition) {
       result.push({
         key: 'overview-path-to-ascension',
-        d: buildConnectorPath(lastPosition, ascension, nodeRadius, orbRadius),
+        d: buildWindingConnectorPath(
+          lastPosition,
+          ascension,
+          positions[positions.length - 2] ?? null,
+          null,
+          {
+            style: getWindingStyle(
+              decoratedPaths[decoratedPaths.length - 1]?.path.id
+            ),
+            edgeIndex: decoratedPaths.length,
+            amplitude: waveAmplitude,
+            forceLoop: true,
+            ...bounds,
+          }
+        ),
         completed: overallStats.percentage >= 100,
       });
     }
 
     return result;
-  }, [decoratedPaths, layout, nodeRadius, overallStats.percentage]);
+  }, [decoratedPaths, layout, overallStats.percentage, width]);
 
   const handlePathOpen = useCallback(
     (pathId: string) => onPathClick(pathId),

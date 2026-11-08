@@ -7,8 +7,9 @@ import TrailConnectors, { TrailConnection } from './trail/TrailConnectors';
 import { useElementWidth } from './trail/useElementWidth';
 import { useNodeMenu } from './trail/useNodeMenu';
 import {
-  buildConnectorPath,
   buildDetailPosition,
+  buildWindingConnectorPath,
+  getWindingStyle,
   midpoint,
 } from './trail/geometry';
 import {
@@ -38,11 +39,6 @@ interface DuolingoPathProps {
   onToggleCompletion: (problemId: string) => Promise<void>;
   pathId?: string; // 用于生成唯一的宝箱ID
 }
-
-/** 节点圆的半径，连接线从圆边缘进出 */
-const NODE_RADIUS = 35;
-/** 宝箱的碰撞半径 */
-const TREASURE_RADIUS = 46;
 
 const getDifficultyClass = (difficulty: string) => {
   switch (difficulty) {
@@ -127,6 +123,9 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     [completionSignature]
   );
 
+  /** 该路径专属的蜿蜒风格：每条路径的曲线性格都不同 */
+  const windingStyle = useMemo(() => getWindingStyle(pathId), [pathId]);
+
   const isSegmentEnd = useCallback(
     (index: number) => {
       if (index >= problems.length - 1) return false;
@@ -150,8 +149,12 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
   const layout = useMemo(() => {
     const width = containerWidth;
     const compact = width < 480;
-    const spacing = compact ? 152 : 168;
-    const amplitude = compact ? 52 : 76;
+    // 纵向基础间距：路口离得远，段内才有空间反复缠绕。
+    // 每条路径再乘上自己的 spacingScale，长度各不相同（见 geometry）。
+    const spacing = compact ? 260 : 360;
+    // 摆动幅度决定路径的舒展程度：太小时路径缩成中间一条细线，
+    // 放大后节点分布到容器两侧，蜿蜒的形态才看得出来。
+    const amplitude = compact ? 110 : 210;
     const startY = 40;
     const segmentGap = showTreasures ? SEGMENT_GAP : 0;
     const treasuresBefore = (index: number) =>
@@ -165,6 +168,7 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         startY,
         spacing,
         amplitude,
+        style: windingStyle,
       });
 
     const nodes = problems.map((_, index) => positionAt(index));
@@ -192,12 +196,26 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         : 240;
 
     return { nodes, treasures, endpoint, height };
-  }, [containerWidth, problems, segmentInfo.segments, showTreasures]);
+  }, [containerWidth, problems, segmentInfo.segments, showTreasures, windingStyle]);
 
-  /** 连接线：普通段直接相连；分段末尾从宝箱顶部进、底部出 */
+  /** 连接线：普通段直接相连；分段末尾从宝箱顶部进、底部出。全部使用蜿蜒曲线 */
   const connections = useMemo<TrailConnection[]>(() => {
     const result: TrailConnection[] = [];
     const { nodes, treasures, endpoint } = layout;
+    // 曲线与节点保持同一套安全边界，避免波浪顶到容器边缘被削平
+    const bounds = { minX: 14, maxX: Math.max(14, containerWidth - 14) };
+    // 段内波幅预算：比节点摆幅更宽，让弯头和回环能绕到节点外侧去
+    const waveAmplitude =
+      containerWidth < 480
+        ? containerWidth / 2 - 20
+        : Math.min(containerWidth / 2 - 14, 320);
+    const winding = (index: number) =>
+      ({
+        style: windingStyle,
+        edgeIndex: index,
+        amplitude: waveAmplitude,
+        ...bounds,
+      }) as const;
 
     for (let i = 0; i < problems.length - 1; i++) {
       const currentCompleted = isCompleted(problems[i].questionFrontendId);
@@ -211,12 +229,24 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
         if (treasure) {
           result.push({
             key: `path-${i}-a`,
-            d: buildConnectorPath(nodes[i], treasure, NODE_RADIUS, TREASURE_RADIUS),
+            d: buildWindingConnectorPath(
+              nodes[i],
+              treasure,
+              nodes[i - 1] ?? null,
+              nodes[i + 1],
+              winding(i)
+            ),
             completed: currentCompleted,
           });
           result.push({
             key: `path-${i}-b`,
-            d: buildConnectorPath(treasure, nodes[i + 1], TREASURE_RADIUS, NODE_RADIUS),
+            d: buildWindingConnectorPath(
+              treasure,
+              nodes[i + 1],
+              nodes[i],
+              nodes[i + 2] ?? null,
+              winding(i + 1)
+            ),
             completed:
               Boolean(originalSegment?.isComplete) && nextCompleted,
           });
@@ -226,7 +256,13 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
 
       result.push({
         key: `path-${i}`,
-        d: buildConnectorPath(nodes[i], nodes[i + 1], NODE_RADIUS, NODE_RADIUS),
+        d: buildWindingConnectorPath(
+          nodes[i],
+          nodes[i + 1],
+          nodes[i - 1] ?? null,
+          nodes[i + 2] ?? null,
+          winding(i)
+        ),
         completed: currentCompleted && nextCompleted,
       });
     }
@@ -235,7 +271,13 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     if (lastNode && endpoint) {
       result.push({
         key: 'path-to-endpoint',
-        d: buildConnectorPath(lastNode, endpoint, NODE_RADIUS, TREASURE_RADIUS),
+        d: buildWindingConnectorPath(
+          lastNode,
+          endpoint,
+          nodes[nodes.length - 2] ?? null,
+          null,
+          winding(problems.length)
+        ),
         completed: isCompleted(problems[problems.length - 1].questionFrontendId),
       });
     }
@@ -251,6 +293,8 @@ const DuolingoPath: React.FC<DuolingoPathProps> = ({
     isSegmentEnd,
     getSegmentIndex,
     originalSegmentInfo.segments,
+    windingStyle,
+    containerWidth,
   ]);
 
   const handleActivate = useCallback((problem: Problem) => {

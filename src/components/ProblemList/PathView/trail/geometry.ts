@@ -615,11 +615,11 @@ export interface WindingConnectorOptions {
   /** 强制使用大摆幅蜿蜒形态（总览页用），忽略风格的 loop */
   forceMeander?: boolean;
   /**
-   * 强制使用圆头折返形态（总览页用）：横向大摆幅 + 纵向小椭圆 + 每段多圈。
-   * 短段上纯正弦只能摆出一个 S，改用扁椭圆回环才能在有限高度里多绕几圈，
-   * 且拐弯半径等于摆幅，天然圆润。
+   * 覆盖风格的「波长/波幅」比（仅 meander 生效）。
+   * 调大 = 波长更长：波峰曲率半径 R ∝ A·ratio²，同段高下波数略减但拐弯更圆，
+   * 用在总览页这种「段短、要求圆润且绝不自交」的场合。
    */
-  forceLoop?: boolean;
+  wavelengthRatio?: number;
 }
 
 /** buildLoopPath 的形态覆盖参数 */
@@ -637,6 +637,8 @@ const MIN_SAMPLES = 30;
 
 /** 出刀/收刀：曲线在节点处先垂直离开，再由窄到宽地展开 */
 const MOUTH_RUN = 0.14;
+/** 端部斜坡长度（占整段比例）：这一小截里偏移从 0 缓到满，线不会兜回节点 */
+const MOUTH_RAMP = 0.12;
 
 /** 高次谐波相对基波的总权重（基波保留满幅，谐波只做「不均匀」的调味） */
 const harmonicWeightOf = (harmonics: WindingHarmonic[]): number =>
@@ -676,7 +678,8 @@ const buildMeanderPath = (
   budget: number,
   edgeIndex: number,
   minX: number,
-  maxX: number
+  maxX: number,
+  wavelengthRatioOverride?: number
 ): string => {
   const edgeLength = Math.max(1, Math.hypot(to.x - from.x, to.y - from.y));
   const noise = (salt: number) => edgeHash(edgeIndex * salt + style.edgeSeed);
@@ -684,7 +687,9 @@ const buildMeanderPath = (
   // 段级随机：相邻两段的波幅 / 波长 / 相位 / 偏向都不同
   const ratio = style.waveRatio * (0.9 + noise(7.13) * 0.2);
   const waveAmplitude = budget * ratio;
-  const wavelength = Math.max(48, waveAmplitude * style.wavelengthRatio);
+  // 波长比可被调用方覆盖（总览页用更肥的波长，短段也能多出一个波并且峰顶圆润）
+  const wavelengthRatio = wavelengthRatioOverride ?? style.wavelengthRatio;
+  const wavelength = Math.max(48, waveAmplitude * wavelengthRatio);
   const waves = clamp(
     (edgeLength / wavelength) * (1 + (noise(3.71) - 0.5) * 2 * style.edgeJitter),
     1.05,
@@ -744,7 +749,19 @@ const buildMeanderPath = (
     if (Math.abs(raw) > room) fitScale = Math.min(fitScale, room / Math.abs(raw));
   }
 
-  const offsets = smoothOffsets(rawOffsets.map(raw => raw * gain * fitScale));
+  // 端部斜坡：让曲线在离开/回到节点的那一小截几乎不偏，
+  // 否则大摆幅会把线甩到节点圆外侧再绕回来，视觉上像穿过了节点
+  const rampCount = Math.max(2, Math.round(sampleCount * MOUTH_RAMP));
+  const rampAt = (index: number, total: number): number => {
+    const head = Math.min(index, rampCount) / rampCount;
+    const tail = Math.min(total - 1 - index, rampCount) / rampCount;
+    const eased = Math.min(head, tail);
+    return eased * eased;
+  };
+
+  const offsets = smoothOffsets(rawOffsets.map(raw => raw * gain * fitScale)).map(
+    (offset, i) => offset * rampAt(i, rawOffsets.length)
+  );
   const points: TrailPoint[] = offsets.map((offset, i) => ({
     x: bases[i] + offset,
     y: lerp(from.y, to.y, (i + 1) / sampleCount),
@@ -834,9 +851,11 @@ const buildLoopPath = (
 /**
  * 生成一条「会缠」的连接曲线。
  *
- * 形态由风格的 mode 决定：总览页可 forceMeander（大摆幅正弦）或
- * forceLoop（圆头折返，短段也能多绕几圈）统一改写。
+ * 形态由风格的 mode 决定（总览页用 forceMeander 统一成不自交的正弦蜿蜒）。
  * 两种形态都保证：起止于两个节点本身、横向不越出 minX / maxX。
+ *
+ * 注意：meander 的纵向严格单调推进，永远不自交；
+ * loop 在段内绕圈，必然自交，只适合详情页「一条绳盘起来」的观感。
  */
 export const buildWindingConnectorPath = (
   from: TrailPoint,
@@ -846,11 +865,7 @@ export const buildWindingConnectorPath = (
   options: WindingConnectorOptions = {}
 ): string => {
   const style = options.style ?? WINDING_STYLES[0];
-  const mode: WindingMode = options.forceMeander
-    ? 'meander'
-    : options.forceLoop
-    ? 'loop'
-    : style.mode;
+  const mode: WindingMode = options.forceMeander ? 'meander' : style.mode;
   const edgeIndex = options.edgeIndex ?? 0;
   const minX = options.minX ?? -Infinity;
   const maxX = options.maxX ?? Infinity;
@@ -862,30 +877,18 @@ export const buildWindingConnectorPath = (
     : edgeLength * 0.5;
   const budget = Math.min(options.amplitude ?? halfWidth, halfWidth);
 
-  if (mode === 'meander') {
-    return buildMeanderPath(style, from, to, budget, edgeIndex, minX, maxX);
-  }
-
-  // 圆头折返：圈数按风格的摆幅给基数，本就缠绕的风格再加档，
-  // 纵向椭圆压扁（0.3 上下），横向摆幅撑满，拐弯半径≈摆幅，天然圆润。
-  const countBase = options.forceLoop
-    ? 1.9 + style.waveRatio * 0.55 + (style.loopCount ?? 0) * 0.45
-    : undefined;
-  const swingRatio = options.forceLoop
-    ? 0.28 + (style.loopSwing ?? 0) * 0.22
-    : undefined;
-  return buildLoopPath(
-    style,
-    from,
-    to,
-    budget,
-    edgeIndex,
-    minX,
-    maxX,
-    countBase === undefined
-      ? undefined
-      : { countBase, swingRatio: swingRatio as number }
-  );
+  return mode === 'meander'
+    ? buildMeanderPath(
+        style,
+        from,
+        to,
+        budget,
+        edgeIndex,
+        minX,
+        maxX,
+        options.wavelengthRatio
+      )
+    : buildLoopPath(style, from, to, budget, edgeIndex, minX, maxX);
 };
 
 /* ------------------------------------------------------------------ *

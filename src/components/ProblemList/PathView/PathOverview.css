@@ -52,21 +52,82 @@
   overflow: visible;
 }
 
-/* 多邻国式双层路径：深色底边 + 亮色顶层 */
-.trail-link-base {
-  stroke: #d3d3d3;
+/* ---------- 路面：投影 / 路基 / 路面 / 内阴影 / 高光 / 车道线 ---------- */
+
+/* 投影：柔和落影，让路面从背景上浮起来 */
+.trail-road-shadow {
+  stroke: #8a8f98;
+  filter: url(#trail-drop-shadow);
 }
 
-.trail-link-base.is-completed {
-  stroke: #3f9a00;
+/* 路基：比路面深，向下偏移形成厚度（未完成状态是石灰色） */
+.trail-road-base {
+  stroke: #b9bfc7;
 }
 
-.trail-link-top {
-  stroke: #ececec;
+.trail-road-base.is-completed {
+  stroke: #3f8f00;
 }
 
-.trail-link-top.is-completed {
-  stroke: #58cc02;
+/* 路面主体：比原来更亮，形成"路面浅、路基深"的层次 */
+.trail-road-surface {
+  stroke: #f4f6f9;
+}
+
+.trail-road-surface.is-completed {
+  stroke: #74dc25;
+}
+
+/* 内阴影：贴边一圈暗色，做出路面略微凹陷的立体感 */
+.trail-road-inner-shadow {
+  stroke: #000;
+  opacity: 0.14;
+  filter: url(#trail-inner-shadow);
+}
+
+/* 横向明暗层：由粗到细叠出圆柱感（中间亮、两侧略暗），
+   宽度逐层收窄，跟路面天然贴合，不依赖固定方向的 translate。 */
+.trail-road-tone-1 {
+  stroke: #e3e8ee;
+}
+
+.trail-road-tone-1.is-completed {
+  stroke: #5cc908;
+}
+
+.trail-road-tone-2 {
+  stroke: #eef2f7;
+}
+
+.trail-road-tone-2.is-completed {
+  stroke: #6bd818;
+}
+
+/* 高光：最内圈细亮线 */
+.trail-road-highlight {
+  stroke: #ffffff;
+  opacity: 0.92;
+}
+
+/* 车道虚线：让"线"读起来像"路"。
+   之前用 2px 压在 15px 路面上几乎看不见，这里加粗到 2.6 并提高对比。 */
+.trail-road-dash {
+  stroke: #b3bdc8;
+  opacity: 0.95;
+  stroke-width: 2.6;
+}
+
+/* 完成态：路面本身是很亮的绿，白色虚线对比不足，
+   改用略深的绿白，压住整体但保留"车道"的可读性。 */
+.trail-road-dash.is-completed {
+  stroke: #c8f79a;
+  opacity: 0.95;
+  stroke-width: 2.6;
+}
+
+/* 内阴影滤镜里 flood 的颜色需要能随主题调整 */
+.trail-inner-shadow-flood {
+  flood-color: #000;
 }
 
 .path-overview-nodes {

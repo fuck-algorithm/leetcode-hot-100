@@ -92,7 +92,8 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     // 纵向间距：够放下节点与标签即可。原先 560 叠加 spacingRhythm（0.78~1.34）
     // 与 spacingScale（0.94~1.5）后单段常接近 900px，两个节点之间空跑太久，
     // 整页被拉到一万像素高，滚动起来像在爬长坡。
-    const spacing = compact ? 280 : 380;
+    // 用户要求：在原来的基础上再收到约 2/3（560 -> 约 370）
+    const spacing = compact ? 265 : 370;
     // 节点摆幅：左右错开、看得到蜿蜒即可，不铺满容器。
     const amplitude = compact ? 80 : 130;
     // 给「开始/继续」气泡留出空间，避免压到页头

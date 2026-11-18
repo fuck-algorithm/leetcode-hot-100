@@ -89,10 +89,12 @@ const PathOverview: React.FC<PathOverviewProps> = ({
   const nodeRadius = width <= 480 ? 44 : width <= 768 ? 48 : 56;
 
   const layout = useMemo(() => {
-    // 间距拉大：每段「路」更长，蜿蜒才有施展空间
-    const spacing = compact ? 400 : 560;
-    // 节点摆幅收敛一点，把两侧的空间让给连接曲线的波头
-    const amplitude = compact ? 100 : 180;
+    // 纵向间距：够放下节点与标签即可。原先 560 叠加 spacingRhythm（0.78~1.34）
+    // 与 spacingScale（0.94~1.5）后单段常接近 900px，两个节点之间空跑太久，
+    // 整页被拉到一万像素高，滚动起来像在爬长坡。
+    const spacing = compact ? 280 : 380;
+    // 节点摆幅：左右错开、看得到蜿蜒即可，不铺满容器。
+    const amplitude = compact ? 80 : 130;
     // 给「开始/继续」气泡留出空间，避免压到页头
     const startY = nodeRadius + 58;
     // 每条路径用自己的蜿蜒风格：节点骨架与连接曲线的性格都不同
@@ -126,8 +128,10 @@ const PathOverview: React.FC<PathOverviewProps> = ({
       height: ascensionY + (compact ? 300 : 340),
       orbRadius,
       labelSpace,
-      // 段内波幅预算：大幅甩开到两侧，但离画布边缘留出安全余量
-      waveAmplitude: Math.max(70, Math.min(215, width * 0.30)),
+      // 段内波幅预算：原先 0.30×width（上限 215）几乎每段都甩到画布边缘，
+      // 看着像在画大浪。收紧到 0.18×width（上限 130），曲线仍明显弯曲，
+      // 但横向不再顶边，和节点摆幅（amplitude）保持同一量级。
+      waveAmplitude: Math.max(60, Math.min(130, width * 0.18)),
     };
   }, [compact, nodeRadius, width, decoratedPaths]);
 

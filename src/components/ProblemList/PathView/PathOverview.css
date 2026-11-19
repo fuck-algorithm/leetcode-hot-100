@@ -100,6 +100,22 @@
   flood-color: #000;
 }
 
+/* ---------- 龙脊 ---------- */
+
+/* 脊线：沿龙身中线的一道亮金线 */
+.dragon-spine {
+  stroke: #ffeaa0;
+  opacity: 0.85;
+}
+
+/* 脊刺：贴在脊线上、垂直于曲线张开的小三角 */
+.dragon-spike {
+  fill: #e8b23a;
+  stroke: #a86d10;
+  stroke-width: 0.6;
+  stroke-linejoin: round;
+}
+
 .path-overview-nodes {
   position: relative;
   z-index: 5;

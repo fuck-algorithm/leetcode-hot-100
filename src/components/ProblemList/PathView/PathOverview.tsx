@@ -99,23 +99,25 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     // （分类顺序：hash, two-pointers, sliding-window, array, linked-list,
     //   binary-tree, graph, backtracking, binary-search, stack, heap,
     //   greedy, dynamic-programming, techniques）
+    // 整条路现在读作一条龙，所以主体统一用金色龙鳞；
+    // 只在个别段落掺入别的材质做节奏变化，避免十四段一模一样。
     const MAP: Record<string, RoadMaterial> = {
-      hash: 'brick',
-      'two-pointers': 'cobble',
-      'sliding-window': 'asphalt',
-      array: 'brick',
-      'linked-list': 'wood',
-      'binary-tree': 'cobble',
-      graph: 'asphalt',
-      backtracking: 'brick',
-      'binary-search': 'wood',
-      stack: 'cobble',
-      heap: 'asphalt',
-      greedy: 'brick',
-      'dynamic-programming': 'wood',
-      techniques: 'cobble',
+      hash: 'scale',
+      'two-pointers': 'scale',
+      'sliding-window': 'cobble',
+      array: 'scale',
+      'linked-list': 'scale',
+      'binary-tree': 'wood',
+      graph: 'scale',
+      backtracking: 'scale',
+      'binary-search': 'cobble',
+      stack: 'scale',
+      heap: 'scale',
+      greedy: 'wood',
+      'dynamic-programming': 'scale',
+      techniques: 'scale',
     };
-    return (pathId && MAP[pathId]) || 'asphalt';
+    return (pathId && MAP[pathId]) || 'scale';
   }, []);
 
   const compact = width <= 560;
@@ -130,8 +132,9 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     const spacing = compact ? 265 : 370;
     // 节点摆幅：左右错开、看得到蜿蜒即可，不铺满容器。
     const amplitude = compact ? 80 : 130;
-    // 给「开始/继续」气泡留出空间，避免压到页头
-    const startY = nodeRadius + 58;
+    // 给「开始/继续」气泡留出空间，避免压到页头。
+    // 再多留 100px 给顶端的龙尾（尾鳍向下垂，需要独立的一段空间）。
+    const startY = nodeRadius + 158;
     // 每条路径用自己的蜿蜒风格：节点骨架与连接曲线的性格都不同
     const styleAt = (index: number) =>
       getWindingStyle(decoratedPaths[index]?.path.id);
@@ -157,18 +160,55 @@ const PathOverview: React.FC<PathOverviewProps> = ({
       ? lastNode.y + nodeRadius + 41 + 24 + labelSpace + orbRadius
       : 260;
 
+    // 龙形：用户要的是"尾巴在上、龙头在下"的一条龙。
+    // 龙的脊柱就是这条学习之路本身：顶端收尾，底端飞升节点处是龙首。
+    //
+    // 位置要留足空隙，否则会被圆形节点和"飞升目标"卡片盖住（踩过）：
+    //   尾 —— 在首节点之上，尾鳍再往下垂一点，不压住节点圆
+    //   首 —— 在飞升光球之下，独占页面最底部
+    const dragonScale = compact ? 1.3 : 1.9;
+    const firstNode = positions[0];
+    const dragon = {
+      tail: firstNode
+        ? {
+            // 尾尖放在首节点正上方但避开"开始"胶囊与节点圆：
+            // 胶囊在节点上方约 90px，尾鳍还要再往下伸 ~70px，
+            // 所以起点要抬到 nodeRadius + 165 才不会压字。
+            x: firstNode.x,
+            // "开始"胶囊约占节点上方 90px，尾鳍再垂下约 70px(×scale)，
+            // 起点取 -140 时尾鳍恰好落在节点圆顶上方，且不超出画布。
+            y: firstNode.y - nodeRadius - 140,
+            scale: dragonScale,
+            completed: overallStats.percentage >= 100,
+          }
+        : undefined,
+      head: lastNode
+        ? {
+            // 龙头放在"飞升目标"卡片下方（卡片占约 340px），
+            // 再用一段短龙身把卡片和龙头连起来，避免视觉断成两截。
+            x: width / 2,
+            y: ascensionY + orbRadius + 400,
+            scale: dragonScale,
+            completed: overallStats.percentage >= 100,
+          }
+        : undefined,
+    };
+
     return {
       positions,
       ascension: { x: width / 2, y: ascensionY },
-      height: ascensionY + (compact ? 300 : 340),
+      // 底部要容纳"飞升目标"卡片（约 340）+ 龙脖 + 放大的龙头
+      // （含龙须约 120*scale），再留 120 缓冲避免被裁
+      height: ascensionY + orbRadius + (compact ? 720 : 760),
       orbRadius,
       labelSpace,
+      dragon,
       // 段内波幅预算：原先 0.30×width（上限 215）几乎每段都甩到画布边缘，
       // 看着像在画大浪。收紧到 0.18×width（上限 130），曲线仍明显弯曲，
       // 但横向不再顶边，和节点摆幅（amplitude）保持同一量级。
       waveAmplitude: Math.max(60, Math.min(130, width * 0.18)),
     };
-  }, [compact, nodeRadius, width, decoratedPaths]);
+  }, [compact, nodeRadius, width, decoratedPaths, overallStats.percentage]);
 
   const connections = useMemo<TrailConnection[]>(() => {
     const result: TrailConnection[] = [];
@@ -224,6 +264,40 @@ const PathOverview: React.FC<PathOverviewProps> = ({
           decoratedPaths[decoratedPaths.length - 1]?.path.id
         ),
       });
+
+      // 卡片下方补一小段龙身，把"飞升目标"和龙头接起来：
+      // 否则龙头孤悬在页面最底部，看起来和整条龙没有关系。
+      if (layout.dragon?.head) {
+        const h = layout.dragon.head;
+        // 龙脖终点落进龙头内部（脸的范围），从下巴下面探出来会像多余尾巴。
+        // 起点也贴着卡片下沿，整段尽量短，减少可摆动长度。
+        // 从卡片下沿稍远处起笔画，做出"脖子从卡片后面垂下来"的纵深感
+        const from = {
+          x: width / 2,
+          y: h.y - 200,
+        };
+        // 侧视龙头：脸朝左、后脑在右侧。龙脖要从"脑后"接进来，
+        // 即 x 偏右、y 略低于头顶，才会被头骨盖住，不会像插在头上的一根管子。
+        const to = { x: h.x + 14 * h.scale, y: h.y - 2 * h.scale };
+        result.push({
+          key: 'overview-dragon-neck',
+          // 龙脖不用大摆幅：这里只是把卡片和龙头接起来，
+          // 扭得太厉害会像面条，压成一条柔和的小弧即可。
+          d: buildWindingConnectorPath(from, to, null, null, {
+            style: getWindingStyle(
+              decoratedPaths[decoratedPaths.length - 1]?.path.id
+            ),
+            edgeIndex: decoratedPaths.length + 1,
+            // 极小的摆幅：这一段只求"接上"，任何明显摆动都会像面条
+            amplitude: 8,
+            forceMeander: true,
+            wavelengthRatio: 3.2,
+            ...bounds,
+          }),
+          completed: overallStats.percentage >= 100,
+          material: 'scale',
+        });
+      }
     }
 
     return result;
@@ -238,7 +312,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     <div className="path-overview-container">
       {/* 标题区域 */}
       <div className="path-overview-header">
-        <div className="header-mascot" aria-hidden="true">🦉</div>
+        <div className="header-mascot" aria-hidden="true">🐲</div>
         <h2 className="path-overview-title">
           {currentLang === 'zh' ? '算法学习之旅' : 'Algorithm Learning Journey'}
         </h2>
@@ -261,6 +335,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
           height={layout.height}
           connections={connections}
           variant="raised"
+          dragon={layout.dragon}
         />
 
         <div className="path-overview-nodes" ref={nodesRef}>

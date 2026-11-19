@@ -1,7 +1,9 @@
 import React from 'react';
+import { DragonHead, DragonTail } from './DragonEnds';
+import { buildSpineSpikes } from './spine';
 
 /** 路面材质：不同分类的路用不同的小路风格，整页看起来更丰富 */
-export type RoadMaterial = 'brick' | 'cobble' | 'wood' | 'asphalt';
+export type RoadMaterial = 'brick' | 'cobble' | 'wood' | 'asphalt' | 'scale';
 
 export const ROAD_MATERIALS: RoadMaterial[] = ['brick', 'cobble', 'wood', 'asphalt'];
 
@@ -14,6 +16,13 @@ export interface TrailConnection {
   material?: RoadMaterial;
 }
 
+interface DragonEnds {
+  /** 龙首位置（路线起点一侧） */
+  head?: { x: number; y: number; scale: number; completed: boolean };
+  /** 龙尾位置（路线终点一侧） */
+  tail?: { x: number; y: number; scale: number; completed: boolean };
+}
+
 interface TrailConnectorsProps {
   className: string;
   width: number;
@@ -24,6 +33,8 @@ interface TrailConnectorsProps {
    * raised: 概览页使用的多层路径，画成有纹理、有厚度的实心小路
    */
   variant?: 'simple' | 'raised';
+  /** 概览页把整条路理解为一条龙：首尾各补一个装饰件 */
+  dragon?: DragonEnds;
 }
 
 const SIMPLE_COMPLETED = '#ffd700';
@@ -34,6 +45,7 @@ const MATERIAL_LABEL: Record<RoadMaterial, string> = {
   cobble: '碎石',
   wood: '木板',
   asphalt: '柏油',
+  scale: '龙鳞',
 };
 
 /** 各材质的基色（路基比路面深一档，用于做出厚度） */
@@ -42,6 +54,7 @@ const BASE_COLOR: Record<RoadMaterial, string> = {
   cobble: '#6e7378',
   wood: '#8a5a34',
   asphalt: '#b9bfc7',
+  scale: '#8a5209',
 };
 
 /**
@@ -124,6 +137,23 @@ const RoadPatterns: React.FC = () => (
       <circle cx="1" cy="8.5" r="0.5" fill="#d8dee4" />
     </pattern>
 
+    {/* ---- 龙鳞：叠瓦状鳞片。
+         两排错半鳞，每片是下缘带弧的半圆，上缘压一道亮边——
+         这样看起来像"鳞片层层压着"，而不是一片片孤立的圆点。 ---- */}
+    <pattern id="trail-pat-scale" width="10" height="9" patternUnits="userSpaceOnUse">
+      <rect width="10" height="9" fill="#b4771a" />
+      {/* 上排 */}
+      <path d="M0.6 4.6 Q 3 1.2 5.4 4.6 Q 3 6.2 0.6 4.6 Z" fill="#e0a832" />
+      <path d="M0.9 4.2 Q 3 1.6 5.1 4.2" stroke="#ffe58a" strokeWidth="0.7" fill="none" opacity="0.75" />
+      <path d="M5.4 4.6 Q 7.8 1.2 10.2 4.6 Q 7.8 6.2 5.4 4.6 Z" fill="#d4992a" />
+      <path d="M5.7 4.2 Q 7.8 1.6 9.9 4.2" stroke="#ffe58a" strokeWidth="0.7" fill="none" opacity="0.65" />
+      {/* 下排（错半鳞） */}
+      <path d="M-1.9 8.7 Q 0.5 5.3 2.9 8.7 Q 0.5 10.3 -1.9 8.7 Z" fill="#cd9026" />
+      <path d="M3.1 8.7 Q 5.5 5.3 7.9 8.7 Q 5.5 10.3 3.1 8.7 Z" fill="#dda62e" />
+      <path d="M3.4 8.3 Q 5.5 5.7 7.6 8.3" stroke="#ffe58a" strokeWidth="0.65" fill="none" opacity="0.6" />
+      <path d="M8.1 8.7 Q 10.5 5.3 12.9 8.7 Q 10.5 10.3 8.1 8.7 Z" fill="#c98c22" />
+    </pattern>
+
     {/* 投影滤镜 */}
     <filter id="trail-drop-shadow" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur stdDeviation="3" />
@@ -147,6 +177,18 @@ const RaisedRoad: React.FC<{ connection: TrailConnection }> = ({ connection }) =
   const done = connection.completed;
   const material: RoadMaterial = connection.material ?? 'asphalt';
   const fill = `url(#trail-pat-${material})`;
+
+  // 龙脊尖刺：沿路径每约 26px 一根，朝"下"（+y 方向，也就是沿路前进的
+  // 视觉"背侧"）张开。只对龙鳞材质计算，避免无谓开销。
+  const spikes = React.useMemo(
+    () =>
+      material === 'scale'
+        ? // side = -1：朝上张开。路半宽只有 10px，刺长必须小于它，
+          // 否则整根刺悬在路面外，看起来像插了一圈牙签。
+          buildSpineSpikes(connection.d, -1, 30, 8, 7)
+        : [],
+    [connection.d, material]
+  );
 
   return (
     <g
@@ -205,6 +247,29 @@ const RaisedRoad: React.FC<{ connection: TrailConnection }> = ({ connection }) =
         strokeLinejoin="round"
         strokeWidth={8}
       />
+      {/* 6. 龙脊：沿中线的金色脊线 + 一串真正垂直于曲线张开的尖刺。
+          尖刺必须按当地切线算法线才对，pattern/dasharray 做不到这点。
+          只在龙鳞材质上画，别的路面不长角。 */}
+      {material === 'scale' && (
+        <>
+          <path
+            className="dragon-spine"
+            d={connection.d}
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={4}
+          />
+          {/* 脊刺根部落在路面的视觉中线（路基 translate(0 7) 下沉，
+              中线约在 -3.5），刺尖朝上越过路面上缘探出去一段。
+              之前整体平移导致根部跑到路面外、整根刺悬空，看着像烤串。 */}
+          <g transform="translate(0 -3.5)">
+            {spikes.map(sp => (
+              <path key={sp.index} className="dragon-spike" d={sp.d} />
+            ))}
+          </g>
+        </>
+      )}
     </g>
   );
 };
@@ -215,6 +280,7 @@ const TrailConnectors: React.FC<TrailConnectorsProps> = ({
   height,
   connections,
   variant = 'simple',
+  dragon,
 }) => {
   return (
     <svg
@@ -232,6 +298,24 @@ const TrailConnectors: React.FC<TrailConnectorsProps> = ({
           {connections.map(connection => (
             <RaisedRoad key={connection.key} connection={connection} />
           ))}
+          {dragon?.head && (
+            <DragonHead
+              variant="head"
+              x={dragon.head.x}
+              y={dragon.head.y}
+              scale={dragon.head.scale}
+              completed={dragon.head.completed}
+            />
+          )}
+          {dragon?.tail && (
+            <DragonTail
+              variant="tail"
+              x={dragon.tail.x}
+              y={dragon.tail.y}
+              scale={dragon.tail.scale}
+              completed={dragon.tail.completed}
+            />
+          )}
         </>
       ) : (
         connections.map(connection => (

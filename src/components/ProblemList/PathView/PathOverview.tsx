@@ -5,7 +5,10 @@ import OverviewPathNode, {
   OverviewCompletionStats,
   OverviewPathStats,
 } from './OverviewPathNode';
-import TrailConnectors, { TrailConnection } from './trail/TrailConnectors';
+import TrailConnectors, {
+  TrailConnection,
+  RoadMaterial,
+} from './trail/TrailConnectors';
 import {
   buildOverviewPositions,
   buildWindingConnectorPath,
@@ -84,6 +87,37 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     [decoratedPaths]
   );
 
+  /**
+   * 每条路挑一种路面材质。
+   *
+   * 按分类语义固定分配（而不是随机），这样同一分类的路材始终一致，
+   * 用户第二次进来看到的还是同一条"红砖路"，不会觉得页面在乱跳。
+   * 四种材质在整页交替出现，避免整页看起来只有一种路。
+   */
+  const materialOf = useCallback((pathId?: string): RoadMaterial => {
+    // 按页面实际出现顺序逐段指定，保证相邻两段材质不同。
+    // （分类顺序：hash, two-pointers, sliding-window, array, linked-list,
+    //   binary-tree, graph, backtracking, binary-search, stack, heap,
+    //   greedy, dynamic-programming, techniques）
+    const MAP: Record<string, RoadMaterial> = {
+      hash: 'brick',
+      'two-pointers': 'cobble',
+      'sliding-window': 'asphalt',
+      array: 'brick',
+      'linked-list': 'wood',
+      'binary-tree': 'cobble',
+      graph: 'asphalt',
+      backtracking: 'brick',
+      'binary-search': 'wood',
+      stack: 'cobble',
+      heap: 'asphalt',
+      greedy: 'brick',
+      'dynamic-programming': 'wood',
+      techniques: 'cobble',
+    };
+    return (pathId && MAP[pathId]) || 'asphalt';
+  }, []);
+
   const compact = width <= 560;
   /** 与 PathOverview.css 中的节点尺寸保持一致 */
   const nodeRadius = width <= 480 ? 44 : width <= 768 ? 48 : 56;
@@ -161,6 +195,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
           }
         ),
         completed: decoratedPaths[i].completionStats.percentage >= 100,
+        material: materialOf(decoratedPaths[i].path.id),
       });
     }
 
@@ -185,11 +220,14 @@ const PathOverview: React.FC<PathOverviewProps> = ({
           }
         ),
         completed: overallStats.percentage >= 100,
+        material: materialOf(
+          decoratedPaths[decoratedPaths.length - 1]?.path.id
+        ),
       });
     }
 
     return result;
-  }, [decoratedPaths, layout, overallStats.percentage, width]);
+  }, [decoratedPaths, layout, overallStats.percentage, width, materialOf]);
 
   const handlePathOpen = useCallback(
     (pathId: string) => onPathClick(pathId),

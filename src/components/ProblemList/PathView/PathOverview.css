@@ -52,77 +52,47 @@
   overflow: visible;
 }
 
-/* ---------- 路面：投影 / 路基 / 路面 / 内阴影 / 高光 / 车道线 ---------- */
+/* ---------- 小路：投影 / 路基 / 材质路面 / 内阴影 / 柔光 ---------- */
 
 /* 投影：柔和落影，让路面从背景上浮起来 */
 .trail-road-shadow {
-  stroke: #8a8f98;
+  stroke: #7d838c;
   filter: url(#trail-drop-shadow);
 }
 
-/* 路基：比路面深，向下偏移形成厚度（未完成状态是石灰色） */
+/* 路基：具体颜色按材质在组件里用 inline style 覆盖，
+   这里只兜底一个深灰。 */
 .trail-road-base {
   stroke: #b9bfc7;
 }
 
+/* 完成态的路基：统一压成深绿，
+   材质本身保持原样，避免"一做完成就全变成绿管子"。 */
 .trail-road-base.is-completed {
-  stroke: #3f8f00;
+  stroke: #3f7f18;
 }
 
-/* 路面主体：比原来更亮，形成"路面浅、路基深"的层次 */
-.trail-road-surface {
-  stroke: #f4f6f9;
-}
-
-.trail-road-surface.is-completed {
-  stroke: #74dc25;
-}
+/* 路面主体：材质图案由组件用 stroke 属性提供。
+   注意这里**不能**写 stroke —— CSS 的优先级高于 SVG presentation
+   attribute，一旦写死颜色就会把 url(#pattern) 覆盖成纯色。 */
 
 /* 内阴影：贴边一圈暗色，做出路面略微凹陷的立体感 */
 .trail-road-inner-shadow {
   stroke: #000;
-  opacity: 0.14;
+  opacity: 0.16;
   filter: url(#trail-inner-shadow);
 }
 
-/* 横向明暗层：由粗到细叠出圆柱感（中间亮、两侧略暗），
-   宽度逐层收窄，跟路面天然贴合，不依赖固定方向的 translate。 */
-.trail-road-tone-1 {
-  stroke: #e3e8ee;
-}
-
-.trail-road-tone-1.is-completed {
-  stroke: #5cc908;
-}
-
-.trail-road-tone-2 {
-  stroke: #eef2f7;
-}
-
-.trail-road-tone-2.is-completed {
-  stroke: #6bd818;
-}
-
-/* 高光：最内圈细亮线 */
-.trail-road-highlight {
+/* 柔光：很淡的中间亮带。只加一点点白，不能盖住材质纹理 */
+.trail-road-sheen {
   stroke: #ffffff;
-  opacity: 0.92;
+  opacity: 0.2;
 }
 
-/* 车道虚线：让"线"读起来像"路"。
-   之前用 2px 压在 15px 路面上几乎看不见，这里加粗到 2.6 并提高对比。 */
-.trail-road-dash {
-  stroke: #b3bdc8;
-  opacity: 0.95;
-  stroke-width: 2.6;
-}
-
-/* 完成态：路面本身是很亮的绿，白色虚线对比不足，
-   改用略深的绿白，压住整体但保留"车道"的可读性。 */
-.trail-road-dash.is-completed {
-  stroke: #c8f79a;
-  opacity: 0.95;
-  stroke-width: 2.6;
+/* 完成态：给材质整体提亮，并叠一层绿色辉光，
+   既保留材质辨识度，又能一眼看出"这段走完了"。 */
+.trail-link-group.is-completed .trail-road-surface {
+  filter: brightness(1.12) saturate(1.15) drop-shadow(0 0 3px rgba(88, 204, 2, 0.45));
 }
 
 /* 内阴影滤镜里 flood 的颜色需要能随主题调整 */

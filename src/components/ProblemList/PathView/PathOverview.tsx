@@ -372,6 +372,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             />
           </div>
         )}
+
       </div>
     </div>
   );

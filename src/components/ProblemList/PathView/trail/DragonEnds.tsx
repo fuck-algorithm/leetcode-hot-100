@@ -29,7 +29,12 @@ const GOLD_MID = '#e8b23a';
 const GOLD_DEEP = '#b4771a';
 const DONE_GREEN = '#58cc02';
 
-/** 龙首：朝上，从龙身顶端"冒出来"迎向起点 */
+/**
+ * 龙首（侧脸，中国龙比例）
+ *
+ * 之前那版像老鼠的原因：眼睛直径占到头高的 40%，吻部又短又圆。
+ * 这里按真实龙首的比例重画——长吻、小眼、额头隆起、上下颌分明。
+ */
 export const DragonHead: React.FC<Props> = ({ x, y, scale, completed }) => {
   const main = completed ? DONE_GREEN : GOLD_MID;
   const deep = completed ? '#3f9a00' : GOLD_DEEP;
@@ -37,101 +42,108 @@ export const DragonHead: React.FC<Props> = ({ x, y, scale, completed }) => {
 
   return (
     <g transform={`translate(${x} ${y}) scale(${scale})`} className="dragon-head">
-      {/* 鬃毛：反向飘起的火焰簇（在头的后方/上方） */}
-      <path d="M-14 2 C -24 -10 -30 -22 -24 -32 C -20 -20 -14 -12 -6 -4 Z" fill={deep} opacity={0.85} />
-      <path d="M14 2 C 24 -10 30 -22 24 -32 C 20 -20 14 -12 6 -4 Z" fill={deep} opacity={0.85} />
-      <path d="M0 0 C -6 -18 -6 -32 0 -44 C 6 -32 6 -18 0 0 Z" fill={deep} opacity={0.7} />
+      {/* 颈后鬃毛：三束向后飘的火苗 */}
+      <path d="M8 -6 C 26 -18 38 -30 40 -46 C 30 -34 20 -24 10 -14 Z" fill={deep} opacity={0.8} />
+      <path d="M10 4 C 30 0 42 -8 48 -22 C 36 -12 24 -6 12 -2 Z" fill={deep} opacity={0.7} />
+      <path d="M10 14 C 26 18 36 28 40 42 C 30 30 20 22 10 22 Z" fill={deep} opacity={0.6} />
 
-      {/* 龙角：从额侧向后上方伸出的骨角 */}
-      <path d="M-13 -4 C -24 -14 -32 -22 -38 -34 C -28 -26 -20 -18 -9 -8 Z" fill={deep} />
-      <path d="M13 -4 C 24 -14 32 -22 38 -34 C 28 -26 20 -18 9 -8 Z" fill={deep} />
+      {/* 龙角：两支向后上方的骨角，粗细适中、末端微叉。
+          之前做得像扇子（过宽过长），这里收窄、缩短。 */}
+      <path d="M-4 -28 C 2 -44 8 -54 18 -62 L 24 -57 C 15 -49 10 -38 6 -26 Z" fill={deep} />
+      <path d="M16 -55 L 24 -68 L 30 -62 L 21 -53 Z" fill={deep} />
+      <path d="M-14 -24 C -13 -38 -10 -47 -4 -56 L 2 -51 C -4 -43 -7 -34 -8 -22 Z" fill={deep} opacity={0.85} />
 
-      {/* 头部主体：3/4 侧视的楔形，吻部向左下探出 */}
+      {/* 头部主体：长吻楔形，额头隆起，颈侧收窄 */}
       <path
-        d="M-30 12 C -30 0 -22 -10 -6 -14 C 12 -18 26 -12 30 0 C 33 12 26 26 12 32 C -4 38 -26 34 -30 22 Z"
+        d="M-66 17
+           C -68 7 -59 -4 -43 -12
+           C -25 -21 -3 -24 13 -18
+           C 25 -14 33 -6 33 5
+           C 33 16 26 24 14 28
+           C -2 33 -22 34 -38 30
+           C -53 26 -63 23 -66 17 Z"
         fill={main}
       />
 
-      {/* 额顶高光带 */}
+      {/* 额骨高光 */}
       <path
-        d="M-24 4 C -20 -6 -8 -11 6 -12 C 18 -13 26 -8 27 -2 C 22 -9 12 -8 2 -6 C -10 -4 -18 0 -24 4 Z"
+        d="M-40 -10 C -24 -18 -6 -20 8 -15 C -6 -17 -24 -14 -40 -6 Z"
         fill={light}
-        opacity={0.8}
+        opacity={0.75}
       />
 
-      {/* 吻部（左下突出，形成龙嘴的侧面轮廓） */}
+      {/* 上唇/鼻梁隆起 */}
       <path
-        d="M-30 12 C -34 16 -34 24 -28 27 C -22 30 -16 26 -14 20 C -18 18 -24 15 -30 12 Z"
-        fill={main}
+        d="M-64 14 C -56 8 -46 8 -38 12 C -46 14 -56 16 -64 20 Z"
+        fill={light}
+        opacity={0.45}
       />
 
-      {/* 鼻孔 */}
-      <ellipse cx="-29" cy="18" rx="1.8" ry="1.2" fill={deep} transform="rotate(-20 -29 18)" />
-
-      {/* 嘴线 */}
+      {/* 下颌：单独一块，略微张开 */}
       <path
-        d="M-31 25 C -22 27 -12 26 -6 22"
-        stroke={deep}
-        strokeWidth={1.6}
+        d="M-62 26 C -52 32 -36 36 -20 34 C -10 33 -4 30 -2 27 C -8 36 -28 42 -46 40 C -56 39 -62 34 -62 26 Z"
+        fill={deep}
+        opacity={0.55}
+      />
+
+      {/* 口腔缝隙 */}
+      <path
+        d="M-60 24 C -44 28 -24 29 -6 26"
+        stroke="#5a1f1f"
+        strokeWidth={2.4}
         fill="none"
         strokeLinecap="round"
-        opacity={0.7}
       />
 
-      {/* 獠牙（从嘴线下方露出） */}
-      <path d="M-22 26 L -19 31 L -16 26 Z" fill="#fffaf0" />
-      <path d="M-12 25 L -9 30 L -6 24 Z" fill="#fffaf0" />
+      {/* 獠牙：上颚朝下、下颚朝上 */}
+      <path d="M-52 25 L -49 34 L -46 25 Z" fill="#fffaf0" />
+      <path d="M-34 27 L -31 35 L -28 27 Z" fill="#fffaf0" />
+      <path d="M-50 33 L -47 25 L -44 33 Z" fill="#f3ead2" opacity={0.9} />
 
-      {/* 眼睛：接近侧视，一只大一只小，带竖瞳 */}
-      <ellipse cx="-8" cy="4" rx="5" ry="6" fill="#1a1a1a" />
-      <ellipse cx="-8" cy="5" rx="2" ry="4" fill={light} />
-      <circle cx="-10" cy="1.5" r="1.5" fill="#fff" opacity={0.9} />
-      {/* 远侧眼（被头部遮挡，只露一点） */}
-      <ellipse cx="8" cy="2" rx="3" ry="3.6" fill="#1a1a1a" opacity={0.85} />
-      <ellipse cx="8" cy="3" rx="1.2" ry="2.4" fill={light} opacity={0.9} />
+      {/* 鼻孔 */}
+      <ellipse cx="-60" cy="15" rx="2.4" ry="1.5" fill={deep} transform="rotate(-24 -60 15)" />
 
-      {/* 眉脊：一道弧线，强化"怒目" */}
+      {/* 眼睛：小得多（约为头高的 1/6），带竖瞳与眉压 */}
+      <ellipse cx="-30" cy="-2" rx="5.5" ry="6.5" fill="#141008" />
+      <ellipse cx="-30" cy="-1" rx="2.2" ry="4.4" fill={light} />
+      <circle cx="-32" cy="-5" r="1.6" fill="#fff" opacity={0.92} />
+      {/* 眉脊压住眼上缘，形成怒目 */}
       <path
-        d="M-15 -2 C -11 -6 -5 -5 -1 -1"
+        d="M-40 -9 C -34 -13 -24 -12 -19 -6"
+        stroke={deep}
+        strokeWidth={2.6}
+        fill="none"
+        strokeLinecap="round"
+      />
+
+      {/* 颊侧鳞片：沿颧骨排三片 */}
+      <path d="M-14 -12 q 4 -5 9 -1 q -5 4 -9 1 Z" fill={deep} opacity={0.35} />
+      <path d="M-6 -8 q 4 -5 9 -1 q -5 4 -9 1 Z" fill={deep} opacity={0.3} />
+      <path d="M-22 -14 q 4 -5 9 -1 q -5 4 -9 1 Z" fill={deep} opacity={0.3} />
+
+      {/* 龙须：从吻侧甩出的长须，带一点颤动尾 */}
+      <path
+        d="M-62 22 C -78 26 -92 36 -100 52"
+        stroke={deep}
+        strokeWidth={2.4}
+        fill="none"
+        strokeLinecap="round"
+      />
+      <path
+        d="M-60 14 C -76 10 -90 8 -102 14"
+        stroke={deep}
+        strokeWidth={2}
+        fill="none"
+        strokeLinecap="round"
+      />
+      {/* 下颌须 */}
+      <path
+        d="M-46 40 C -56 50 -64 58 -74 62"
         stroke={deep}
         strokeWidth={1.8}
         fill="none"
         strokeLinecap="round"
-        opacity={0.75}
-      />
-
-      {/* 龙须：从左吻部甩出的两根长须 */}
-      <path
-        d="M-32 20 C -46 22 -56 28 -62 38"
-        stroke={deep}
-        strokeWidth={2.2}
-        fill="none"
-        strokeLinecap="round"
-      />
-      <path
-        d="M-31 16 C -44 12 -54 12 -62 16"
-        stroke={deep}
-        strokeWidth={2}
-        fill="none"
-        strokeLinecap="round"
-      />
-      {/* 右侧短须 */}
-      <path
-        d="M28 10 C 40 8 48 12 54 20"
-        stroke={deep}
-        strokeWidth={2}
-        fill="none"
-        strokeLinecap="round"
-      />
-
-      {/* 头顶鳞片点缀 */}
-      <path
-        d="M-4 -9 C 0 -11 4 -10 6 -7"
-        stroke={deep}
-        strokeWidth={1.2}
-        fill="none"
-        opacity={0.5}
-        strokeLinecap="round"
+        opacity={0.8}
       />
     </g>
   );

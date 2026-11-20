@@ -1,5 +1,6 @@
 import React from 'react';
-import { DragonHead, DragonTail } from './DragonEnds';
+
+import { DragonHead } from './DragonEnds';
 import { buildSpineSpikes } from './spine';
 
 /** 路面材质：不同分类的路用不同的小路风格，整页看起来更丰富 */
@@ -307,15 +308,9 @@ const TrailConnectors: React.FC<TrailConnectorsProps> = ({
               completed={dragon.head.completed}
             />
           )}
-          {dragon?.tail && (
-            <DragonTail
-              variant="tail"
-              x={dragon.tail.x}
-              y={dragon.tail.y}
-              scale={dragon.tail.scale}
-              completed={dragon.tail.completed}
-            />
-          )}
+          {/* 顶端不再画之前的"龙尾"装饰——用户反馈那看起来像个脑袋。
+              顶端改为让龙身自然收尖（linecap round + 逐渐收窄的虚化），
+              避免在"开始"节点上方悬一个球状物。 */}
         </>
       ) : (
         connections.map(connection => (

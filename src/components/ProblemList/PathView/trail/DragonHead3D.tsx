@@ -69,7 +69,7 @@ const makeScaleTexture = (): THREE.CanvasTexture => {
   const tex = new THREE.CanvasTexture(cv);
   tex.wrapS = THREE.RepeatWrapping;
   tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(3, 3);
+  tex.repeat.set(2.2, 2.2);
   return tex;
 };
 
@@ -87,21 +87,23 @@ const sculptSkull = (): THREE.BufferGeometry => {
   // 从左（吻尖，x=-1）到右（后脑，x=+1）的半径序列。
   // 每条: [x 位置, 半径(相对头高)]
   const spine: Array<[number, number]> = [
-    [-1.00, 0.02],  // 吻尖
-    [-0.94, 0.13],  // 吻端
-    [-0.86, 0.20],
-    [-0.74, 0.27],
-    [-0.60, 0.34],  // 吻部
-    [-0.44, 0.42],
-    [-0.26, 0.54],  // 颊部最宽
-    [-0.06, 0.62],
-    [0.14, 0.63],   // 颅顶最宽
-    [0.34, 0.58],
-    [0.54, 0.48],
-    [0.72, 0.34],
-    [0.86, 0.20],
-    [0.97, 0.08],   // 后脑收口
-    [1.00, 0.02],
+    [-1.00, 0.015], // 吻尖
+    [-0.96, 0.075], // 吻端（细）
+    [-0.90, 0.12],
+    [-0.82, 0.165],
+    [-0.72, 0.21],  // 长吻段：保持细窄，这是"不像鱼"的关键
+    [-0.60, 0.26],
+    [-0.46, 0.31],
+    [-0.30, 0.36],  // 眶前
+    [-0.14, 0.40],  // 颊部
+    [0.02, 0.42],   // 颅顶最宽（比上一版 0.63 收窄 1/3）
+    [0.20, 0.41],
+    [0.38, 0.38],
+    [0.56, 0.32],
+    [0.72, 0.24],
+    [0.86, 0.15],
+    [0.96, 0.06],
+    [1.00, 0.015],
   ];
 
   // Lathe 绕 Y 轴旋转；半径用轮廓值，高度方向取"头长"
@@ -111,7 +113,7 @@ const sculptSkull = (): THREE.BufferGeometry => {
   // 旋转轴从 Y 换成 X：吻部朝 -X
   geo.rotateZ(-Math.PI / 2);
   // 纵向压扁（爬行类头部偏扁），横向略收
-  geo.scale(1.0, 0.78, 0.86);
+  geo.scale(1.28, 0.80, 0.86);
 
   // 额骨隆起：把后段上表面顶高一点，做出一条脊
   const attr = geo.attributes.position as THREE.BufferAttribute;
@@ -165,8 +167,9 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
 
     const camera = new THREE.PerspectiveCamera(32, width / height, 0.1, 200);
     // 侧前方视角：吻部朝 -X，把相机放在 -X 与 +Z 之间，才看得到侧脸
-    camera.position.set(-3.6, 1.15, 5.2);
-    camera.lookAt(-0.7, 0.0, 0);
+    // 正侧偏前：沿 Z 轴看向 -X 的侧脸，这样吻部、眼、颌都完整可见
+    camera.position.set(-1.2, 0.9, 4.6);
+    camera.lookAt(-0.45, 0.02, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -229,7 +232,7 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
       roughness: 0.52,
       metalness: 0.28,
       bumpMap: scaleBump,
-      bumpScale: 0.055,
+      bumpScale: 0.12,
       envMapIntensity: 0.9,
     });
 
@@ -259,7 +262,7 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
 
     // 眼珠：clearcoat 做出角膜的反光层
     const eyeMat = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(completed ? '#bbff7a' : '#ffcf4a'),
+      color: new THREE.Color(completed ? '#9de84f' : '#e8a018'),
       roughness: 0.08,
       metalness: 0.0,
       clearcoat: 1.0,
@@ -285,20 +288,20 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
     const dragon = new THREE.Group();
     // 侧脸朝镜头：脸朝 -X，绕 Y 转一点露出 3/4 面
     // 让龙身从右后方延伸、吻部朝左前，形成 3/4 侧脸构图
-    dragon.rotation.y = -Math.PI * 0.30;
+    dragon.rotation.y = -Math.PI * 0.16;
     scene.add(dragon);
 
     // ---- 头骨 ----
     const skull = new THREE.Mesh(sculptSkull(), skin);
-    skull.scale.set(1.0, 1.0, 0.94);
+    skull.scale.set(1.0, 1.05, 0.90);
     skull.position.set(0, 0.08, 0);
     dragon.add(skull);
 
     // ---- 下颌（微张） ----
     const jaw = new THREE.Mesh(sculptJaw(), belly);
-    jaw.position.set(-0.34, -0.40, 0);
-    jaw.rotation.z = -0.14;
-    jaw.scale.set(1.06, 0.92, 0.90);
+    jaw.position.set(-0.34, -0.30, 0);
+    jaw.rotation.z = -0.12;
+    jaw.scale.set(0.86, 0.78, 0.76);
     dragon.add(jaw);
 
     // 口腔：张嘴时避免看穿
@@ -310,19 +313,29 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
     // ---- 眼睛：眼窝凹陷 + 角膜 + 竖瞳 ----
     for (const side of [-1, 1]) {
       // 眶骨隆起
-      const socket = new THREE.Mesh(new THREE.SphereGeometry(0.22, 22, 16), skin);
-      socket.position.set(-0.50, 0.26, 0.26 * side);
-      socket.scale.set(1.15, 0.72, 0.85);
+      // 眼窝用深色薄片压在脸侧，只做"眼眶"的阴影，
+      // 不再用金色球（那玩意比眼球更靠外，会把眼珠整个包住）
+      const socket = new THREE.Mesh(
+        new THREE.SphereGeometry(0.175, 22, 16),
+        new THREE.MeshStandardMaterial({
+          color: new THREE.Color('#6b4410'),
+          roughness: 0.9,
+        })
+      );
+      socket.position.set(-0.47, 0.25, 0.255 * side);
+      socket.scale.set(1.15, 0.85, 0.32);
       dragon.add(socket);
 
-      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.13, 26, 20), eyeMat);
-      eye.position.set(-0.57, 0.26, 0.30 * side);
-      eye.scale.set(0.92, 1.05, 0.96);
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.145, 28, 22), eyeMat);
+      eye.position.set(-0.47, 0.25, 0.345 * side);
+      eye.scale.set(0.92, 1.05, 0.92);
       dragon.add(eye);
 
-      const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.062, 18, 14), pupilMat);
-      pupil.position.set(-0.61, 0.26, 0.315 * side);
-      pupil.scale.set(0.32, 1.5, 0.55);
+      // 瞳必须探出眼球表面（z 比眼球半径更大），否则会被眼球吞掉
+      const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.082, 20, 16), pupilMat);
+      // 眼球表面在 z≈0.478（心 0.345 + 半径 0.133），瞳孔中心要探到 0.50 才不会陷进去
+      pupil.position.set(-0.47, 0.25, 0.50 * side);
+      pupil.scale.set(0.55, 1.25, 0.30);
       dragon.add(pupil);
 
       // 眉脊：压住眼上缘，形成凶相
@@ -330,7 +343,7 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
         new THREE.CapsuleGeometry(0.055, 0.30, 4, 12),
         skin
       );
-      brow.position.set(-0.46, 0.40, 0.27 * side);
+      brow.position.set(-0.44, 0.42, 0.31 * side);
       brow.rotation.z = -0.32;
       brow.rotation.x = 0.22 * side;
       dragon.add(brow);
@@ -347,10 +360,10 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
     // ---- 角：沿曲线、半径递减，做出弯曲且变细的骨角 ----
     const addHorn = (side: number) => {
       const curve = new THREE.CatmullRomCurve3([
-        new THREE.Vector3(0.02, 0.52, 0.22 * side),
-        new THREE.Vector3(0.28, 0.82, 0.34 * side),
-        new THREE.Vector3(0.54, 1.02, 0.42 * side),
-        new THREE.Vector3(0.78, 1.08, 0.46 * side),
+        new THREE.Vector3(0.08, 0.36, 0.18 * side),
+        new THREE.Vector3(0.30, 0.52, 0.22 * side),
+        new THREE.Vector3(0.52, 0.56, 0.22 * side),
+        new THREE.Vector3(0.70, 0.48, 0.20 * side),
       ]);
       const segs = 16;
       for (let i = 0; i < segs; i++) {
@@ -358,8 +371,8 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
         const t1 = (i + 1) / segs;
         const p0 = curve.getPoint(t0);
         const p1 = curve.getPoint(t1);
-        const r0 = 0.10 * Math.pow(1 - t0, 1.3) + 0.010;
-        const r1 = 0.10 * Math.pow(1 - t1, 1.3) + 0.010;
+        const r0 = 0.095 * Math.pow(1 - t0, 1.2) + 0.008;
+        const r1 = 0.095 * Math.pow(1 - t1, 1.2) + 0.008;
         const dir = new THREE.Vector3().subVectors(p1, p0);
         const len = dir.length();
         const mesh = new THREE.Mesh(
@@ -383,7 +396,7 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
       x: number, y: number, z: number, len: number, down: boolean
     ) => {
       const mesh = new THREE.Mesh(
-        new THREE.ConeGeometry(0.030, len, 8),
+        new THREE.ConeGeometry(0.038, len, 9),
         toothMat
       );
       mesh.position.set(x, y, z);
@@ -391,11 +404,11 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
       dragon.add(mesh);
     };
     // 上颚
-    addTooth(-0.84, -0.14, 0.08, 0.24, true);
-    addTooth(-0.84, -0.14, -0.08, 0.24, true);
-    addTooth(-0.64, -0.16, 0.12, 0.20, true);
-    addTooth(-0.64, -0.16, -0.12, 0.20, true);
-    addTooth(-0.44, -0.14, 0.15, 0.13, true);
+    addTooth(-0.92, -0.02, 0.10, 0.32, true);
+    addTooth(-0.92, -0.02, -0.10, 0.32, true);
+    addTooth(-0.70, -0.04, 0.14, 0.26, true);
+    addTooth(-0.70, -0.04, -0.14, 0.26, true);
+    addTooth(-0.48, -0.06, 0.17, 0.20, true);
     // 下颚
     addTooth(-0.80, -0.30, 0.08, 0.14, false);
     addTooth(-0.80, -0.30, -0.08, 0.14, false);
@@ -433,7 +446,7 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
     const animate = () => {
       t += 0.016;
       dragon.position.y = Math.sin(t * 0.75) * 0.045;
-      dragon.rotation.y = -Math.PI * 0.30 + pointer.x * 0.14 + Math.sin(t * 0.5) * 0.03;
+      dragon.rotation.y = -Math.PI * 0.16 + pointer.x * 0.14 + Math.sin(t * 0.5) * 0.03;
       dragon.rotation.x = pointer.y * 0.05;
       renderer.render(scene, camera);
       raf = requestAnimationFrame(animate);

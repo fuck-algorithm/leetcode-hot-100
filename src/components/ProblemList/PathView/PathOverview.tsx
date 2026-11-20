@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { LearningPath } from '../data/learningPaths';
 import AscensionNode from './AscensionNode';
+import { DragonHead3D } from './trail/DragonHead3D';
 import OverviewPathNode, {
   OverviewCompletionStats,
   OverviewPathStats,
@@ -278,7 +279,9 @@ const PathOverview: React.FC<PathOverviewProps> = ({
         };
         // 侧视龙头：脸朝左、后脑在右侧。龙脖要从"脑后"接进来，
         // 即 x 偏右、y 略低于头顶，才会被头骨盖住，不会像插在头上的一根管子。
-        const to = { x: h.x + 14 * h.scale, y: h.y - 2 * h.scale };
+        // 3D 龙头朝左，头在画布中心偏左；龙脖从上方偏右位置接入，
+        // 视觉上像从颈后伸进头骨
+        const to = { x: h.x + 30, y: h.y - 40 };
         result.push({
           key: 'overview-dragon-neck',
           // 龙脖不用大摆幅：这里只是把卡片和龙头接起来，
@@ -373,6 +376,23 @@ const PathOverview: React.FC<PathOverviewProps> = ({
           </div>
         )}
 
+        {/* 龙头：Three.js 渲染。整页七千多像素，只有这一处上 WebGL，
+            龙身继续用 SVG，避免滚动时整屏重绘掉帧。 */}
+        {layout.dragon?.head && (
+          <div
+            className="dragon-head3d-wrapper"
+            style={{
+              left: `${layout.dragon.head.x}px`,
+              top: `${layout.dragon.head.y - 130}px`,
+            }}
+          >
+            <DragonHead3D
+              width={compact ? 260 : 380}
+              height={compact ? 210 : 300}
+              completed={overallStats.percentage >= 100}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

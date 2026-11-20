@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { DragonHead } from './DragonEnds';
 import { buildSpineSpikes } from './spine';
 
 /** 路面材质：不同分类的路用不同的小路风格，整页看起来更丰富 */
@@ -299,15 +298,8 @@ const TrailConnectors: React.FC<TrailConnectorsProps> = ({
           {connections.map(connection => (
             <RaisedRoad key={connection.key} connection={connection} />
           ))}
-          {dragon?.head && (
-            <DragonHead
-              variant="head"
-              x={dragon.head.x}
-              y={dragon.head.y}
-              scale={dragon.head.scale}
-              completed={dragon.head.completed}
-            />
-          )}
+          {/* 龙头由 PathOverview 里的 DragonHead3D（Three.js）渲染，
+              这里不再画 SVG 版，避免两个头重叠。 */}
           {/* 顶端不再画之前的"龙尾"装饰——用户反馈那看起来像个脑袋。
               顶端改为让龙身自然收尖（linecap round + 逐渐收窄的虚化），
               避免在"开始"节点上方悬一个球状物。 */}

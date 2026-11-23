@@ -350,7 +350,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             className="dragon-head3d-wrapper"
             style={{
               left: `${layout.dragon.head.x}px`,
-              top: `${layout.dragon.head.y - 330}px`,
+              top: `${layout.dragon.head.y - 300}px`,
               // 尺寸必须和传给 canvas 的 width/height 一致，
               // 否则 CSS 的 100% 撑不起来、画布高度为 0（踩过）
               width: compact ? 380 : 620,
@@ -358,8 +358,8 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             }}
           >
             <DragonHead3D
-              width={compact ? 320 : 460}
-              height={compact ? 420 : 620}
+              width={compact ? 300 : 440}
+              height={compact ? 400 : 560}
               completed={overallStats.percentage >= 100}
             />
           </div>

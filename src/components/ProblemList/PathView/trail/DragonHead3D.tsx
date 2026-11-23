@@ -95,6 +95,7 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
     // 骨骼动画：模型自带 8 段（Flying_Idle / Fast_Flying / Headbutt...），
     // 优先用飞行动画循环播放，龙才"活"起来，而不是一尊雕塑。
     let mixer: THREE.AnimationMixer | null = null;
+    let modelRef: THREE.Object3D | null = null;
 
     let raf = 0;
     let t = 0;
@@ -111,9 +112,13 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
       if (disposed) return;
       t += 0.016;
       mixer?.update(0.016);
-      // 极轻微的呼吸 + 头部随鼠标微动，营造"抬起头看向你"的感觉
-      dragon.position.y = Math.sin(t * 0.7) * 0.03;
-      dragon.rotation.y = baseYaw + pointer.x * 0.10;
+      // 极轻微的整体浮动 + 鼠标视差，不改变模型自身姿态
+      if (modelRef) {
+        modelRef.position.y = basePosY + Math.sin(t * 0.7) * 0.04;
+        camera.position.x = pointer.x * 0.35;
+        camera.position.y = s2_0.y * 0.08 + pointer.y * -0.25;
+        camera.lookAt(0, 0, 0);
+      }
       renderer.render(scene, camera);
       // 调试探针：把场景实际状态挂到 window 上，便于外部核查
       (window as any).__dragonProbe = {
@@ -133,6 +138,8 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
 
     // 默认朝向在加载后按实际包围盒确定
     let baseYaw = 0;
+    let basePosY = 0;
+    let s2_0 = new THREE.Vector3(0, 3, 0);
     raf = requestAnimationFrame(animate);
 
     new GLTFLoader().load(
@@ -166,61 +173,48 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
 
         setCredit(true);
 
-        // 播放飞行动画：让龙翼与身体真的动起来
-        if (gltf.animations?.length) {
-          mixer = new THREE.AnimationMixer(obj);
-          // 只用 Flying_Idle：Fast_Flying 摆幅太大，龙会漂出取景框，
-          // 也让人看不清头部朝向
-          const clip =
-            gltf.animations.find(a => /Flying_Idle/i.test(a.name)) ||
-            gltf.animations[0];
-          const action = mixer.clipAction(clip);
-          action.setLoop(THREE.LoopRepeat, Infinity);
-          action.play();
-        }
+        // 不播动画：这个 glTF 的动画会驱动各节点自身 transform，
+        // 从而覆盖父级做的居中/缩放，导致龙身跑出视野只剩头部。
+        // 静态摆好姿态反而稳定。
 
-        // ---- 姿态：龙身从上往下，龙头在最下方抬起面向观众 ----
-        // 直接作用在 obj 上（不再套中间组）：
-        // 套组会让"居中"与"组内旋转"两次变换叠加，模型最后跑出视锥。
-        // 实测 6 个朝向角后选定：yaw = π/2 时龙头正面朝向观众，
-        // 龙身自上方垂下、尾巴在底部盘绕 —— 正是要的构图。
-        obj.rotation.set(-Math.PI * 0.12, Math.PI * 0.5, 0);
+        // ---- 姿态与取景（照搬已在独立页面验证通过的实现）----
+        // 关键：obj 直接加到 scene，不再经过 dragon 组。
+        // 之前套了一层组、又在动画循环里改组的旋转，两次变换互相叠加，
+        // 导致每帧都把模型推到视锥外，只剩头部可见。
+        // 姿态：**正面抬头**（在独立页面里逐个角度试出来的最优解）。
+        // 模型原始朝向是"展翅平飞、脸朝 +Z"，不做旋转时正好正对镜头、
+        // 抬头张嘴，龙翼在两侧展开 —— 这正是"龙头在下、抬头面向用户"。
+        // 唯一保留的小改动：绕 X 轴微微后仰 8°，让下巴抬高一点更有神。
+        obj.rotation.set(-Math.PI * 0.045, 0, 0);
         obj.updateMatrixWorld(true);
 
-        // 旋转后重新算包围盒，按它做居中 + 等比缩放
-        // （顺序必须是"先旋转、再按旋转后的盒居中缩放"，否则会偏）
-        const rbox = new THREE.Box3().setFromObject(obj);
-        const rcenter = rbox.getCenter(new THREE.Vector3());
-        const rsize = rbox.getSize(new THREE.Vector3());
-        const rmax = Math.max(rsize.x, rsize.y, rsize.z) || 1;
-        const k = 3.0 / rmax;
+        // 归一化：先旋转、再按旋转后的包围盒居中 + 等比缩放。
+        // 注意顺序——必须先 sub(center) 再 scale，且位置要跟着同一比例缩放，
+        // 否则模型会被推离原点（踩过）。
+        const b1 = new THREE.Box3().setFromObject(obj);
+        const c1 = b1.getCenter(new THREE.Vector3());
+        const s1 = b1.getSize(new THREE.Vector3());
+        const max1 = Math.max(s1.x, s1.y, s1.z) || 1;
+        const k = 3.0 / max1;
 
-        obj.position.sub(rcenter.multiplyScalar(1)); // 把中心移到原点
+        obj.position.set(-c1.x * k, -c1.y * k, -c1.z * k);
         obj.scale.setScalar(k);
-        // 缩放是绕 obj 原点做的，位置也要按同一比例修正
-        obj.position.multiplyScalar(k);
+        scene.add(obj);
         obj.updateMatrixWorld(true);
 
-        dragon.add(obj);
-        baseYaw = 0;
-        dragon.rotation.y = baseYaw;
-
-        // 取景：只读尺寸，**不要再居中一次**。
-        // 之前多调了一次 obj.position.sub(center)，把已经居中的模型又推偏了，
-        // 结果是只剩头部在视野里（身体和尾巴跑到画面外）。
-        obj.updateMatrixWorld(true);
-        const box3 = new THREE.Box3().setFromObject(obj);
-        const sz3 = box3.getSize(new THREE.Vector3());
-        // 相机距离直接用"最长边 × 系数"这个已被验证过的经验公式。
-        // 之前用 FOV/视锥反推，泰勒展开漏掉了画布宽高比的影响，
-        // 结果不是太近（只剩头部）就是太远（缩成小点）。
-        // 横竖都要装下：水平方向按画布宽高比折算成等效高度再取大者
-        const aspect = width / height;
-        const needForY = sz3.y;
-        const needForX = sz3.x / aspect;
-        const d = Math.max(needForY, needForX) * 1.9;
-        camera.position.set(0, sz3.y * 0.04, d);
+        const b2 = new THREE.Box3().setFromObject(obj);
+        const s2 = b2.getSize(new THREE.Vector3());
+        // 按视锥几何反推距离：水平垂直都要装得下，再留 35% 余量
+        const tan = Math.tan((camera.fov * Math.PI) / 360);
+        const needV = s2.y / 2 / tan;
+        const needH = s2.x / 2 / (width / height) / tan;
+        const d = Math.max(needV, needH) * 1.35;
+        camera.position.set(0, 0, d);
         camera.lookAt(0, 0, 0);
+
+        modelRef = obj;
+        basePosY = obj.position.y;
+        s2_0 = s2.clone();
       },
       undefined,
       err => {

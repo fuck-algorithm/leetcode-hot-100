@@ -11,9 +11,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
  *   现成资产的上限高一个量级，所以换成加载 glTF。
  *
  * 模型来源：
- *   "Dragon" by Quaternius — CC0 / Public Domain（无署名义务）
- *   https://poly.pizza/m/3rUm1cN3yp
- *   实际文件 md5 已核对：public/models/dragon.glb = ae5b8510...glb
+ *   "Red Dragon" by Tomek Zamojski — CC BY 3.0（需署名，页面下方保留署名行）
+ *   https://poly.pizza/m/5SgYrV6nhws
+ *   10 个网格 / 130K 顶点，是候选里细节最丰富的一版
  *
  * 摆放姿态（用户要求）：
  *   龙身从画面**上方**往下盘，龙头在最下方，且**抬起来面向用户**。
@@ -32,9 +32,53 @@ interface Props {
  * Quaternius 的 Dragon 是 CC0（公有领域），法律上不需要署名；
  * 仍然保留一行致谢，是出于对作者的尊重，不是许可要求。
  */
-export const DRAGON_CREDIT = 'Dragon by Quaternius — CC0 (Public Domain)';
+export const DRAGON_CREDIT = '“Red Dragon” by Tomek Zamojski — CC BY 3.0';
 
-const MODEL_URL = `${process.env.PUBLIC_URL}/models/dragon.glb`;
+const MODEL_URL = `${process.env.PUBLIC_URL}/models/red-dragon.glb`;
+
+/**
+ * 程序化鳞片凹凸贴图：
+ * 原 glTF 是单色无贴图模型，直接上 PBR 会像塑料。用 canvas 画一层
+ * "叠瓦状鳞片"当 bumpMap，光照下表面就有了鳞甲起伏。
+ * 灰度值决定凹凸高度（亮 = 凸起），不参与颜色。
+ */
+const makeScaleBump = (): THREE.CanvasTexture => {
+  const S = 256;
+  const cv = document.createElement('canvas');
+  cv.width = S;
+  cv.height = S;
+  const ctx = cv.getContext('2d')!;
+  ctx.fillStyle = '#7a7a7a';
+  ctx.fillRect(0, 0, S, S);
+
+  const rows = 10;
+  const cols = 8;
+  const w = S / cols;
+  const h = S / rows;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const cx = c * w + (r % 2 ? w / 2 : 0) + w / 2;
+      const cy = r * h + h / 2;
+      // 每片鳞：中心凸起、边缘回落
+      const g = ctx.createRadialGradient(
+        cx - w * 0.1, cy - h * 0.15, h * 0.05,
+        cx, cy, h * 0.62
+      );
+      g.addColorStop(0, '#ffffff');
+      g.addColorStop(0.6, '#b0b0b0');
+      g.addColorStop(1, '#3a3a3a');
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, w * 0.44, h * 0.40, 0, 0, Math.PI * 2);
+      ctx.fillStyle = g;
+      ctx.fill();
+    }
+  }
+  const tex = new THREE.CanvasTexture(cv);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(6, 6);
+  return tex;
+};
 
 export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -95,6 +139,8 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
     // 骨骼动画：模型自带 8 段（Flying_Idle / Fast_Flying / Headbutt...），
     // 优先用飞行动画循环播放，龙才"活"起来，而不是一尊雕塑。
     let modelRef: THREE.Object3D | null = null;
+
+    const scaleBump = makeScaleBump();
 
     let raf = 0;
     let t = 0;
@@ -162,11 +208,15 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
           else if (lum > 0.72) color = accentColor;
           // 提高金属度 + 降低粗糙度：皮肤看起来像"金色鳞甲"而不是陶土，
           // 也更能跟上方 SVG 龙身的亮金色呼应
+          // 原模型是纯单色、没有贴图，看起来像塑料。这里补一张程序化
+          // 鳞片凹凸图，让表面在光照下有细节起伏，不再是一块光滑塑料。
           mesh.material = new THREE.MeshStandardMaterial({
             color: color.clone(),
-            roughness: 0.38,
-            metalness: 0.52,
-            envMapIntensity: 1.15,
+            roughness: 0.44,
+            metalness: 0.40,
+            envMapIntensity: 1.1,
+            bumpMap: scaleBump,
+            bumpScale: 0.05,
           });
         });
 
@@ -184,7 +234,9 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
         // 模型原始朝向是"展翅平飞、脸朝 +Z"，不做旋转时正好正对镜头、
         // 抬头张嘴，龙翼在两侧展开 —— 这正是"龙头在下、抬头面向用户"。
         // 唯一保留的小改动：绕 X 轴微微后仰 8°，让下巴抬高一点更有神。
-        obj.rotation.set(-Math.PI * 0.045, 0, 0);
+        // 红龙原模型是"站立展翅、面朝前"的姿态。绕 X 轴后仰 12° 让头略微
+        // 抬起（面向用户），同时相机从略高处俯拍，能同时看到头和展开的翅膀。
+        obj.rotation.set(-Math.PI * 0.07, 0, 0);
         obj.updateMatrixWorld(true);
 
         // 归一化：先旋转、再按旋转后的包围盒居中 + 等比缩放。
@@ -208,9 +260,13 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
         const needV = s2.y / 2 / tan;
         const needH = s2.x / 2 / (width / height) / tan;
         // 把整条龙（头 + 身体 + 尾巴）都框进来，不能只框头和翅膀
-        const d = Math.max(needV, needH) * 1.9;
-        camera.position.set(0, 0, d);
-        camera.lookAt(0, 0, 0);
+        const d = Math.max(needV, needH) * 1.15;
+        // 构图：只框"头 + 胸 + 双翼"，裁掉下半身的腿。
+        // 整只站立展示时龙头在画面里太小、看不出表情；裁成半身像更有气势。
+        // 半身像构图：相机拉近到只框住"头 + 胸 + 翼"，
+        // 腿被裁到画框外。整只站立展示时龙头太小、看不出气势。
+        camera.position.set(0, s2.y * 0.16, d * 0.82);
+        camera.lookAt(0, s2.y * 0.22, 0);
 
         modelRef = obj;
         basePosY = obj.position.y;
@@ -235,6 +291,7 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
         else mt?.dispose();
       });
       envMap.dispose();
+      scaleBump.dispose();
       renderer.dispose();
       if (renderer.domElement.parentNode === mount) mount.removeChild(renderer.domElement);
     };

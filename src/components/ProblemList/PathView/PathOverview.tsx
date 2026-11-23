@@ -351,15 +351,15 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             style={{
               left: `${layout.dragon.head.x}px`,
               top: `${layout.dragon.head.y - 300}px`,
-              // 尺寸必须和传给 canvas 的 width/height 一致，
-              // 否则 CSS 的 100% 撑不起来、画布高度为 0（踩过）
-              width: compact ? 380 : 620,
-              height: compact ? 400 : 560,
+              // 尺寸必须与传给 canvas 的 width/height **完全一致**：
+              // 不一致会让 canvas 被 CSS 拉伸，宽高比变形（踩过）
+              width: compact ? 340 : 640,
+              height: compact ? 300 : 400,
             }}
           >
             <DragonHead3D
-              width={compact ? 300 : 440}
-              height={compact ? 400 : 560}
+              width={compact ? 340 : 640}
+              height={compact ? 300 : 400}
               completed={overallStats.percentage >= 100}
             />
           </div>

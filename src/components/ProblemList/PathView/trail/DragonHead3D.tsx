@@ -160,11 +160,13 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
           let color = mainColor;
           if (lum < 0.45) color = darkColor;
           else if (lum > 0.72) color = accentColor;
+          // 提高金属度 + 降低粗糙度：皮肤看起来像"金色鳞甲"而不是陶土，
+          // 也更能跟上方 SVG 龙身的亮金色呼应
           mesh.material = new THREE.MeshStandardMaterial({
             color: color.clone(),
-            roughness: 0.60,
-            metalness: 0.20,
-            envMapIntensity: 0.8,
+            roughness: 0.38,
+            metalness: 0.52,
+            envMapIntensity: 1.15,
           });
         });
 

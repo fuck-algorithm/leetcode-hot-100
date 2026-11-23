@@ -94,7 +94,6 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
 
     // 骨骼动画：模型自带 8 段（Flying_Idle / Fast_Flying / Headbutt...），
     // 优先用飞行动画循环播放，龙才"活"起来，而不是一尊雕塑。
-    let mixer: THREE.AnimationMixer | null = null;
     let modelRef: THREE.Object3D | null = null;
 
     let raf = 0;
@@ -111,7 +110,6 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
     const animate = () => {
       if (disposed) return;
       t += 0.016;
-      mixer?.update(0.016);
       // 极轻微的整体浮动 + 鼠标视差，不改变模型自身姿态
       if (modelRef) {
         modelRef.position.y = basePosY + Math.sin(t * 0.7) * 0.04;
@@ -137,7 +135,6 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
     };
 
     // 默认朝向在加载后按实际包围盒确定
-    let baseYaw = 0;
     let basePosY = 0;
     let s2_0 = new THREE.Vector3(0, 3, 0);
     raf = requestAnimationFrame(animate);
@@ -208,7 +205,8 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
         const tan = Math.tan((camera.fov * Math.PI) / 360);
         const needV = s2.y / 2 / tan;
         const needH = s2.x / 2 / (width / height) / tan;
-        const d = Math.max(needV, needH) * 1.35;
+        // 把整条龙（头 + 身体 + 尾巴）都框进来，不能只框头和翅膀
+        const d = Math.max(needV, needH) * 1.9;
         camera.position.set(0, 0, d);
         camera.lookAt(0, 0, 0);
 
@@ -226,7 +224,6 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
     return () => {
       disposed = true;
       cancelAnimationFrame(raf);
-      mixer?.stopAllAction();
       mount.removeEventListener('mousemove', onMove);
       scene.traverse(o => {
         const m = o as THREE.Mesh;

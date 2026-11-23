@@ -14,6 +14,12 @@ export interface TrailConnection {
   completed: boolean;
   /** 路面材质；缺省用柏油 */
   material?: RoadMaterial;
+  /**
+   * 身体粗细系数（0.75~1.25）。
+   * 一条龙从尾到头应当逐渐变粗：尾端细、靠近龙头处最粗。
+   * 缺省 1（等粗），详情页路径不需要这个。
+   */
+  girth?: number;
 }
 
 interface DragonEnds {
@@ -141,17 +147,17 @@ const RoadPatterns: React.FC = () => (
          两排错半鳞，每片是下缘带弧的半圆，上缘压一道亮边——
          这样看起来像"鳞片层层压着"，而不是一片片孤立的圆点。 ---- */}
     <pattern id="trail-pat-scale" width="10" height="9" patternUnits="userSpaceOnUse">
-      <rect width="10" height="9" fill="#b4771a" />
+      <rect width="10" height="9" fill="#c98a1e" />
       {/* 上排 */}
-      <path d="M0.6 4.6 Q 3 1.2 5.4 4.6 Q 3 6.2 0.6 4.6 Z" fill="#e0a832" />
-      <path d="M0.9 4.2 Q 3 1.6 5.1 4.2" stroke="#ffe58a" strokeWidth="0.7" fill="none" opacity="0.75" />
-      <path d="M5.4 4.6 Q 7.8 1.2 10.2 4.6 Q 7.8 6.2 5.4 4.6 Z" fill="#d4992a" />
-      <path d="M5.7 4.2 Q 7.8 1.6 9.9 4.2" stroke="#ffe58a" strokeWidth="0.7" fill="none" opacity="0.65" />
+      <path d="M0.6 4.6 Q 3 1.2 5.4 4.6 Q 3 6.2 0.6 4.6 Z" fill="#f0bc3f" />
+      <path d="M0.9 4.2 Q 3 1.6 5.1 4.2" stroke="#fff3b8" strokeWidth="0.7" fill="none" opacity="0.75" />
+      <path d="M5.4 4.6 Q 7.8 1.2 10.2 4.6 Q 7.8 6.2 5.4 4.6 Z" fill="#e5ab35" />
+      <path d="M5.7 4.2 Q 7.8 1.6 9.9 4.2" stroke="#fff3b8" strokeWidth="0.7" fill="none" opacity="0.65" />
       {/* 下排（错半鳞） */}
-      <path d="M-1.9 8.7 Q 0.5 5.3 2.9 8.7 Q 0.5 10.3 -1.9 8.7 Z" fill="#cd9026" />
-      <path d="M3.1 8.7 Q 5.5 5.3 7.9 8.7 Q 5.5 10.3 3.1 8.7 Z" fill="#dda62e" />
-      <path d="M3.4 8.3 Q 5.5 5.7 7.6 8.3" stroke="#ffe58a" strokeWidth="0.65" fill="none" opacity="0.6" />
-      <path d="M8.1 8.7 Q 10.5 5.3 12.9 8.7 Q 10.5 10.3 8.1 8.7 Z" fill="#c98c22" />
+      <path d="M-1.9 8.7 Q 0.5 5.3 2.9 8.7 Q 0.5 10.3 -1.9 8.7 Z" fill="#e0a22c" />
+      <path d="M3.1 8.7 Q 5.5 5.3 7.9 8.7 Q 5.5 10.3 3.1 8.7 Z" fill="#eeb640" />
+      <path d="M3.4 8.3 Q 5.5 5.7 7.6 8.3" stroke="#fff3b8" strokeWidth="0.65" fill="none" opacity="0.6" />
+      <path d="M8.1 8.7 Q 10.5 5.3 12.9 8.7 Q 10.5 10.3 8.1 8.7 Z" fill="#d99c29" />
     </pattern>
 
     {/* 投影滤镜 */}
@@ -177,6 +183,12 @@ const RaisedRoad: React.FC<{ connection: TrailConnection }> = ({ connection }) =
   const done = connection.completed;
   const material: RoadMaterial = connection.material ?? 'asphalt';
   const fill = `url(#trail-pat-${material})`;
+  // 身体粗细：尾端细、接近龙头处粗，让整条龙有"体量"而不像一根软管
+  const g = connection.girth ?? 1;
+  const W = 20 * g;      // 路面
+  const WBase = 22 * g;  // 路基
+  const WShade = 24 * g; // 投影
+  const WSheen = 8 * g;  // 柔光
 
   // 龙脊尖刺：沿路径每约 26px 一根，朝"下"（+y 方向，也就是沿路前进的
   // 视觉"背侧"）张开。只对龙鳞材质计算，避免无谓开销。
@@ -185,7 +197,7 @@ const RaisedRoad: React.FC<{ connection: TrailConnection }> = ({ connection }) =
       material === 'scale'
         ? // side = -1：朝上张开。路半宽只有 10px，刺长必须小于它，
           // 否则整根刺悬在路面外，看起来像插了一圈牙签。
-          buildSpineSpikes(connection.d, -1, 30, 8, 7)
+          buildSpineSpikes(connection.d, -1, 17, 16, 11)
         : [],
     [connection.d, material]
   );
@@ -204,7 +216,7 @@ const RaisedRoad: React.FC<{ connection: TrailConnection }> = ({ connection }) =
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth={24}
+        strokeWidth={WShade}
         transform="translate(0 11)"
         opacity={0.28}
       />
@@ -215,7 +227,7 @@ const RaisedRoad: React.FC<{ connection: TrailConnection }> = ({ connection }) =
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth={22}
+        strokeWidth={WBase}
         transform="translate(0 7)"
         style={{ stroke: done ? undefined : BASE_COLOR[material] }}
       />
@@ -226,7 +238,7 @@ const RaisedRoad: React.FC<{ connection: TrailConnection }> = ({ connection }) =
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth={20}
+        strokeWidth={W}
         stroke={fill}
       />
       {/* 4. 内阴影：贴边一圈暗色 */}
@@ -236,7 +248,7 @@ const RaisedRoad: React.FC<{ connection: TrailConnection }> = ({ connection }) =
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth={20}
+        strokeWidth={W}
       />
       {/* 5. 柔光：极淡的中间亮带，给材质一点润泽 */}
       <path
@@ -245,7 +257,7 @@ const RaisedRoad: React.FC<{ connection: TrailConnection }> = ({ connection }) =
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth={8}
+        strokeWidth={WSheen}
       />
       {/* 6. 龙脊：沿中线的金色脊线 + 一串真正垂直于曲线张开的尖刺。
           尖刺必须按当地切线算法线才对，pattern/dasharray 做不到这点。

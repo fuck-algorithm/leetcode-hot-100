@@ -95,31 +95,13 @@ const PathOverview: React.FC<PathOverviewProps> = ({
    * 用户第二次进来看到的还是同一条"红砖路"，不会觉得页面在乱跳。
    * 四种材质在整页交替出现，避免整页看起来只有一种路。
    */
-  const materialOf = useCallback((pathId?: string): RoadMaterial => {
-    // 按页面实际出现顺序逐段指定，保证相邻两段材质不同。
-    // （分类顺序：hash, two-pointers, sliding-window, array, linked-list,
-    //   binary-tree, graph, backtracking, binary-search, stack, heap,
-    //   greedy, dynamic-programming, techniques）
-    // 整条路现在读作一条龙，所以主体统一用金色龙鳞；
-    // 只在个别段落掺入别的材质做节奏变化，避免十四段一模一样。
-    const MAP: Record<string, RoadMaterial> = {
-      hash: 'scale',
-      'two-pointers': 'scale',
-      'sliding-window': 'cobble',
-      array: 'scale',
-      'linked-list': 'scale',
-      'binary-tree': 'wood',
-      graph: 'scale',
-      backtracking: 'scale',
-      'binary-search': 'cobble',
-      stack: 'scale',
-      heap: 'scale',
-      greedy: 'wood',
-      'dynamic-programming': 'scale',
-      techniques: 'scale',
-    };
-    return (pathId && MAP[pathId]) || 'scale';
-  }, []);
+  /**
+   * 整条学习之路就是一条龙，所以**所有**路段都用龙鳞材质。
+   * 之前按分类混用砖/木/碎石，整页看是"一条龙身上夹着几段别的东西"，
+   * 割裂了"一条连续龙"的观感——用户要的是一条龙，不是拼贴画。
+   */
+  const materialOf = useCallback((): RoadMaterial => 'scale', []);
+
 
   const compact = width <= 560;
   /** 与 PathOverview.css 中的节点尺寸保持一致 */
@@ -238,7 +220,9 @@ const PathOverview: React.FC<PathOverviewProps> = ({
           }
         ),
         completed: decoratedPaths[i].completionStats.percentage >= 100,
-        material: materialOf(decoratedPaths[i].path.id),
+        material: materialOf(),
+        // 龙身粗细：从顶部（尾巴）到底部（颈）逐渐变粗，0.78 -> 1.22
+        girth: 0.78 + (i / Math.max(1, decoratedPaths.length - 1)) * 0.44,
       });
     }
 
@@ -263,9 +247,8 @@ const PathOverview: React.FC<PathOverviewProps> = ({
           }
         ),
         completed: overallStats.percentage >= 100,
-        material: materialOf(
-          decoratedPaths[decoratedPaths.length - 1]?.path.id
-        ),
+        material: materialOf(),
+        girth: 1.24,   // 接到龙头处最粗，形成"颈"的体量
       });
 
       // 龙脖不再用 SVG 补：3D 龙首自带颈部与身体，

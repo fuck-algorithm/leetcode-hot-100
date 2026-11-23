@@ -133,11 +133,19 @@ export const buildSpineSpikes = (
     nextAt += every;
     idx++;
 
-    // 当地单位切线 -> 法线（垂直于曲线，指向 side 指定一侧）
+    // 当地单位切线 -> 法线。
+    // 关键：法线必须"永远朝视觉上方"，不能跟着曲线前进方向翻转。
+    // 之前用固定左法线（-ty, tx），曲线从上往下走时它会翻到龙身内侧，
+    // 表现为"直段朝上、弯段朝里"，像一排乱插的牙签。
+    // 做法：取两个候选法线，选 y 分量更小的那个（即更朝上）。
     const tx = dx / len;
     const ty = dy / len;
-    const nx = -ty * side;
-    const ny = tx * side;
+    let nx = -ty * side;
+    let ny = tx * side;
+    if (ny > 0) {          // 若当前法线朝下，就翻转成朝上
+      nx = -nx;
+      ny = -ny;
+    }
 
     // 大小轻微起伏，避免一排刺像梳齿一样死板
     const vary = 0.75 + ((idx * 7) % 5) / 10;

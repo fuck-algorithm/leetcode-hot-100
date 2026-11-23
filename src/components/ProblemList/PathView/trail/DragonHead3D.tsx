@@ -129,9 +129,9 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
     pmrem.dispose();
 
     // ---- 主题色：未完成金色，完成态翠绿 ----
-    const mainColor = new THREE.Color(completed ? '#57c21a' : '#d79a2b');
-    const accentColor = new THREE.Color(completed ? '#95e05a' : '#efc46a');
-    const darkColor = new THREE.Color(completed ? '#3d8a10' : '#8c5c14');
+    const mainColor = new THREE.Color(completed ? '#5fce12' : '#e6a82f');
+    const accentColor = new THREE.Color(completed ? '#a8f06a' : '#f7cd6b');
+    const darkColor = new THREE.Color(completed ? '#3f9a00' : '#9a6512');
 
     const dragon = new THREE.Group();
     scene.add(dragon);
@@ -212,8 +212,8 @@ export const DragonHead3D: React.FC<Props> = ({ width, height, completed }) => {
           // 鳞片凹凸图，让表面在光照下有细节起伏，不再是一块光滑塑料。
           mesh.material = new THREE.MeshStandardMaterial({
             color: color.clone(),
-            roughness: 0.44,
-            metalness: 0.40,
+            roughness: 0.46,
+            metalness: 0.28,
             envMapIntensity: 1.1,
             bumpMap: scaleBump,
             bumpScale: 0.05,

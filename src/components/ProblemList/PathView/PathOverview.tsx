@@ -185,10 +185,11 @@ const PathOverview: React.FC<PathOverviewProps> = ({
         : undefined,
       head: lastNode
         ? {
-            // 龙头放在"飞升目标"卡片下方（卡片占约 340px），
-            // 再用一段短龙身把卡片和龙头连起来，避免视觉断成两截。
+            // 龙头紧接龙身末端——用户要的是"一条龙"，不是"路 + 一个雕塑"。
+            // 所以龙头必须和最后一段龙身首尾相连，中间不能夹卡片。
+            // 卡片挪到龙头下方（见渲染部分），不再挡在龙身和头之间。
             x: width / 2,
-            y: ascensionY + orbRadius + 400,
+            y: ascensionY + orbRadius + 60,
             scale: dragonScale,
             completed: overallStats.percentage >= 100,
           }
@@ -200,7 +201,8 @@ const PathOverview: React.FC<PathOverviewProps> = ({
       ascension: { x: width / 2, y: ascensionY },
       // 底部要容纳"飞升目标"卡片（约 340）+ 龙脖 + 放大的龙头
       // （含龙须约 120*scale），再留 120 缓冲避免被裁
-      height: ascensionY + orbRadius + (compact ? 720 : 760),
+      // 底部要容纳：龙头（400/300 高）+ 其下方的飞升卡片（约 300）
+      height: ascensionY + orbRadius + (compact ? 820 : 880),
       orbRadius,
       labelSpace,
       dragon,
@@ -331,7 +333,8 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             className="ascension-node-wrapper"
             style={{
               left: `${layout.ascension.x}px`,
-              top: layout.ascension.y - layout.labelSpace - layout.orbRadius,
+              // 卡片挪到龙头下方，避免插在龙身与龙头之间把一条龙切成两段
+              top: (layout.dragon?.head?.y ?? layout.ascension.y) + (compact ? 265 : 340) + 40,
             }}
           >
             <AscensionNode
@@ -350,16 +353,16 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             className="dragon-head3d-wrapper"
             style={{
               left: `${layout.dragon.head.x}px`,
-              top: `${layout.dragon.head.y - 300}px`,
+              top: `${layout.dragon.head.y - 250}px`,
               // 尺寸必须与传给 canvas 的 width/height **完全一致**：
               // 不一致会让 canvas 被 CSS 拉伸，宽高比变形（踩过）
-              width: compact ? 340 : 640,
-              height: compact ? 300 : 400,
+              width: compact ? 300 : 520,
+              height: compact ? 265 : 340,
             }}
           >
             <DragonHead3D
-              width={compact ? 340 : 640}
-              height={compact ? 300 : 400}
+              width={compact ? 300 : 520}
+              height={compact ? 265 : 340}
               completed={overallStats.percentage >= 100}
             />
           </div>

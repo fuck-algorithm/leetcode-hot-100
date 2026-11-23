@@ -17,7 +17,7 @@ export interface SpineSpike {
   index: number;
 }
 
-interface Pt {
+export interface Pt {
   x: number;
   y: number;
 }
@@ -77,7 +77,7 @@ const bezier = (seg: Cubic, t: number): Pt => {
 };
 
 /** 按固定步长重采样整条路径 */
-const samplePath = (d: string, step: number): Pt[] => {
+export const samplePathPoints = (d: string, step: number): Pt[] => {
   const segs = parseSegments(d);
   if (!segs.length) return [];
   // 单段细分步数：按控制点包围盒估算长度，保证采样密度大致均匀
@@ -113,7 +113,7 @@ export const buildSpineSpikes = (
   height: number,
   base: number
 ): SpineSpike[] => {
-  const pts = samplePath(d, 6);
+  const pts = samplePathPoints(d, 6);
   if (pts.length < 4) return [];
 
   const out: SpineSpike[] = [];

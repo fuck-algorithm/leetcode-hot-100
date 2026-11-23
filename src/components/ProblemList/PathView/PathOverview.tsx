@@ -10,6 +10,7 @@ import TrailConnectors, {
   TrailConnection,
   RoadMaterial,
 } from './trail/TrailConnectors';
+import { DragonBody3D } from './trail/DragonBody3D';
 import {
   buildOverviewPositions,
   buildWindingConnectorPath,
@@ -284,8 +285,17 @@ const PathOverview: React.FC<PathOverviewProps> = ({
         style={{ minHeight: layout.height }}
         ref={stageRef}
       >
+        {/* 龙身：Three.js 真实 3D 管体（静态渲染一帧，滚动不重绘）。
+            SVG 版仍保留在下面作为"几何兜底"（3D 失败时至少有形状），
+            但它会被 3D 画布盖住。 */}
+        <DragonBody3D
+          width={width}
+          height={layout.height}
+          paths={connections.map(c => c.d)}
+          completed={overallStats.percentage >= 100}
+        />
         <TrailConnectors
-          className="path-overview-svg"
+          className="path-overview-svg path-overview-svg--underlay"
           width={width}
           height={layout.height}
           connections={connections}

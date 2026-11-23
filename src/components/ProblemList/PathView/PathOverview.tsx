@@ -266,41 +266,8 @@ const PathOverview: React.FC<PathOverviewProps> = ({
         ),
       });
 
-      // 卡片下方补一小段龙身，把"飞升目标"和龙头接起来：
-      // 否则龙头孤悬在页面最底部，看起来和整条龙没有关系。
-      if (layout.dragon?.head) {
-        const h = layout.dragon.head;
-        // 龙脖终点落进龙头内部（脸的范围），从下巴下面探出来会像多余尾巴。
-        // 起点也贴着卡片下沿，整段尽量短，减少可摆动长度。
-        // 从卡片下沿稍远处起笔画，做出"脖子从卡片后面垂下来"的纵深感
-        const from = {
-          x: width / 2,
-          y: h.y - 200,
-        };
-        // 侧视龙头：脸朝左、后脑在右侧。龙脖要从"脑后"接进来，
-        // 即 x 偏右、y 略低于头顶，才会被头骨盖住，不会像插在头上的一根管子。
-        // 3D 龙头朝左，头在画布中心偏左；龙脖从上方偏右位置接入，
-        // 视觉上像从颈后伸进头骨
-        const to = { x: h.x + 30, y: h.y - 40 };
-        result.push({
-          key: 'overview-dragon-neck',
-          // 龙脖不用大摆幅：这里只是把卡片和龙头接起来，
-          // 扭得太厉害会像面条，压成一条柔和的小弧即可。
-          d: buildWindingConnectorPath(from, to, null, null, {
-            style: getWindingStyle(
-              decoratedPaths[decoratedPaths.length - 1]?.path.id
-            ),
-            edgeIndex: decoratedPaths.length + 1,
-            // 极小的摆幅：这一段只求"接上"，任何明显摆动都会像面条
-            amplitude: 8,
-            forceMeander: true,
-            wavelengthRatio: 3.2,
-            ...bounds,
-          }),
-          completed: overallStats.percentage >= 100,
-          material: 'scale',
-        });
-      }
+      // 龙脖不再用 SVG 补：3D 龙首自带颈部与身体，
+      // 再加一段 SVG 反而会插进模型里、露出断头（踩过）。
     }
 
     return result;
@@ -383,12 +350,16 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             className="dragon-head3d-wrapper"
             style={{
               left: `${layout.dragon.head.x}px`,
-              top: `${layout.dragon.head.y - 130}px`,
+              top: `${layout.dragon.head.y - 330}px`,
+              // 尺寸必须和传给 canvas 的 width/height 一致，
+              // 否则 CSS 的 100% 撑不起来、画布高度为 0（踩过）
+              width: compact ? 380 : 620,
+              height: compact ? 400 : 560,
             }}
           >
             <DragonHead3D
-              width={compact ? 260 : 380}
-              height={compact ? 210 : 300}
+              width={compact ? 320 : 460}
+              height={compact ? 420 : 620}
               completed={overallStats.percentage >= 100}
             />
           </div>

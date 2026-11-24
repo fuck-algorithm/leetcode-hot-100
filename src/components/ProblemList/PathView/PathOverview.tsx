@@ -346,7 +346,10 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             className="dragon-head3d-wrapper"
             style={{
               left: `${layout.dragon.head.x}px`,
-              top: `${layout.dragon.head.y - 300}px`,
+              // 龙首画布高 420，头骨顶部（鹿角根部）约在画布内 y=120。
+            // 把画布上移 190px，让"龙身末端"正好压进头骨顶部，
+            // 形成"龙身从左上方长进龙首"的连续感（之前差 930px 是断开的）。
+            top: `${layout.dragon.head.y - 240}px`,
               // 尺寸必须与传给 canvas 的 width/height **完全一致**：
               // 不一致会让 canvas 被 CSS 拉伸，宽高比变形（踩过）
               width: compact ? 300 : 420,

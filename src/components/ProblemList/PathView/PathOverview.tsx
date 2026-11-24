@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { LearningPath } from '../data/learningPaths';
 import AscensionNode from './AscensionNode';
-import { DragonHead3D } from './trail/DragonHead3D';
+import { ChineseDragonHead } from './trail/ChineseDragonHead';
 import OverviewPathNode, {
   OverviewCompletionStats,
   OverviewPathStats,
@@ -346,16 +346,16 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             className="dragon-head3d-wrapper"
             style={{
               left: `${layout.dragon.head.x}px`,
-              top: `${layout.dragon.head.y - 250}px`,
+              top: `${layout.dragon.head.y - 300}px`,
               // 尺寸必须与传给 canvas 的 width/height **完全一致**：
               // 不一致会让 canvas 被 CSS 拉伸，宽高比变形（踩过）
-              width: compact ? 300 : 520,
-              height: compact ? 265 : 340,
+              width: compact ? 300 : 420,
+              height: compact ? 300 : 420,
             }}
           >
-            <DragonHead3D
-              width={compact ? 300 : 520}
-              height={compact ? 265 : 340}
+            <ChineseDragonHead
+              width={compact ? 300 : 420}
+              height={compact ? 300 : 420}
               completed={overallStats.percentage >= 100}
             />
           </div>

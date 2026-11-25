@@ -127,12 +127,15 @@ export const DragonBody3D: React.FC<Props> = ({
 
     // ---- 自定义管体：半径沿路径渐变（尾细颈粗）----
     const segments = Math.min(1400, Math.max(240, Math.floor(curve.getLength() / 8)));
-    const radialSegs = 12;
-    const r0 = 7;   // 尾端半径
-    const r1 = 13;  // 颈端半径
+    // 加粗：原来 7→13 太细，鳞片和棱面根本没有展示空间，
+    // 看起来就是一根细软管。加粗到 13→22 才有"龙身"的体量。
+    const radialSegs = 20;
+    const r0 = 13;  // 尾端半径
+    const r1 = 22;  // 颈端半径
 
     const radial = curve.computeFrenetFrames(segments, false);
     const pos: number[] = [];
+    const col: number[] = [];
     const norm: number[] = [];
     const uv: number[] = [];
     const index: number[] = [];
@@ -153,8 +156,27 @@ export const DragonBody3D: React.FC<Props> = ({
         const nx = cos * N.x + sin * B.x;
         const ny = cos * N.y + sin * B.y;
         const nz = cos * N.z + sin * B.z;
+
+        // 环向起伏：让截面不是完美圆，而是有鳞片棱的圆角多边形，
+        // 侧面轮廓才有"龙身"的骨感而不是一根光滑软管
+        const ripple = 1 + 0.06 * Math.sin(v * 9) + 0.03 * Math.cos(v * 14 + t * 40);
+        const RR = R * ripple;
+
+        // 腹部亮、背部暗：v 在 π 附近是"下方"（对应世界坐标的腹部）
+        const belly = Math.max(0, -ny);          // 朝下的分量
+        const c = belly * 0.75;                  // 腹部权重
+        // 背用饱和金、腹用浅金：中国龙通体金黄，靠明度区分而非色相
+        const baseC = completed
+          ? new THREE.Color('#6ada1c')
+          : new THREE.Color('#e8b62e');
+        const bellyC = completed
+          ? new THREE.Color('#c9f79a')
+          : new THREE.Color('#fbe7b0');
+        const mixed = baseC.clone().lerp(bellyC, c);
+        col.push(mixed.r, mixed.g, mixed.b);
+
         norm.push(nx, ny, nz);
-        pos.push(P.x + R * nx, P.y + R * ny, P.z + R * nz);
+        pos.push(P.x + RR * nx, P.y + RR * ny, P.z + RR * nz);
         uv.push(t * 26, j / radialSegs);
       }
     }
@@ -172,15 +194,18 @@ export const DragonBody3D: React.FC<Props> = ({
     geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
     geo.setAttribute('normal', new THREE.Float32BufferAttribute(norm, 3));
     geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
     geo.setIndex(index);
 
     const scaleBump = makeScaleBump();
     const bodyMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(completed ? '#5fce12' : '#e8b23a'),
+      // 顶点色已经带颜色，材质底色必须是白，否则两者相乘会让金色发棕
+      color: new THREE.Color(0xffffff),
       roughness: 0.42,
       metalness: 0.34,
       bumpMap: scaleBump,
       bumpScale: 1.2,
+      vertexColors: true,
     });
     const body = new THREE.Mesh(geo, bodyMat);
     scene.add(body);
@@ -200,10 +225,10 @@ export const DragonBody3D: React.FC<Props> = ({
       // 背脊方向 = 切线 × Z轴，再取朝上的那支
       const side = new THREE.Vector3().crossVectors(T, new THREE.Vector3(0, 0, 1)).normalize();
       if (side.y < 0) side.negate();
-      const h = 15 + 6 * Math.sin(t * Math.PI * 5);
+      const h = 22 + 8 * Math.sin(t * Math.PI * 5);
       const cone = new THREE.Mesh(new THREE.ConeGeometry(4.6, h, 6), spikeMat);
       // 锥的默认轴是 +Y，旋转到 side 方向
-      cone.position.copy(P).addScaledVector(side, 8 + h / 2);
+      cone.position.copy(P).addScaledVector(side, 14 + h / 2);
       cone.quaternion.setFromUnitVectors(up, side);
       scene.add(cone);
     }

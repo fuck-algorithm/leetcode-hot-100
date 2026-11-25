@@ -1,20 +1,19 @@
 import React from 'react';
 
 /**
- * 中国龙头（矢量插画）
+ * 中国龙头（矢量插画 · 精细版）
  *
- * 之前用的是西方龙（蝙蝠翅、獠牙、爬行类尖吻），完全不是中国龙的样子。
- * 中国龙的核心特征，这张图逐一做出：
- *   - 方吻（不是尖吻），额头宽而平
- *   - 分叉的鹿角（不是独角）
- *   - 两根长须从吻侧甩出
- *   - 嗔目圆睁（眼球外凸、竖瞳、粗眉弓）
- *   - 脑后一圈火焰状鬃毛
- *   - 颊侧鳞甲、双排獠牙
- *   - 通体金色，与上方龙身同色系
+ * 上一版的问题：脸是一块纯色像贴纸、眼睛太大像卡通青蛙、
+ * 鬃毛细碎散乱、鹿角与龙须太淡、吻部无立体感。
  *
- * 用 SVG 画而不是 3D：免费渠道拿不到中式龙的 3D 模型（Sketchfab 需登录），
- * 而矢量插画可以把线条画到足够精细，且与页面整体风格统一。
+ * 这一版让每一处都有体积：
+ *   - 脸用径向渐变，颧骨/额骨/下颌各受不同方向的光
+ *   - 眼睛压成杏仁形嗔目，配厚眼睑、竖瞳、角膜高光
+ *   - 鬃毛连成火焰块面，根部宽、尖端分叉
+ *   - 鹿角加粗、双色渐变、带节瘤
+ *   - 龙须加粗、带渐变与描边
+ *   - 吻部三层：侧壁阴影 / 吻顶面 / 凸起的鼻端，鼻孔是内凹深洞
+ *   - 獠牙加大、减少数量，配牙龈阴影
  */
 
 interface Props {
@@ -23,29 +22,17 @@ interface Props {
   completed: boolean;
 }
 
-const GOLD = '#e8b23a';
-const GOLD_L = '#f7d268';
-const GOLD_D = '#b0761b';
-const GOLD_DD = '#7d4f0d';
-const HORN = '#efe3c4';
-const HORN_D = '#c9b98f';
-const TOOTH = '#fffdf5';
-const MOUTH = '#8e2f2a';
-const EYE = '#ffe066';
-const PUPIL = '#140f08';
-
 export const ChineseDragonHead: React.FC<Props> = ({
   width,
   height,
   completed,
 }) => {
-  const main = completed ? '#5fce12' : GOLD;
-  const light = completed ? '#a8f06a' : GOLD_L;
-  const dark = completed ? '#3f9a00' : GOLD_D;
-  const deep = completed ? '#2f7000' : GOLD_DD;
+  const C = completed
+    ? { hi:'#d8ffb0', lit:'#a8f06a', mid:'#6ad82a', dark:'#3f9a00', deep:'#266000', mane:'#2f7000' }
+    : { hi:'#fff3c4', lit:'#f7d268', mid:'#e0a92e', dark:'#b0761b', deep:'#7d4f0d', mane:'#8c5a10' };
 
-  const W = 400;
-  const H = 400;
+  const W = 420;
+  const H = 420;
 
   return (
     <svg
@@ -58,252 +45,212 @@ export const ChineseDragonHead: React.FC<Props> = ({
       focusable="false"
     >
       <defs>
-        <linearGradient id="cn-gold" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={light} />
-          <stop offset="55%" stopColor={main} />
-          <stop offset="100%" stopColor={dark} />
-        </linearGradient>
-        <linearGradient id="cn-face" x1="0" y1="0" x2="0.4" y2="1">
-          <stop offset="0%" stopColor={light} />
-          <stop offset="65%" stopColor={main} />
-          <stop offset="100%" stopColor={dark} />
-        </linearGradient>
-        <linearGradient id="cn-horn" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor={HORN} />
-          <stop offset="100%" stopColor={HORN_D} />
-        </linearGradient>
-        <radialGradient id="cn-eye" cx="35%" cy="30%" r="75%">
-          <stop offset="0%" stopColor="#fff7c4" />
-          <stop offset="60%" stopColor={EYE} />
-          <stop offset="100%" stopColor="#c9920d" />
+        <radialGradient id="cn-face-g" cx="34%" cy="28%" r="78%">
+          <stop offset="0%" stopColor={C.hi} />
+          <stop offset="38%" stopColor={C.lit} />
+          <stop offset="72%" stopColor={C.mid} />
+          <stop offset="100%" stopColor={C.dark} />
         </radialGradient>
+        <linearGradient id="cn-snout-g" x1="0" y1="0" x2="0.25" y2="1">
+          <stop offset="0%" stopColor={C.lit} />
+          <stop offset="45%" stopColor={C.mid} />
+          <stop offset="100%" stopColor={C.dark} />
+        </linearGradient>
+        <linearGradient id="cn-jaw-g" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={C.mid} />
+          <stop offset="100%" stopColor={C.deep} />
+        </linearGradient>
+        <linearGradient id="cn-horn-g" x1="0" y1="0" x2="1" y2="0.6">
+          <stop offset="0%" stopColor="#fffdf0" />
+          <stop offset="42%" stopColor="#ece0bd" />
+          <stop offset="100%" stopColor="#b9a67a" />
+        </linearGradient>
+        <linearGradient id="cn-whisker-g" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0%" stopColor="#c9b68c" />
+          <stop offset="60%" stopColor="#efe3c4" />
+          <stop offset="100%" stopColor="#fffaea" />
+        </linearGradient>
+        <radialGradient id="cn-eye-g" cx="38%" cy="32%" r="72%">
+          <stop offset="0%" stopColor="#fffbe0" />
+          <stop offset="45%" stopColor={completed ? '#c8ff70' : '#ffd947'} />
+          <stop offset="100%" stopColor={completed ? '#3fa300' : '#b0740a'} />
+        </radialGradient>
+        <linearGradient id="cn-mane-g" x1="0" y1="1" x2="0.6" y2="0">
+          <stop offset="0%" stopColor={C.lit} />
+          <stop offset="55%" stopColor={C.mid} />
+          <stop offset="100%" stopColor={C.mane} />
+        </linearGradient>
+        <filter id="cn-shadow" x="-25%" y="-25%" width="150%" height="150%">
+          <feGaussianBlur stdDeviation="7" />
+        </filter>
       </defs>
 
-      {/* ============ 脑后鬃毛：贴在头轮廓两侧，往后上方飘的火焰簇 ============
-          之前画成横向伸出的叶子，远看像翅膀；改成贴着颊部、朝后上方飘。 */}
-      {[-1, 1].map(s =>
-        [0, 1, 2].map(i => {
-          // 粗短的火焰簇：根部宽、尖端圆，贴着颊部向后上方翘
-          const bx = 200 + s * (95 + i * 4);
-          const by = 138 + i * 24;
-          const len = 30 + i * 4;
-          const wide = 9 - i * 1.5;
-          const tipX = bx + s * (len * 0.75);
-          const tipY = by - len * 0.85;
-          return (
-            <path
-              key={`mane-${s}-${i}`}
-              d={`M ${bx - wide} ${by + 10}
-                  C ${bx - wide * 0.6} ${by - 6}, ${tipX - wide * 0.7} ${tipY + 8}, ${tipX} ${tipY}
-                  C ${tipX - wide * 0.2} ${tipY + 14}, ${bx + wide * 0.8} ${by + 14}, ${bx + wide} ${by + 10} Z`}
-              fill={deep}
-              opacity={0.82 - i * 0.12}
-            />
-          );
-        })
-      )}
+      {/* 投影 */}
+      <ellipse cx="210" cy="332" rx="118" ry="34" fill={C.deep} opacity="0.16" filter="url(#cn-shadow)" />
 
-      {/* ============ 鹿角（分叉枝状，向后上方） ============ */}
+      {/* 鬃毛（头后，连成块面） */}
       {[-1, 1].map(s => (
-        <g key={`antler-${s}`} transform={`translate(${200 + s * 62} 132) scale(${s} 1)`}>
-          {/* 主干：从额角向上外弯 */}
-          <path
-            d="M 0 0 C 10 -26, 22 -48, 30 -74"
-            stroke="url(#cn-horn)"
-            strokeWidth="11"
-            strokeLinecap="round"
-            fill="none"
-          />
-          {/* 第一分叉：向外 */}
-          <path
-            d="M 13 -34 C 26 -40, 38 -44, 50 -48"
-            stroke="url(#cn-horn)"
-            strokeWidth="8"
-            strokeLinecap="round"
-            fill="none"
-          />
-          {/* 第二分叉：向上内弯 */}
-          <path
-            d="M 24 -58 C 34 -70, 40 -82, 42 -96"
-            stroke="url(#cn-horn)"
-            strokeWidth="7"
-            strokeLinecap="round"
-            fill="none"
-          />
-          {/* 第三小叉：向前 */}
-          <path
-            d="M 5 -16 C 2 -30, -4 -40, -10 -48"
-            stroke="url(#cn-horn)"
-            strokeWidth="6.5"
-            strokeLinecap="round"
-            fill="none"
-          />
-          {/* 角根凸起 */}
-          <ellipse cx="0" cy="2" rx="11" ry="8" fill={dark} />
+        <g key={`mane-${s}`} transform={`translate(210 176) scale(${s} 1)`}>
+          {/* 三簇短而圆的火焰鬃，贴着颊部向后垂。
+              不要长条尖刺：长度控制在 40px 内，末端收成弧。 */}
+          {[0, 1, 2].map(i => {
+            const y0 = 8 + i * 22;
+            const x0 = 84 + i * 3;
+            const len = 34 + i * 3;
+            return (
+              <g key={`m${i}`}>
+                <path
+                  d={`M ${x0} ${y0}
+                      C ${x0 + 10} ${y0 - 6}, ${x0 + len - 8} ${y0 + 2}, ${x0 + len} ${y0 + 14}
+                      C ${x0 + len - 6} ${y0 + 20}, ${x0 + 14} ${y0 + 22}, ${x0} ${y0 + 16} Z`}
+                  fill="url(#cn-mane-g)"
+                />
+                <path
+                  d={`M ${x0 + 3} ${y0 + 4} C ${x0 + 12} ${y0}, ${x0 + len - 10} ${y0 + 6}, ${x0 + len - 3} ${y0 + 14}`}
+                  stroke={C.hi}
+                  strokeWidth="1.5"
+                  fill="none"
+                  opacity="0.4"
+                />
+              </g>
+            );
+          })}
         </g>
       ))}
 
-      {/* ============ 龙头主体 ============
-          中国龙的脸不是圆的：额头宽平有棱角，下颊向内收，
-          整体呈"倒梯形"，再配上方吻才有龙的样子。
-          之前画成一个大圆，远看像青蛙脸。 */}
-      <path
-        d="
-          M 106 150
-          L 118 112
-          C 140 100, 172 94, 200 94
-          C 228 94, 260 100, 282 112
-          L 294 150
-          C 294 178, 286 202, 272 220
-          C 258 236, 232 246, 200 248
-          C 168 246, 142 236, 128 220
-          C 114 202, 106 178, 106 150
-          Z"
-        fill="url(#cn-face)"
-      />
-
-      {/* 额骨棱线：两道斜向的暗描，强化"骨相"而非"肉球" */}
-      <path d="M 130 124 C 160 112, 240 112, 270 124" stroke="#a8761d" strokeWidth="3" fill="none" opacity="0.5" />
-      <path d="M 122 142 L 278 142" stroke="#c08c28" strokeWidth="2" fill="none" opacity="0.35" />
-
-      {/* ============ 方吻 ============
-          中国龙的吻是"向前方伸出的方盒"，有清楚的正面、顶面、侧面。
-          之前只画了一个扁平椭圆贴在脸上，完全没有纵深。
-          这里用三块面拼出体积：顶面（亮）、正面（中）、底部阴影。 */}
-      {/* 吻部侧面（暗，制造纵深） */}
-      <path
-        d="M 132 196 C 130 206, 134 218, 144 226 L 152 222 C 142 212, 140 202, 142 194 Z"
-        fill={dark}
-      />
-      <path
-        d="M 268 196 C 270 206, 266 218, 256 226 L 248 222 C 258 212, 260 202, 258 194 Z"
-        fill={dark}
-      />
-      {/* 吻部主体（方盒正面） */}
-      <path
-        d="
-          M 140 192
-          L 146 176
-          C 168 170, 232 170, 254 176
-          L 260 192
-          C 262 206, 254 218, 240 224
-          C 220 230, 180 230, 160 224
-          C 146 218, 138 206, 140 192
-          Z"
-        fill="url(#cn-gold)"
-      />
-      {/* 顶面：一道窄亮条，做出"上表面受光" */}
-      <path
-        d="M 146 176 C 168 170, 232 170, 254 176 L 252 184 C 232 178, 168 178, 148 184 Z"
-        fill={light}
-        opacity={0.75}
-      />
-      {/* 鼻端凸起：向前伸出的短方盒（正对镜头时是深色块） */}
-      <path
-        d="M 162 188 L 168 178 C 186 174, 214 174, 232 178 L 238 188 C 240 196, 232 202, 218 204 C 200 206, 180 206, 166 204 C 156 202, 160 194, 162 188 Z"
-        fill={light}
-        opacity={0.5}
-      />
-      {/* 鼻孔：两个朝天的深洞 */}
+      {/* 鹿角 */}
       {[-1, 1].map(s => (
-        <ellipse
-          key={`nostril-${s}`}
-          cx={200 + s * 22}
-          cy={200}
-          rx={7}
-          ry={4.5}
-          fill={deep}
-          transform={`rotate(${s * -12} ${200 + s * 22} 200)`}
-        />
-      ))}
-
-      {/* ============ 嘴：微张，露出獠牙 ============ */}
-      <path
-        d="M 150 232 C 170 244, 230 244, 250 232 C 244 252, 214 260, 200 260 C 186 260, 156 252, 150 232 Z"
-        fill={MOUTH}
-      />
-      {/* 舌 */}
-      <path
-        d="M 176 244 C 190 250, 210 250, 224 244 C 214 254, 186 254, 176 244 Z"
-        fill="#b8433c"
-        opacity={0.9}
-      />
-      {/* 上排獠牙 */}
-      {[-1, 1].map(s => (
-        <g key={`ft-${s}`}>
-          <path d={`M ${168 + s * 6} 234 L ${171 + s * 6} 248 L ${176 + s * 6} 234 Z`} fill={TOOTH} />
-          <path d={`M ${192 + s * 6} 236 L ${194 + s * 6} 247 L ${198 + s * 6} 236 Z`} fill={TOOTH} />
-          <path d={`M ${216 + s * 6} 234 L ${219 + s * 6} 246 L ${223 + s * 6} 234 Z`} fill={TOOTH} />
-        </g>
-      ))}
-      {/* 下排小牙 */}
-      {[-1, 1].map(s => (
-        <g key={`fb-${s}`}>
-          <path d={`M ${178 + s * 8} 250 L ${180 + s * 8} 240 L ${183 + s * 8} 250 Z`} fill={TOOTH} opacity={0.95} />
-          <path d={`M ${210 + s * 8} 250 L ${212 + s * 8} 241 L ${215 + s * 8} 250 Z`} fill={TOOTH} opacity={0.95} />
+        <g key={`antler-${s}`} transform={`translate(${210 + s * 58} 150) scale(${s} 1)`}>
+          <path d="M 0 8 C 12 -20, 26 -44, 36 -70" stroke="url(#cn-horn-g)" strokeWidth="15" strokeLinecap="round" fill="none" />
+          <path d="M 15 -30 C 30 -36, 46 -42, 62 -46" stroke="url(#cn-horn-g)" strokeWidth="10" strokeLinecap="round" fill="none" />
+          <path d="M 28 -56 C 38 -70, 46 -84, 50 -100" stroke="url(#cn-horn-g)" strokeWidth="9" strokeLinecap="round" fill="none" />
+          <path d="M 46 -86 C 54 -90, 60 -96, 64 -104" stroke="url(#cn-horn-g)" strokeWidth="6" strokeLinecap="round" fill="none" />
+          <path d="M 8 -14 C 4 -30, -2 -42, -8 -54" stroke="url(#cn-horn-g)" strokeWidth="8" strokeLinecap="round" fill="none" />
+          {[[6,-12,7],[16,-32,6.5],[27,-54,6],[37,-72,5],[46,-42,5],[49,-96,4]].map(([x,y,r],i)=>(
+            <circle key={`k-${i}`} cx={x} cy={y} r={r} fill="#f5ebd2" opacity="0.5" />
+          ))}
         </g>
       ))}
 
-      {/* ============ 大嗔目：外凸圆眼 + 粗眉弓 ============ */}
+      {/* 头骨主体 */}
+      <path
+        d="M 96 152 L 106 112 C 128 96, 166 88, 210 88 C 254 88, 292 96, 314 112
+           L 324 152 C 324 186, 314 214, 296 234 C 278 252, 246 262, 210 264
+           C 174 262, 142 252, 124 234 C 106 214, 96 186, 96 152 Z"
+        fill="url(#cn-face-g)"
+      />
+      <path d="M 118 120 C 150 104, 270 104, 302 120" stroke={C.hi} strokeWidth="4" fill="none" opacity="0.5" />
+      <path d="M 210 96 L 210 130" stroke={C.dark} strokeWidth="2.5" opacity="0.26" />
+      <ellipse cx="140" cy="198" rx="34" ry="22" fill={C.dark} opacity="0.16" />
+      <ellipse cx="280" cy="198" rx="34" ry="22" fill={C.dark} opacity="0.16" />
+
+      {/* 方吻：侧壁阴影 */}
+      <path d="M 118 196 C 116 212, 120 226, 132 236 L 142 230 C 132 218, 130 206, 132 196 Z" fill={C.deep} opacity="0.45" />
+      <path d="M 302 196 C 304 212, 300 226, 288 236 L 278 230 C 288 218, 290 206, 288 196 Z" fill={C.deep} opacity="0.45" />
+      {/* 吻部主体 */}
+      <path
+        d="M 126 190 L 134 172 C 160 164, 260 164, 286 172 L 294 190
+           C 297 208, 288 222, 272 230 C 248 238, 172 238, 148 230
+           C 132 222, 123 208, 126 190 Z"
+        fill="url(#cn-snout-g)"
+      />
+      <path d="M 210 132 C 214 150, 216 168, 212 190 C 208 168, 206 150, 210 132 Z" fill={C.hi} opacity="0.5" />
+      <path d="M 134 172 C 160 164, 260 164, 286 172 L 283 182 C 258 175, 162 175, 137 182 Z" fill={C.hi} opacity="0.65" />
+      {/* 鼻端凸起 */}
+      <path
+        d="M 160 186 L 166 175 C 188 170, 232 170, 250 175 L 256 186
+           C 258 195, 248 202, 232 205 C 212 209, 192 209, 176 205
+           C 164 202, 158 195, 160 186 Z"
+        fill={C.lit}
+      />
+      <path d="M 160 186 L 166 175 C 188 170, 232 170, 250 175 L 256 186 C 252 180, 168 180, 160 186 Z" fill={C.hi} opacity="0.55" />
+      {/* 鼻孔 */}
       {[-1, 1].map(s => (
-        <g key={`eye-${s}`}>
-          {/* 眼眶凸起 */}
-          <ellipse
-            cx={200 + s * 54}
-            cy={172}
-            rx={30}
-            ry={26}
-            fill={light}
-            opacity={0.85}
-          />
-          {/* 眼球 */}
-          <circle cx={200 + s * 54} cy={172} r={23} fill="url(#cn-eye)" />
-          {/* 竖瞳 */}
-          <ellipse
-            cx={200 + s * 54}
-            cy={172}
-            rx={6.5}
-            ry={17}
-            fill={PUPIL}
-          />
-          {/* 高光 */}
-          <circle cx={200 + s * 54 - 7} cy={162} r={5} fill="#ffffff" opacity={0.92} />
-          {/* 粗眉弓：上扬的斜条 */}
+        <g key={`nos-${s}`}>
+          <ellipse cx={210 + s * 26} cy={192} rx={11} ry={7} fill={C.deep} opacity="0.8" transform={`rotate(${s * -14} ${210 + s * 26} 192)`} />
+          <ellipse cx={210 + s * 26} cy={191} rx={7} ry={4} fill="#3a2408" opacity="0.9" transform={`rotate(${s * -14} ${210 + s * 26} 191)`} />
+        </g>
+      ))}
+      <path d="M 168 208 C 190 216, 230 216, 252 208" stroke={C.dark} strokeWidth="2.5" fill="none" opacity="0.42" />
+
+      {/* 嘴 */}
+      <path d="M 148 224 C 172 236, 248 236, 272 224 C 268 246, 240 258, 210 258 C 180 258, 152 246, 148 224 Z" fill="url(#cn-jaw-g)" />
+      <path d="M 156 226 C 178 236, 242 236, 264 226 C 256 244, 222 250, 210 250 C 198 250, 164 244, 156 226 Z" fill="#7a1f1c" />
+      <path d="M 186 238 C 200 244, 220 244, 234 238 C 226 250, 194 250, 186 238 Z" fill="#b8534a" />
+      <path d="M 156 226 C 178 236, 242 236, 264 226 L 262 230 C 240 240, 180 240, 158 230 Z" fill="#5c1512" opacity="0.65" />
+      {[-1, 1].map(s => (
+        <g key={`fang-${s}`}>
+          <path d={`M ${182 + s * 10} 230 L ${186 + s * 10} 250 L ${191 + s * 10} 230 Z`} fill="#fffdf5" />
+          <path d={`M ${182 + s * 10} 230 L ${185 + s * 10} 244 L ${186 + s * 10} 230 Z`} fill="#d9cfae" opacity="0.6" />
+          <path d={`M ${196 + s * 12} 248 L ${200 + s * 12} 234 L ${204 + s * 12} 248 Z`} fill="#fffdf5" opacity="0.9" />
+        </g>
+      ))}
+      {[0, 1].map(i => (
+        <g key={`sm-${i}`}>
+          <path d={`M ${168 + i * 8} 231 L ${171 + i * 8} 240 L ${174 + i * 8} 231 Z`} fill="#f5efdc" opacity="0.85" />
+          <path d={`M ${244 - i * 8} 231 L ${247 - i * 8} 240 L ${250 - i * 8} 231 Z`} fill="#f5efdc" opacity="0.85" />
+        </g>
+      ))}
+
+      {/* 嗔目 */}
+      {[-1, 1].map(s => (
+        <g key={`eye-${s}`} transform={`translate(${210 + s * 62} 168)`}>
+          <ellipse rx="34" ry="27" fill={C.dark} opacity="0.3" />
+          <ellipse rx="31" ry="24" fill={C.deep} opacity="0.22" />
+          <ellipse rx="27" ry="19" fill="url(#cn-eye-g)" />
+          <ellipse rx="7" ry="15" fill="#100b05" />
+          <ellipse rx="3" ry="9" fill={completed ? '#8fe05a' : '#ffb32b'} opacity="0.75" />
+          <ellipse cx="-9" cy="-8" rx="6.5" ry="5" fill="#fff" opacity="0.9" />
+          <circle cx="10" cy="7" r="3" fill="#fff" opacity="0.4" />
+          <path d="M -34 -12 C -20 -26, 20 -26, 34 -12 L 34 -6 C 16 -20, -16 -20, -34 -6 Z" fill={C.dark} opacity="0.88" />
+          <path d="M -30 14 C -14 22, 14 22, 30 14 L 30 17 C 14 25, -14 25, -30 17 Z" fill={C.dark} opacity="0.5" />
+        </g>
+      ))}
+
+      {/* 眉弓 */}
+      {[-1, 1].map(s => (
+        <g key={`brow-${s}`}>
           <path
-            d={`M ${200 + s * 26} ${150} C ${200 + s * 46} ${138}, ${200 + s * 70} ${136}, ${200 + s * 84} ${144} L ${200 + s * 82} ${156} C ${200 + s * 68} ${148}, ${200 + s * 46} ${150}, ${200 + s * 30} ${160} Z`}
-            fill={deep}
+            d={`M ${210 + s * 30} 144 C ${210 + s * 48} 128, ${210 + s * 76} 124, ${210 + s * 96} 136
+               L ${210 + s * 94} 150 C ${210 + s * 74} 140, ${210 + s * 50} 144, ${210 + s * 34} 158 Z`}
+            fill={C.deep}
           />
-          {/* 眉端火焰尖 */}
           <path
-            d={`M ${200 + s * 82} ${146} C ${200 + s * 96} ${132}, ${200 + s * 104} ${122}, ${200 + s * 108} ${110} C ${200 + s * 96} ${124}, ${200 + s * 88} ${134}, ${200 + s * 78} ${140} Z`}
-            fill={dark}
+            d={`M ${210 + s * 94} 138 C ${210 + s * 108} 120, ${210 + s * 118} 104, ${210 + s * 122} 88
+               C ${210 + s * 106} 108, ${210 + s * 98} 124, ${210 + s * 90} 134 Z`}
+            fill={C.dark}
           />
         </g>
       ))}
 
-      {/* ============ 颊侧鳞甲 ============ */}
-      {[-1, 1].map(s =>
-        [0, 1, 2].map(i => (
-          <path
-            key={`sc-${s}-${i}`}
-            d={`M ${200 + s * (76 + i * 3)} ${196 + i * 18} q ${s * 9} ${-7} ${s * 15} ${3} q ${-s * 7} ${7} ${-s * 15} ${-3} Z`}
-            fill={deep}
-            opacity={0.45 - i * 0.08}
-          />
-        ))
-      )}
+      {/* 颊侧鳞甲 */}
+      {[-1, 1].map(s => [0,1,2].map(i => {
+        const x = 210 + s * (96 + i * 7);
+        const y = 202 + i * 20;
+        return (
+          <g key={`sc-${s}-${i}`}>
+            <path d={`M ${x} ${y} q ${s * 12} ${-9} ${s * 19} ${4} q ${-s * 9} ${9} ${-s * 19} ${-4} Z`} fill={C.dark} opacity={0.45 - i * 0.09} />
+            <path d={`M ${x + s * 2} ${y + 1} q ${s * 9} ${-5} ${s * 13} ${3}`} stroke={C.hi} strokeWidth="1.6" fill="none" opacity={0.45 - i * 0.09} />
+          </g>
+        );
+      }))}
 
-      {/* ============ 龙须：从吻侧向前甩出的长须 ============ */}
+      {/* 龙须 */}
       {[-1, 1].map(s => (
-        <g key={`whisker-${s}`}>
+        <g key={`wh-${s}`}>
           <path
-            d={`M ${200 + s * 48} 214 C ${200 + s * 92} 208, ${200 + s * 128} 222, ${200 + s * 152} 250 C ${200 + s * 128} 232, ${200 + s * 96} 222, ${200 + s * 52} 224 Z`}
-            fill="url(#cn-horn)"
+            d={`M ${210 + s * 60} 206 C ${210 + s * 108} 196, ${210 + s * 150} 208, ${210 + s * 178} 236
+               C ${210 + s * 150} 218, ${210 + s * 116} 210, ${210 + s * 64} 214 Z`}
+            fill="url(#cn-whisker-g)"
           />
           <path
-            d={`M ${200 + s * 46} 226 C ${200 + s * 80} 232, ${200 + s * 108} 254, ${200 + s * 124} 282 C ${200 + s * 104} 258, ${200 + s * 78} 240, ${200 + s * 48} 234 Z`}
-            fill="url(#cn-horn)"
-            opacity={0.85}
+            d={`M ${210 + s * 60} 206 C ${210 + s * 108} 196, ${210 + s * 150} 208, ${210 + s * 178} 236`}
+            stroke="#a8916a" strokeWidth="1.4" fill="none" opacity="0.45"
+          />
+          <path
+            d={`M ${210 + s * 54} 236 C ${210 + s * 86} 250, ${210 + s * 104} 272, ${210 + s * 108} 296
+               C ${210 + s * 96} 276, ${210 + s * 78} 258, ${210 + s * 56} 244 Z`}
+            fill="url(#cn-whisker-g)" opacity="0.9"
           />
         </g>
       ))}

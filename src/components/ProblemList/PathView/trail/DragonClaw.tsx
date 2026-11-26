@@ -27,7 +27,6 @@ export const DragonClaw: React.FC<Props> = ({ x, y, dir, scale = 1, completed })
   const skinL = completed ? '#a8f06a' : '#f7d268';
   const skinD = completed ? '#3f9a00' : '#b0761b';
   const nail = '#f8f0d8';
-  const nailD = '#c9bb96';
 
   return (
     <g transform={`translate(${x} ${y}) rotate(${dir * 18}) scale(${dir * scale} ${scale})`} className="dragon-claw">

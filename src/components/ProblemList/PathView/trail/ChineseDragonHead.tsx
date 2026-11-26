@@ -71,13 +71,13 @@ export const ChineseDragonHead: React.FC<Props> = ({ width, height, completed })
 
       {/* 鬃毛 */}
       {[-1, 1].map(s => (
-        <g key={`m-${s}`} transform={`translate(220 208) scale(${s} 1.25)`}>
-          <path d="M 62 -34 C 78 -50, 90 -66, 94 -84 C 100 -62, 100 -44, 96 -26
-                     C 108 -40, 114 -54, 116 -70 C 118 -46, 112 -26, 102 -8 Z" fill="url(#cnh)" opacity="0.95" />
-          <path d="M 58 -12 C 76 -20, 92 -28, 104 -40 C 96 -24, 84 -12, 68 -2
-                     C 82 2, 94 6, 102 14 C 88 14, 72 12, 58 6 Z" fill="url(#cnh)" opacity="0.9" />
-          <path d="M 56 12 C 74 14, 92 22, 104 36 C 88 30, 72 26, 56 24
-                     C 68 32, 78 42, 82 54 C 68 48, 54 38, 44 24 Z" fill="url(#cnh)" opacity="0.85" />
+        <g key={`m-${s}`} transform={`translate(220 210) scale(${s} 1.5)`}>
+          <path d="M 44 -40 C 66 -62, 82 -84, 84 -104 C 94 -76, 94 -52, 92 -30
+                     C 106 -48, 114 -66, 116 -86 C 118 -56, 112 -30, 100 -4 Z" fill="url(#cnh)" opacity="0.95" />
+          <path d="M 40 -10 C 62 -20, 84 -30, 102 -46 C 92 -26, 78 -12, 58 0
+                     C 78 4, 94 10, 104 20 C 86 20, 66 16, 46 8 Z" fill="url(#cnh)" opacity="0.9" />
+          <path d="M 40 16 C 62 18, 84 28, 102 46 C 88 38, 70 32, 52 30
+                     C 70 42, 82 56, 86 70 C 70 62, 50 48, 34 30 Z" fill="url(#cnh)" opacity="0.85" />
           {[0, 1, 2, 3].map(i => (
             <path key={`ms-${i}`} d={`M ${62 + i * 8} ${-24 + i * 16} q ${10 + i * 3} ${-12 - i * 2} ${16 + i * 5} ${-22 - i * 3}`}
               stroke={HO.l} strokeWidth="1.2" fill="none" opacity="0.4" />
@@ -154,6 +154,12 @@ export const ChineseDragonHead: React.FC<Props> = ({ width, height, completed })
       ))}
       <path d="M 172 214 C 198 224, 242 224, 268 214" stroke={C.s4} strokeWidth="3" fill="none" opacity="0.4" strokeLinecap="round" />
 
+      {/* 脸颊 / 下颌鳞甲：整脸都要有鳞，不能只有额头 */}
+      {scales(140, 214, 4, 2, 14, 13, 6, 'scd', 0.3)}
+      {scales(252, 214, 4, 2, 14, 13, 6, 'sce', 0.3)}
+      {scales(176, 240, 3, 1, 15, 12, 5.5, 'scf', 0.26)}
+      {scales(210, 240, 3, 1, 15, 12, 5.5, 'scg', 0.26)}
+
       {/* 嘴 */}
       <path d="M 156 230 C 182 242, 258 242, 284 230 C 280 252, 248 264, 220 264 C 192 264, 160 252, 156 230 Z" fill="url(#cnj)" />
       <path d="M 164 232 C 188 242, 252 242, 276 232 C 268 250, 232 258, 220 258 C 208 258, 172 250, 164 232 Z" fill="#74201c" />
@@ -216,6 +222,9 @@ export const ChineseDragonHead: React.FC<Props> = ({ width, height, completed })
       {/* 龙须 */}
       {[-1, 1].map(s => (
         <g key={`w-${s}`}>
+          {/* 须根：从吻侧肌肉里长出来的一段粗根 */}
+          <ellipse cx={220 + s * 78} cy={210} rx={11} ry={8} fill={C.s3} opacity="0.85" />
+          <ellipse cx={220 + s * 74} cy={208} rx={6} ry={4} fill={C.s1} opacity="0.6" />
           <path d={`M ${220+s*76} 208 C ${220+s*122} 196, ${220+s*168} 204, ${220+s*196} 232
                     C ${220+s*168} 214, ${220+s*122} 208, ${220+s*80} 216 Z`} fill="url(#cnh)" />
           <path d={`M ${220+s*80} 210 C ${220+s*122} 200, ${220+s*164} 208, ${220+s*190} 228`}

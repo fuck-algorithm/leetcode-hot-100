@@ -115,7 +115,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
     // 用户要求：在原来的基础上再收到约 2/3（560 -> 约 370）
     const spacing = compact ? 265 : 370;
     // 节点摆幅：左右错开、看得到蜿蜒即可，不铺满容器。
-    const amplitude = compact ? 80 : 130;
+    const amplitude = compact ? 66 : 96;
     // 给「开始/继续」气泡留出空间，避免压到页头。
     // 再多留 100px 给顶端的龙尾（尾鳍向下垂，需要独立的一段空间）。
     const startY = nodeRadius + 158;
@@ -192,7 +192,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
       // 段内波幅预算：原先 0.30×width（上限 215）几乎每段都甩到画布边缘，
       // 看着像在画大浪。收紧到 0.18×width（上限 130），曲线仍明显弯曲，
       // 但横向不再顶边，和节点摆幅（amplitude）保持同一量级。
-      waveAmplitude: Math.max(60, Math.min(130, width * 0.18)),
+      waveAmplitude: Math.max(46, Math.min(96, width * 0.13)),
     };
   }, [compact, nodeRadius, width, decoratedPaths, overallStats.percentage]);
 
@@ -216,7 +216,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             // 总览页统一用不自交的正弦蜿蜒：段内每段约 1.5 个波，
             // 波长比放大到 1.8 让峰顶曲率半径（~20px）明显大于 14px 描边
             forceMeander: true,
-            wavelengthRatio: 1.9,
+            wavelengthRatio: 3.4,   // 波长拉长：段内只留一个舒缓的摆动，不是反复抖动
             ...bounds,
           }
         ),
@@ -243,7 +243,7 @@ const PathOverview: React.FC<PathOverviewProps> = ({
             edgeIndex: decoratedPaths.length,
             amplitude: waveAmplitude,
             forceMeander: true,
-            wavelengthRatio: 1.9,
+            wavelengthRatio: 3.4,   // 波长拉长：段内只留一个舒缓的摆动，不是反复抖动
             ...bounds,
           }
         ),

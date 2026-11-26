@@ -731,6 +731,7 @@
    覆盖整条路径，绝对定位在 SVG 之上；只渲染一帧，
    滚动时只是一张纹理在合成。 */
 .dragon-body-3d {
+  display: none;   /* 3D 龙身停用：长路径上 3D 管体会扭曲，改用 SVG */
   position: absolute;
   top: 0;
   left: 0;
@@ -746,6 +747,6 @@
 /* SVG 兜底层：3D 正常时被完全遮住；若 3D 失败，它就是可见的龙身。
    opacity 0 而不是 display:none——保留几何，切换时不会闪。 */
 .path-overview-svg--underlay {
-  z-index: 0;
-  opacity: 0;
+  z-index: 2;
+  opacity: 1;   /* 龙身改回 SVG 绘制：可控、不会扭曲 */
 }

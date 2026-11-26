@@ -301,6 +301,8 @@ const PathOverview: React.FC<PathOverviewProps> = ({
           connections={connections}
           variant="raised"
           dragon={layout.dragon}
+          claws
+          completed={overallStats.percentage >= 100}
         />
 
         <div className="path-overview-nodes" ref={nodesRef}>

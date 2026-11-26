@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { buildSpineSpikes } from './spine';
+import { buildSpineSpikes, samplePathPoints } from './spine';
+import { DragonClaw } from './DragonClaw';
 
 /** 路面材质：不同分类的路用不同的小路风格，整页看起来更丰富 */
 export type RoadMaterial = 'brick' | 'cobble' | 'wood' | 'asphalt' | 'scale';
@@ -41,6 +42,9 @@ interface TrailConnectorsProps {
   variant?: 'simple' | 'raised';
   /** 概览页把整条路理解为一条龙：首尾各补一个装饰件 */
   dragon?: DragonEnds;
+  /** 是否在若干段上画龙爪 */
+  claws?: boolean;
+  completed?: boolean;
 }
 
 const SIMPLE_COMPLETED = '#ffd700';
@@ -197,7 +201,7 @@ const RaisedRoad: React.FC<{ connection: TrailConnection }> = ({ connection }) =
       material === 'scale'
         ? // side = -1：朝上张开。路半宽只有 10px，刺长必须小于它，
           // 否则整根刺悬在路面外，看起来像插了一圈牙签。
-          buildSpineSpikes(connection.d, -1, 17, 16, 11)
+          buildSpineSpikes(connection.d, -1, 46, 22, 13)
         : [],
     [connection.d, material]
   );
@@ -293,6 +297,8 @@ const TrailConnectors: React.FC<TrailConnectorsProps> = ({
   connections,
   variant = 'simple',
   dragon,
+  claws = false,
+  completed = false,
 }) => {
   return (
     <svg
@@ -315,6 +321,39 @@ const TrailConnectors: React.FC<TrailConnectorsProps> = ({
           {/* 顶端不再画之前的"龙尾"装饰——用户反馈那看起来像个脑袋。
               顶端改为让龙身自然收尖（linecap round + 逐渐收窄的虚化），
               避免在"开始"节点上方悬一个球状物。 */}
+          {/* 龙爪：在若干段的侧边各画一只，左右交替。
+              用 SVG 而不是 3D：3D 版写好了但画面上看不见（坐标/相机问题）。 */}
+          {claws && connections.map((c, ci) => {
+            if (ci % 3 !== 1) return null;   // 每 3 段放一对
+            const pts = samplePathPoints(c.d, 20);
+            if (pts.length < 4) return null;
+            const mid = pts[Math.floor(pts.length / 2)];
+            const prev = pts[Math.max(0, Math.floor(pts.length / 2) - 1)];
+            const dx = mid.x - prev.x;
+            const dy = mid.y - prev.y;
+            const len = Math.hypot(dx, dy) || 1;
+            // 侧向 = 切线逆时针 90°
+            const nx = -dy / len;
+            const ny = dx / len;
+            return (
+              <g key={`claw-${c.key}`}>
+                <DragonClaw
+                  x={mid.x + nx * 16}
+                  y={mid.y + ny * 16}
+                  dir={nx > 0 ? 1 : -1}
+                  scale={1.1}
+                  completed={completed}
+                />
+                <DragonClaw
+                  x={mid.x - nx * 16}
+                  y={mid.y - ny * 16}
+                  dir={nx > 0 ? -1 : 1}
+                  scale={1.1}
+                  completed={completed}
+                />
+              </g>
+            );
+          })}
         </>
       ) : (
         connections.map(connection => (
